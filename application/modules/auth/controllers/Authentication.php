@@ -13,7 +13,7 @@ class Authentication extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('authentication_v', $data);
+		$this->load->view('authentication_v');
 	}
 
 }
