@@ -66,16 +66,9 @@
                   <?= $userSession['name'] ?>
                 </p>
               </li>
-
-              </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
-                <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                </div>
+                  <a href="<?= base_url('logout') ?>" class="btn btn-default btn-flat">Sign out</a>
               </li>
             </ul>
           </li>
