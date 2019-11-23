@@ -52,7 +52,7 @@ class Authentication extends CI_Controller {
 		];
 		
 		$this->session->set_userdata('login_session',$dataLogin);
-		redirect('dashboard','refresh');
+		redirect('dashboard');
 	}
 
 	/**
