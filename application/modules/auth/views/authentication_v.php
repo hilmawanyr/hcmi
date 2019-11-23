@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="<?= base_url() ?>assets/plugins/iCheck/square/blue.css">
 
   <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="stylesheet" href="<?= base_url('assets/dist/google-font.css') ?>">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -26,16 +26,25 @@
     <a href="<?= base_url() ?>assets/index2.html"><b>HRIS</b>HCMI</a>
   </div>
   <!-- /.login-logo -->
+
+  <!-- show alert if login fail -->
+  <?php if ($this->session->flashdata('login_fail')) { ?>
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h5><i class="icon fa fa-ban"></i> <?= $this->session->flashdata('login_fail') ?></h5>
+    </div>
+  <?php } ?>
+
   <div class="login-box-body">
     <p class="login-box-msg">Sign in</p>
 
-    <form action="<?= base_url() ?>assets/index2.html" method="post">
+    <form action="<?= base_url('attemptlogin') ?>" method="post">
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="NIK">
+        <input type="text" class="form-control" name="nik" placeholder="NIK">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
+        <input type="password" class="form-control" name="password" placeholder="Password">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">

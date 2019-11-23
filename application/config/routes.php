@@ -52,3 +52,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'auth/authentication';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['attemptlogin'] = 'auth/authentication/attempt_login';
+$route['logout'] = 'auth/authentication/logout';
