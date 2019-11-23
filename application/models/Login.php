@@ -1,0 +1,49 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Login extends CI_Model {
+
+	public $variable;
+
+	public function __construct()
+	{
+		parent::__construct();
+		
+	}
+
+	/**
+	 * Check whether user with the $nik is exist
+	 * @param string $nik
+	 * @return object stdClass
+	 */
+	public function is_user_exist(string $nik) : ?object
+	{
+		return $this->db->select('nik, password')->from('users')->where('nik', $nik)->get()->row();
+	}
+
+	/**
+	 * Get user data
+	 * @param string $nik
+	 * @return array
+	 */
+	public function get_user(string $nik) : object
+	{
+		$this->db->select('
+			a.nik, 
+			a.name, 
+			a.section_id, 
+			a.grade, 
+			a.position_id, 
+			a.job_title_id, 
+			b.group_id, 
+			b.level');
+		$this->db->from('employes a');
+		$this->db->join('users b', 'a.nik = b.nik');
+		$this->db->where('a.nik', $nik);
+		return $this->db->get()->row();
+	}
+	
+
+}
+
+/* End of file Login.php */
+/* Location: ./application/models/Login.php */

@@ -3,6 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Authentication extends CI_Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('login');
+	}
+
 	public function index()
 	{
 		if ($this->session->userdata('login_session')) {
@@ -21,7 +27,7 @@ class Authentication extends CI_Controller {
 	{
 		$nik 			= $this->input->post('nik');
 		$password 		= $this->input->post('password');
-		$isUserExist 	= $this->db->where('nik', $nik)->get('users')->row();
+		$isUserExist 	= $this->login->is_user_exist($nik);
 		
 		if (count($isUserExist) > 0) {
 			// do verification for user's password
@@ -43,16 +49,34 @@ class Authentication extends CI_Controller {
 	 * @param object $userData
 	 * @return void
 	 */
-	private function _login_success(stdClass $userData): void
+	private function _login_success(stdClass $userData) : void
 	{
+		$createDataLogin = $this->_prepare_user_data($userData->nik);
+		$this->session->set_userdata('login_session',$createDataLogin);
+		redirect('dashboard');
+	}
+
+	/**
+	 * Prepare user's data for session login usage
+	 * @param string $nik
+	 * @return array
+	 */
+	private function _prepare_user_data(string $nik) : array
+	{
+		$getUserData = $this->login->get_user($nik);
+
 		$dataLogin = [
-			'nik' => $userData->nik,
-			'group' => $userData->group,
-			'level' => $userData->level
+			'nik' 		=> $getUserData->nik,
+			'name' 		=> $getUserData->name,
+			'section' 	=> $getUserData->section_id,
+			'position' 	=> $getUserData->position_id,
+			'job_title' => $getUserData->job_title_id,
+			'grade' 	=> $getUserData->grade,
+			'group' 	=> $getUserData->group_id,
+			'level' 	=> $getUserData->level
 		];
 		
-		$this->session->set_userdata('login_session',$dataLogin);
-		redirect('dashboard');
+		return $dataLogin;
 	}
 
 	/**
