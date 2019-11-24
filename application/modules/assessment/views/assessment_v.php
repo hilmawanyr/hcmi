@@ -1,0 +1,60 @@
+<?php error_reporting(0); ?>
+
+<section class="content-header">
+  <h3 class="box-title">Department : Quality Assurance Department</h3>
+  <ol class="breadcrumb">
+    <h3 class="box-title pull-right">Section : QC for Excavator</h3>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table id="example1" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Grade</th>
+            <th>Job Title</th>
+            <th>Employes</th>
+
+            <!-- if user is not a participant -->
+            <?php if ($this->session->userdata('login_session')['group'] != 3) { ?>
+            <th>Section</th>
+            <th>Department</th>
+            <?php } ?>
+            <!-- end if -->
+
+            <th>Percentage of Filling</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($jobtitleList as $row) { ?>
+            <tr>
+              <td><?= convert_to_roman($row->grade) ?></td>
+              <td><?= $row->jobtitleName ?></td>
+              <td><?= $row->numberOfPeople ?></td>
+
+              <!-- if user is not a participant -->
+              <?php if ($this->session->userdata('login_session')['group'] != 3) { ?>
+              <td><?= get_section($row->section_id)->name ?></td>
+              <td><?= get_department(get_section($row->section_id)->dept_id) ?></td>
+              <?php } ?>
+              <!-- end if -->
+
+              <td><?= is_form_complete($row->job_title_id) ?> %</td>
+              <td>
+                <a href="<?= base_url('form/'.$row->job_title_id) ?>" class="btn btn-info">
+                  <i class="fa fa-file-text-o"></i> Form
+                </a>
+              </td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+  </div>
+</section>

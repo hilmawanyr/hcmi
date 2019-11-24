@@ -28,6 +28,8 @@
   <link rel="stylesheet" href="<?= base_url() ?>assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- Daterange picker -->
   <link rel="stylesheet" href="<?= base_url() ?>assets/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="<?= base_url('assets/') ?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
   <!-- Google Font -->
   <link rel="stylesheet" href="<?= base_url('assets/dist/google-font.css') ?>">
@@ -96,8 +98,8 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <li>
-          <a href="pages/widgets.html">
-            <i class="fa fa-th"></i> <span>Widgets</span>
+          <a href="<?= base_url('assessment') ?>">
+            <i class="fa fa-file-text-o"></i> <span>Assessment Form</span>
           </a>
         </li>
         
@@ -174,11 +176,14 @@
 <script src="<?= base_url() ?>assets/dist/js/pages/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?= base_url() ?>assets/dist/js/demo.js"></script>
+<!-- DataTables -->
+<script src="<?= base_url('assets/') ?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= base_url('assets/') ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
 <script>
   $(function () {
     $('#example1').DataTable()
-  }
+  })
 </script>
 </body>
 </html>

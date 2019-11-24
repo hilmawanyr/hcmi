@@ -57,3 +57,6 @@ $route['attemptlogin'] = 'auth/authentication/attempt_login';
 $route['logout'] = 'auth/authentication/logout';
 
 $route['dashboard'] = 'dashboard';
+
+$route['assessment'] = 'assessment';
+$route['form/:num'] = 'assessment/form/$1';
