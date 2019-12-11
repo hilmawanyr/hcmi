@@ -1,10 +1,14 @@
 <?php error_reporting(0); ?>
 
 <section class="content-header">
-  <h3 class="box-title">Department : Quality Assurance Department</h3>
-  <ol class="breadcrumb">
-    <h3 class="box-title pull-right">Section : QC for Excavator</h3>
-  </ol>
+  <?php if ($this->session->userdata('login_session')['group'] == 3) { ?>
+    <h3 class="box-title">Department : <?= $jobtitleList->dept_name ?></h3>
+    <ol class="breadcrumb">
+      <h3 class="box-title pull-right">Section : <?= $jobtitleList->dept_name ?></h3>
+    </ol>
+  <?php } else { ?>
+    <h3 class="box-title">Job Title List</h3>
+  <?php } ?>
 </section>
 
 <!-- Main content -->

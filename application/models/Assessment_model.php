@@ -209,6 +209,30 @@ class Assessment_model extends CI_Model {
 									AND skill_matrix.deleted_at IS NULL")->result();
 		return $matrix;
 	}
+
+	/**
+	 * Get each poin of each employe assessment
+	 * @param int $skillId
+	 * @param string $nik
+	 * @return array
+	 */
+	public function get_poin(int $skillId, string $nik) : array
+	{
+		$activeYear = get_active_year();
+		
+        $poin 	= $this->db->query("SELECT 
+	        							skill_units.description, 
+	        							assessment_form_questions.poin, 
+	        							assessment_form_questions.weight
+	        						FROM skill_units
+	        						JOIN assessment_form_questions ON skill_units.id = assessment_form_questions.skill_unit_id
+									WHERE skill_units.id_dictionary = '$skillId'
+									AND assessment_form_questions.form_id = 
+										(SELECT id from assessment_forms where nik = '$nik' and code like '%$activeYear')
+									AND assessment_form_questions.poin IS NOT NULL ")->result();
+        return $poin;
+	}
+	
 	
 }
 

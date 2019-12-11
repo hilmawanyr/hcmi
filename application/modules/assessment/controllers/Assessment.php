@@ -256,23 +256,36 @@ class Assessment extends CI_Controller {
     public function export_assessment_to_excel(int $jobtitleId)
     {
         // active assessment year
-        $data['activeyear']= get_active_year();
+        $data['activeyear']    = get_active_year();
 
         // get job title name
-        $data['jobtitlename'] = $this->db->where('id', $jobtitleId)->get('job_titles')->row();
+        $data['jobtitlename']  = $this->db->where('id', $jobtitleId)->get('job_titles')->row();
 
         // load competency base on job title
-        $data['dictionary'] = $this->assessment->get_assessment_matrix($jobtitleId);
+        $data['dictionary']    = $this->assessment->get_assessment_matrix($jobtitleId);
 
-        $data['numberofcolumn'] = count($data['dictionary']) + 3;
+        $data['numberofcolumn']= count($data['dictionary']) + 3;
 
         // get emlployee base on job title
-        $data['employee'] = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
+        $data['employee']      = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
         
         $this->load->view('excel_assessment_form', $data);
     }
     
-	
+	/**
+	 * Look up each assessment poin from HR
+	 * @param int $skillId
+	 * @param string $nik
+	 * @return void
+	 */
+	public function see_poin(int $skillId, string $nik) : void
+    {
+        $data['dictionary']= $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
+        $data['nik']       = $nik;
+        $data['poin']      = $this->assessment->get_poin($skillId, $nik);
+
+        $this->load->view('assessment_modal_view_poin', $data);
+    }
 
 }
 

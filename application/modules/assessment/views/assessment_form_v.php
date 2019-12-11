@@ -237,10 +237,10 @@
     var pathArray = window.location.pathname.split('/');
 
     function loadCompetency(skill_id,nik,job_id) {
-        $('#field-poin').load(location.origin +'/nik/'+nik+'/jobtitle/'+job_id+'/competency/'+skill_id+'/assessment');
+        $('#field-poin').load(location.origin + '/' + pathArray[1] + '/nik/'+nik+'/jobtitle/'+job_id+'/competency/'+skill_id+'/assessment');
     }
 
     function loadDetailPoin(skill_id,nik) {
-        $('#detailpoin-content').load(location.origin+'/assessment/'+skill_id+'/competency/'+nik+'/nik');
+        $('#detailpoin-content').load(location.origin + '/' + pathArray[1] +'/assessment/'+skill_id+'/competency/'+nik+'/nik');
     }
 </script>

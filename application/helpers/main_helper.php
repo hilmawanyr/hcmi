@@ -101,8 +101,10 @@
 	
 	/**
 	 * Check for completeness of assessent from filling
-	 * 
-	 *
+	 * @param int $amount
+	 * @param string $nik
+	 * @param string $year
+	 * @return bool
 	 */
 	function is_value_complete($amount, $nik, $year)
     {
@@ -118,3 +120,14 @@
         return false;
     }
 	
+    /**
+     * Get name of user
+     * @param string $nik
+     * @return string
+     */
+    function user_name(string $nik) : string
+    {
+    	$CI =& get_instance();
+        $userName = $CI->db->where('nik', $nik)->get('employes')->row()->name;
+        return $userName;
+    }
