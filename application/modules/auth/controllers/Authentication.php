@@ -29,16 +29,16 @@ class Authentication extends CI_Controller {
 		$password 		= $this->input->post('password');
 		$isUserExist 	= $this->login->is_user_exist($nik);
 		
-		if (count($isUserExist) > 0) {
-			// do verification for user's password
-			if (password_verify($password, $isUserExist->password)) {
-				// create login session and redirect them to dahsboard
-				$this->_login_success($isUserExist);
-			}
-			// handle fail login - wrong password
-			$this->session->set_flashdata('login_fail', 'Your password is wrong!');
-			redirect('auth/authentication');
-		}
+		// if (count($isUserExist) > 0) {
+		// 	// do verification for user's password
+		// 	if (password_verify($password, $isUserExist->password)) {
+		// 		// create login session and redirect them to dahsboard
+		// 		$this->_login_success($isUserExist);
+		// 	}
+		// 	// handle fail login - wrong password
+		// 	$this->session->set_flashdata('login_fail', 'Your password is wrong!');
+		// 	redirect('auth/authentication');
+		// }
 		// handle fail login - wrong password
 		$this->session->set_flashdata('login_fail', 'Account not found!');
 		redirect('auth/authentication');
@@ -88,6 +88,49 @@ class Authentication extends CI_Controller {
 	{
 		$this->session->sess_destroy();
 		redirect('auth/authentication','refresh');
+	}
+
+	/**
+	 * Handle user change password.
+	 * 
+	 * @return void
+	 */
+	public function edit_pass()
+	{
+		$data['page'] = "change_password_v";
+		$this->load->view('template/template', $data);
+	}
+
+	public function update_pass()
+	{	
+		$nik 			= $this->input->post('nik');
+		$password 		= $this->input->post('old_pass');
+		$new_pass 		= $this->input->post('new_pass');
+		// $repeat_pass 	= $this->input->post('repeat_pass');
+		$isUserExist 	= $this->login->is_user_exist($nik);
+		
+		if ($isUserExist) {
+			// do verification for user's password
+			if (password_verify($password, $isUserExist->password)) {
+				$hash_new_pass = password_hash($new_pass, 1, null);
+
+				$this->login->update_password($nik, $new_pass);
+				$this->session->set_flashdata('result', true);
+				$this->session->set_flashdata('alert_class', "alert alert-success alert-dismissible");
+				$this->session->set_flashdata('result_message', "Success change password");
+				redirect('auth/authentication/edit_pass');
+			}
+			
+			$this->session->set_flashdata('result', false);
+			$this->session->set_flashdata('alert_class', "alert alert-danger alert-dismissible");
+			$this->session->set_flashdata('result_message', "Failed, old password not match");
+			redirect('auth/authentication/edit_pass');
+		}
+
+		$this->session->set_flashdata('result', false);
+		$this->session->set_flashdata('alert_class', "alert alert-danger alert-dismissible");
+		$this->session->set_flashdata('result_message', "Error user session, please contact administrator");
+		redirect('auth/authentication/edit_pass');
 	}
 	
 }

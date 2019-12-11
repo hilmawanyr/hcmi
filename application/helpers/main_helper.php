@@ -14,6 +14,15 @@
 		return $CI->db->get()->row();
 	}
 
+	function get_section_by_nik(int $nik) : int
+	{
+		$CI =& get_instance();
+		$CI->db->select('section_id');
+		$CI->db->from('employes');
+		$CI->db->where('nik', $nik);
+		return $CI->db->get()->row()->section_id;
+	}
+
 	/**
 	 * Get name of department by its ID department
 	 * @param int $id

@@ -55,8 +55,11 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['attemptlogin'] = 'auth/authentication/attempt_login';
 $route['logout'] = 'auth/authentication/logout';
+$route['changepassword'] = 'auth/authentication/edit_pass';
+$route['storenewpass'] = 'auth/authentication/update_pass';
 
 $route['dashboard'] = 'dashboard';
+$route['dashboard/ratioFormFelling/(:string)'] = 'dashboard/ratioFormFelling/$1';
 
 $route['assessment'] = 'assessment';
 $route['form/(:num)'] = 'assessment/form/$1';
