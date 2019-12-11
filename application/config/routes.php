@@ -59,4 +59,8 @@ $route['logout'] = 'auth/authentication/logout';
 $route['dashboard'] = 'dashboard';
 
 $route['assessment'] = 'assessment';
-$route['form/:num'] = 'assessment/form/$1';
+$route['form/(:num)'] = 'assessment/form/$1';
+$route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';
+$route['store_poin'] = 'assessment/insert_poin';
+$route['submit_form/(:num)'] = 'assessment/submit_form/$1';
+$route['export_to_excel/(:num)'] = 'assessment/export_assessment_to_excel/$1';

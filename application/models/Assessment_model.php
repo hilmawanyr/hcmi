@@ -56,7 +56,7 @@ class Assessment_model extends CI_Model {
 	 * @param int $jobtitle
 	 * @return array
 	 */
-	public function get_competency(int $jobtitle) : array
+	public function get_competency(int $jobtitle) : object
 	{
 		$this->db->select('
 			a.job_id,
@@ -77,7 +77,7 @@ class Assessment_model extends CI_Model {
 	 * @param int $jobtitle
 	 * @return array
 	 */
-	public function is_assessment_form_exist(string $activeYear, int $jobtitle) : array
+	public function is_assessment_form_exist(string $activeYear, int $jobtitle) : object
 	{
 		$this->db->where('job_id', $jobtitle);
 		$this->db->like('code', $activeYear, 'before');
@@ -90,7 +90,7 @@ class Assessment_model extends CI_Model {
 	 * @param int $jobtitle
 	 * @return array
 	 */
-	public function competency_by_jobtitle(string $activeYear, int $jobtitle) : array
+	public function competency_by_jobtitle(string $activeYear, int $jobtitle) : object
 	{
 		$this->db->select('*');
 		$this->db->from('employes a');
@@ -162,6 +162,54 @@ class Assessment_model extends CI_Model {
 		$this->db->where('job_titles.id', $jobtitle);
 		return $this->db->get();
 	}
+
+	/**
+	 * Get competency base on nik, job title, and active assessment year
+	 * @param string $nik
+	 * @param int $jobtitle 
+	 * @param int $skillId
+	 * @param string $activeYear
+	 * @return array
+	 */
+	public function get_competency_for_assessment(string $nik, int $jobtitle, int $skillId, string $activeYear) : array
+	{
+		$competency = $this->db->query("SELECT 
+        									assessment_forms.*,
+				                            assessment_form_questions.skill_unit_id AS unit_question,
+				                            assessment_form_questions.weight,
+				                            assessment_form_questions.poin, 
+				                            skill_units.description
+										FROM assessment_forms
+										JOIN assessment_form_questions ON assessment_forms.id = assessment_form_questions.form_id
+										JOIN skill_units ON skill_units.id = assessment_form_questions.skill_unit_id
+										WHERE assessment_forms.job_id = '$jobtitle'
+										AND assessment_forms.nik = '$nik'
+										AND skill_units.id_dictionary = '$skillId'
+										AND assessment_forms.code like '%-$activeYear'
+										AND skill_units.deleted_at IS NULL")->result();
+		return $competency;
+	}
+
+	/**
+	 * Get assessment matrix depend on job title
+	 * @param int $jobtitleId
+	 * @return array
+	 */
+	public function get_assessment_matrix(int $jobtitleId) : array
+	{
+		$matrix = $this->db->query("SELECT 
+										skill_matrix.job_id,
+										skill_matrix.skill_id,
+										skill_matrix.level,
+										skill_dictionaries.name_id,
+										skill_dictionaries.description 
+									FROM skill_matrix 
+									JOIN skill_dictionaries ON skill_matrix.skill_id = skill_dictionaries.id 
+									WHERE skill_matrix.job_id = '$jobtitleId' 
+									AND skill_matrix.deleted_at IS NULL")->result();
+		return $matrix;
+	}
+	
 }
 
 /* End of file Assessment.php */

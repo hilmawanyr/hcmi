@@ -99,3 +99,22 @@
 		return $CI->db->where('is_active', 1)->get('assessment_years')->row()->year;
 	}
 	
+	/**
+	 * Check for completeness of assessent from filling
+	 * 
+	 *
+	 */
+	function is_value_complete($amount, $nik, $year)
+    {
+    	$CI =& get_instance();
+        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row();
+        
+        $filledCompetency = $CI->db->query("SELECT * from assessment_form_questions where form_id = '".$formId->id."' and poin IS NOT NULL")->result();
+
+        if ($amount == count($filledCompetency)) {
+            return true;
+        }
+
+        return false;
+    }
+	

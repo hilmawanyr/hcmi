@@ -44,12 +44,12 @@ class Assessment extends CI_Controller {
 	 * @param int $jobtitle
 	 * @return void
 	 */
-	public function form(int $jobtitle) : void
+	public function form(string $jobtitle) : void
 	{
 		$data['active_year'] = get_active_year();
 
 		$get_employes = $this->db->where('job_title_id', $jobtitle)->get('employes');
-		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles');
+		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
 		$data['dictionary'] = $this->assessment->get_competency($jobtitle);
@@ -148,6 +148,130 @@ class Assessment extends CI_Controller {
 		$this->db->insert_batch('assessment_form_questions', $assessmentQuestion);
 		return;
 	}
+	
+	/**
+	 * Get competency for each dictionary
+	 * @param string $nik
+	 * @param int $jobtitle 
+	 * @param int $skillId
+	 * @return void
+	 */
+	public function get_competency(string $nik, int $jobtitle, int $skillId) : void
+    {
+        $activeYear = get_active_year();
+        $data['dict'] = $skillId;
+        $data['nik'] = $nik;
+        $data['job'] = $jobtitle;
+
+        $competency = $this->assessment->get_competency_for_assessment($nik, $jobtitle, $skillId, $activeYear);
+
+        $data['dictionary'] = $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
+        
+        // get employe name
+        $data['employname'] = $this->db->where('nik', $nik)->get('employes')->row();
+        $data['competency'] = $competency;
+        $this->load->view('assessment_modal_v', $data);
+    }
+
+    /**
+     * Store assessment point to DB
+     * 
+     * @return void
+     */
+    public function insert_poin() : void
+    {
+        $inputamount = count($this->input->post('nilai_mentah'));
+        for ($i=0; $i < $inputamount; $i++) {
+
+            // compulate data in array 2 dimension
+            $poin[] = [$this->input->post('nilai_mentah')[$i],$this->input->post('skill_id')[$i]];
+        }
+
+        // get poin based on assessed competency
+        $assessedCompetency = max($poin);
+
+        $data = ['poin' => $assessedCompetency[0]];
+        $this->db->where('form_id', $this->input->post('idform'));
+        $this->db->where('skill_unit_id', $assessedCompetency[1]);
+        $this->db->update('assessment_form_questions', $data);
+
+        /**
+         * if amount of statement for each job title is not equal
+         * with amount of filled statement
+         * so total_poin in assessment_forms will not filled 
+         */
+        $assessForm = $this->db->where('id', $this->input->post('idform'))->get('assessment_forms')->row();
+        $jobTitle = $assessForm->job_id;
+
+        /** amount of statement base on job title */
+        $statementAmountbyJobtitle = $this->db->where('job_id', $jobTitle)->where('deleted_at')->get('skill_matrix')->num_rows();
+
+        /** check amount of filled statement  */
+        $filledFormAmount = $this->db->where('form_id', $this->input->post('idform'))->where('poin is NOT NULL', NULL, FALSE)->get('assessment_form_questions');
+
+        /**
+         * if amount of statement base on job title is equal with amount of filled statement
+         * so update total_poin in assessment_forms
+        */
+        if ($statementAmountbyJobtitle == $filledFormAmount->num_rows()) {
+            $const = 0;
+            foreach ($filledFormAmount->result() as $val) {
+                $const = $const + ($val->poin * $val->weight);
+            }
+            $totalPoin = $const;
+            $this->db->where('id', $this->input->post('idform'))->update('assessment_forms',['total_poin' => $totalPoin, 'audit_by' => $this->session->userdata('login_session')['nik']]);
+        /**
+         * but if total_poin in assessment_forms has filled cause intentionally submit
+         * update it to NULL
+         */
+        } elseif ($statementAmountbyJobtitle > $filledFormAmount->num_rows()) {
+            $isTotalPoinNull = $this->db->where('id', $this->input->post('idform'))->get('assessment_forms')->row();
+            if (!is_null($isTotalPoinNull->total_poin)) {
+            	$this->db->where('id', $this->input->post('idform'))->update('assessment_forms',['total_poin' => NULL]);
+            }
+        }
+
+        redirect(base_url('form/'.$this->input->post('job')));
+    }
+
+    /**
+     * Handle submit form assessment
+     * @param int $jobtitleId
+     * @return void
+     */
+    public function submit_form(int $jobtitleId) : void
+    {
+        // get active year of assessment
+        $activeyear = get_active_year();
+        $this->db->insert('assessment_validations', ['code' => 'AF-'.$jobtitleId.'-'.$activeyear, 'is_valid' => 1]);
+
+        redirect(base_url('form/'.$jobtitleId));
+    }
+
+    /**
+     * Export assessment for to excel
+     * @param int $jobtitleId
+     * @return void
+     */
+    public function export_assessment_to_excel(int $jobtitleId)
+    {
+        // active assessment year
+        $data['activeyear']= get_active_year();
+
+        // get job title name
+        $data['jobtitlename'] = $this->db->where('id', $jobtitleId)->get('job_titles')->row();
+
+        // load competency base on job title
+        $data['dictionary'] = $this->assessment->get_assessment_matrix($jobtitleId);
+
+        $data['numberofcolumn'] = count($data['dictionary']) + 3;
+
+        // get emlployee base on job title
+        $data['employee'] = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
+        
+        $this->load->view('excel_assessment_form', $data);
+    }
+    
 	
 
 }
