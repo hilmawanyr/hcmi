@@ -56,7 +56,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer pull-left">
-        <button type="submit" class="btn btn-default" style="margin-left:16em">Cancel</button> 
+        <a href="<?= base_url() ?>" class="btn btn-default" style="margin-left:16em">Cancel</a> 
         <button type="submit" class="btn btn-info pull-right" style="margin-left:2.5em">Submit</button>
         </div>
         <!-- /.box-footer -->
