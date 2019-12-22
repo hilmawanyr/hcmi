@@ -33,6 +33,9 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="<?= base_url('assets/dist/google-font.css') ?>">
+
+  <!-- jQuery 3 -->
+  <script src="<?= base_url() ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
 </head>
 <body class="hold-transition skin-black-light sidebar-mini">
 <div class="wrapper">
@@ -142,8 +145,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 3 -->
-<script src="<?= base_url() ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="<?= base_url() ?>assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

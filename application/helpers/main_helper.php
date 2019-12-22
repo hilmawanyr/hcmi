@@ -131,3 +131,27 @@
         $userName = $CI->db->where('nik', $nik)->get('employes')->row()->name;
         return $userName;
     }
+
+    /**
+     * Get skill type name by its id
+     * @param int $id
+     * @return string
+     */
+    function get_skill_type_name(int $id) : string
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $id);
+		return $CI->db->get('skill_types', 1)->row()->name;
+	}
+
+	/**
+	 * Get competency dictionary name
+	 * @param int $dictionaryId
+	 * @return string
+	 */
+	function get_dictionary_detail(int $dictionaryId) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $dictionaryId);
+		return $CI->db->get('skill_dictionaries', 1)->row();
+	}

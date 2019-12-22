@@ -65,3 +65,13 @@ $route['assessment/(:num)/competency/(:any)/nik'] = 'assessment/see_poin/$1/$2';
 $route['store_poin'] = 'assessment/insert_poin';
 $route['submit_form/(:num)'] = 'assessment/submit_form/$1';
 $route['export_to_excel/(:num)'] = 'assessment/export_assessment_to_excel/$1';
+
+$route['dictionary'] = 'competency/dictionary';
+$route['dictionary/(:num)/detail'] = 'competency/dictionary/get_dictionary/$1';
+$route['dictionary/store'] = 'competency/dictionary/store_competency';
+$route['dictionary/(:num)/edit'] = 'competency/dictionary/edit_competency/$1';
+$route['dictionary/(:num)/remove'] = 'competency/dictionary/remove_competency/$1';
+$route['dictionary/(:num)/print'] = 'competency/dictionary/print_dictionary/$1';
+
+$route['skill_unit/(:num)/dictionary'] = 'competency/dictionary/get_skill_unit/$1';
+$route['skill_unit/(:num)/print'] = 'competency/dictionary/print_skill_unit/$1';
