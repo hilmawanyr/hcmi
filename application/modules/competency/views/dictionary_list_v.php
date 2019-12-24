@@ -20,7 +20,7 @@
                     <th>Indonesian Name</th>
                     <th>Description</th>
                     <th>Competency Type</th>
-                    <th>Action</th>
+                    <th width="140">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" id="btnSubmit" class="btn btn-primary"></button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </form>
@@ -104,10 +104,12 @@
                 $('input[name="name_id"]').val('');
                 $('input[name="name_en"]').val('');
                 $('textarea#description').val('');
+                $('#btnSubmit').text('Save');
                 break;
             // for edit competency dictionary data
             default:
-                $('.modal-title').text('Edit Competency Dictionary')
+                $('.modal-title').text('Edit Competency Dictionary');
+                $('#btnSubmit').text('Update');
                 $.get('<?= base_url() ?>dictionary/' + skillTypeId + '/edit', function(response){
                     var res = JSON.parse(response);
                     console.log(res)

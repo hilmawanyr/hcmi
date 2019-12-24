@@ -155,3 +155,16 @@
 		$CI->db->where('id', $dictionaryId);
 		return $CI->db->get('skill_dictionaries', 1)->row();
 	}
+
+	/**
+	 * Get skill type base on dixtionary id
+	 * @param int $dictionaeryId
+	 * @return array
+	 */
+	function skill_type_by_dictionary(int $dictionaryId) : object
+	{
+		$CI =& get_instance();
+		$this->db->where('id', $dictionaryId);
+		return $this->db->get('skill_types')->row();
+	}
+	

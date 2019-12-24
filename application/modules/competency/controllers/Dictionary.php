@@ -71,7 +71,12 @@ class Dictionary extends CI_Controller {
 			$this->session->set_flashdata('success_update_data', 'Update successfully!');
 		}
 		
-		redirect(base_url('dictionary'));
+		// update from detail view of competency dictionary
+		if ($this->input->post('updateFromDetailMode') == '1') {
+			redirect(base_url('skill_unit/'.$isUpdate.'/dictionary'));
+		} else {
+			redirect(base_url('dictionary'));
+		}
 	}
 
 	/**
@@ -99,6 +104,12 @@ class Dictionary extends CI_Controller {
 	 */
 	public function remove_competency(int $dictionaryId) : void
 	{
+		// check whether this dictionary has skill unit or not
+		$isHaveSkillUnit = $this->dictionary->skill_unit_by_dictionary($dictionaryId);
+		if (count($isHaveSkillUnit) > 0) {
+			$this->session->set_flashdata('fail_remove_data', 'Dictionary can not remove because contain skill unit(s)!');
+			redirect(base_url('dictionary'));
+		}
 		$this->db->where('id', $dictionaryId);
 		$this->db->update('skill_dictionaries',['deleted_at' => date('Y-m-d H:i:s')]);
 		$this->session->set_flashdata('success_remove_data', 'Data successfully removed!');
@@ -117,30 +128,6 @@ class Dictionary extends CI_Controller {
 		$this->load->view('dictionary_print', $data);
 	}
 	
-	/**
-	 * Get skill unit by id dictionary
-	 * @param int $dictionaryId
-	 * @return void
-	 */
-	public function get_skill_unit(int $dictionaryId) : void
-	{
-		$data['dictionary'] = $this->dictionary->get_dictionary_detail($dictionaryId);
-		$data['skillUnit']  = $this->dictionary->get_skill_unit($dictionaryId);
-		$data['page']       = "skill_unit_v";
-		$this->load->view('template/template', $data);
-	}
-	
-	/**
-	 * Print list of skill unit base on dictionary id
-	 * @param int $dictionaryId
-	 * @return void
-	 */
-	public function print_skill_unit(int $dictionaryId) : void
-	{
-		$data['dictionary'] = $dictionaryId;
-		$data['skillUnit']  = $this->dictionary->get_skill_unit($dictionaryId);
-		$this->load->view('skill_unit_print', $data);
-	}
 }
 
 /* End of file Dictionary.php */

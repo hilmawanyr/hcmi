@@ -73,5 +73,8 @@ $route['dictionary/(:num)/edit'] = 'competency/dictionary/edit_competency/$1';
 $route['dictionary/(:num)/remove'] = 'competency/dictionary/remove_competency/$1';
 $route['dictionary/(:num)/print'] = 'competency/dictionary/print_dictionary/$1';
 
-$route['skill_unit/(:num)/dictionary'] = 'competency/dictionary/get_skill_unit/$1';
-$route['skill_unit/(:num)/print'] = 'competency/dictionary/print_skill_unit/$1';
+$route['skill_unit/(:num)/dictionary'] = 'competency/skill_unit/get_skill_unit/$1';
+$route['skill_unit/store'] = 'competency/skill_unit/store';
+$route['skill_unit/(:num)/print'] = 'competency/skill_unit/print_skill_unit/$1';
+$route['skill_unit/(:num)/detail'] = 'competency/skill_unit/detail/$1';
+$route['skill_unit/(:num)/remove/(:num)/dictionary'] = 'competency/skill_unit/remove/$1/$2';

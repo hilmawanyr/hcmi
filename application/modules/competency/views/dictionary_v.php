@@ -1,5 +1,13 @@
 <section class="content-header">
     <h3 class="box-title">Competency Dictionary <small>List of competency dictionary</small></h3>
+  
+    <!-- flash data for fail data save -->
+    <?php if ($this->session->flashdata('fail_remove_data')) { ?>
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h5><i class="icon fa fa-ban"></i> <?= $this->session->flashdata('fail_remove_data') ?></h5>
+      </div>
+    <?php } ?>
 
     <!-- flash data for successfully data save -->
     <?php if ($this->session->flashdata('success_save_data')) { ?>

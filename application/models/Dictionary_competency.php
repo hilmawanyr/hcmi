@@ -51,9 +51,22 @@ class Dictionary_competency extends CI_Model {
 	 * @param int $dictioanryId
 	 * @return array
 	 */
-	public function get_skill_unit(int $dictionaryId) : array
+	public function skill_unit_by_dictionary(int $dictionaryId) : array
 	{
 		$this->db->where('id_dictionary', $dictionaryId);
+		$this->db->where('deleted_at');
+		return $this->db->get('skill_units')->result();
+	}
+
+	/**
+	 * Get skill unit detail
+	 * @param int $skillId
+	 * @return array
+	 */
+	public function get_skill_unit(int $skillId) : array
+	{
+		$this->db->where('id', $skillId);
+		$this->db->where('deleted_at');
 		return $this->db->get('skill_units')->result();
 	}
 }
