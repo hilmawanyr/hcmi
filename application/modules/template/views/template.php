@@ -106,21 +106,26 @@
           </a>
         </li>
         
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-gear"></i>
+            <span>Manage</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?= base_url('manage/assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
+            <li><a href="<?= base_url() ?>"><i class="fa fa-circle-o"></i> Department</a></li>
+          </ul>
+        </li>
+
         <li>
-          <a href="pages/calendar.html">
-            <i class="fa fa-calendar"></i> <span>Calendar</span>
+          <a href="<?= base_url('dictionary') ?>">
+            <i class="fa fa-book"></i> <span>Competency Dictionary</span>
           </a>
         </li>
-        <li>
-          <a href="pages/mailbox/mailbox.html">
-            <i class="fa fa-envelope"></i> <span>Mailbox</span>
-          </a>
-        </li>
-        
-        <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
+
       </ul>
     </section>
     <!-- /.sidebar -->
