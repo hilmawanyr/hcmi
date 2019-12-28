@@ -78,3 +78,11 @@ $route['skill_unit/store'] = 'competency/skill_unit/store';
 $route['skill_unit/(:num)/print'] = 'competency/skill_unit/print_skill_unit/$1';
 $route['skill_unit/(:num)/detail'] = 'competency/skill_unit/detail/$1';
 $route['skill_unit/(:num)/remove/(:num)/dictionary'] = 'competency/skill_unit/remove/$1/$2';
+
+$route['assessment_year'] = 'manage/assessment_year';
+$route['assessment_year/store'] = 'manage/assessment_year/store';
+$route['assessment_year/(:num)/edit'] = 'manage/assessment_year/edit/$1';
+$route['assessment_year/(:num)/set_active'] = 'manage/assessment_year/set_active_year/$1';
+$route['assessment_year/(:num)/remove'] = 'manage/assessment_year/remove/$1';
+$route['assessment_year/set_period'] = 'manage/assessment_year/set_period';
+$route['assessment_year/(:num)/period'] = 'manage/assessment_year/detail_period/$1';

@@ -168,3 +168,15 @@
 		return $this->db->get('skill_types')->row();
 	}
 	
+	/**
+	 * Change date format to yyyy-mm-dd
+	 * @param string $date
+	 * @param string $delimiter
+	 * @return string
+	 */
+	
+	function date_format_ymd(string $date, string $delimiter) : string
+	{
+		$source = explode($delimiter, $date);
+		return $source[2].'-'.$source[1].'-'.$source[0];
+	}
