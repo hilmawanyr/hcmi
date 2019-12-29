@@ -2,55 +2,8 @@
 <link rel="stylesheet" href="<?= base_url('assets') ?>bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 
 <section class="content-header">
-    <h3 class="box-title">Assessment Year <small>Set your assessment year configuration here</small></h3>
-  
-    <!-- flash data for fail data save -->
-    <?php if ($this->session->flashdata('fail_remove_data')) { ?>
-      <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-ban"></i> <?= $this->session->flashdata('fail_remove_data') ?></h5>
-      </div>
-    <?php } ?>
-
-    <!-- flash data for fail data save -->
-    <?php if ($this->session->flashdata('fail_save_data')) { ?>
-      <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-ban"></i> <?= $this->session->flashdata('fail_save_data') ?></h5>
-      </div>
-    <?php } ?>
-
-    <!-- flash data for successfully data save -->
-    <?php if ($this->session->flashdata('success_save_data')) { ?>
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-check"></i> <?= $this->session->flashdata('success_save_data') ?></h5>
-      </div>
-    <?php } ?>
-
-    <!-- flash data for successfully data update -->
-    <?php if ($this->session->flashdata('success_update_data')) { ?>
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-refresh"></i> <?= $this->session->flashdata('success_update_data') ?></h5>
-      </div>
-    <?php } ?>
-
-    <!-- flash data for successfully data remove -->
-    <?php if ($this->session->flashdata('success_remove_data')) { ?>
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-trash"></i> <?= $this->session->flashdata('success_remove_data') ?></h5>
-      </div>
-    <?php } ?>
-
-    <!-- flash data for successfully data remove -->
-    <?php if ($this->session->flashdata('success_change_active_year')) { ?>
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fa fa-check"></i> <?= $this->session->flashdata('success_change_active_year') ?></h5>
-      </div>
-    <?php } ?>
+  <h3 class="box-title">Assessment Year <small>Set your assessment year configuration here</small></h3>
+  <?php $this->load->view('template/action_message'); ?>    
 </section>
 
 <!-- Main content -->

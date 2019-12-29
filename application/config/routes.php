@@ -86,3 +86,16 @@ $route['assessment_year/(:num)/set_active'] = 'manage/assessment_year/set_active
 $route['assessment_year/(:num)/remove'] = 'manage/assessment_year/remove/$1';
 $route['assessment_year/set_period'] = 'manage/assessment_year/set_period';
 $route['assessment_year/(:num)/period'] = 'manage/assessment_year/detail_period/$1';
+
+$route['department'] = 'manage/department';
+$route['department/store'] = 'manage/department/store';
+$route['department/(:num)/detail'] = 'manage/department/detail/$1';
+$route['department/(:num)/section'] = 'manage/section/sections/$1';
+
+$route['section/store']  ='manage/section/store';
+$route['section/(:num)/detail'] = 'manage/section/detail/$1';
+$route['section/(:num)/jobtitle'] = 'manage/jobtitle/jobtitles/$1';
+
+$route['jobtitle/update_section'] = 'manage/jobtitle/update_section';
+$route['jobtitle/store'] = 'manage/jobtitle/store';
+$route['jobtitle/(:num)/detail'] = 'manage/jobtitle/detail/$1';

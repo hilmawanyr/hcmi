@@ -115,8 +115,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?= base_url('manage/assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
-            <li><a href="<?= base_url() ?>"><i class="fa fa-circle-o"></i> Department</a></li>
+            <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
+            <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
           </ul>
         </li>
 
