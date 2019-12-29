@@ -83,13 +83,6 @@
             <i class="fa fa-file-text-o"></i> <span>Assessment Form</span>
           </a>
         </li>
-<<<<<<< HEAD
-        <hr>
-        <li>
-          <a href="<?= base_url('changepassword') ?>">
-            <i class="fa fa-key"></i> <span>Change Password</span>
-=======
-        
         <li class="treeview">
           <a href="#">
             <i class="fa fa-gear"></i>
@@ -97,27 +90,28 @@
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
->>>>>>> 6d5d5301db670f3d86141afd7df6be5ab03cee70
           </a>
           <ul class="treeview-menu">
             <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
             <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
           </ul>
         </li>
-
         <li>
-<<<<<<< HEAD
-          <a href="<?= base_url('logout') ?>">
-            <i class="fa fa-sign-out"></i> <span>Sign Out</span>
-          </a>
-        </li>
-=======
           <a href="<?= base_url('dictionary') ?>">
             <i class="fa fa-book"></i> <span>Competency Dictionary</span>
           </a>
         </li>
-
->>>>>>> 6d5d5301db670f3d86141afd7df6be5ab03cee70
+        <hr>
+        <li>
+          <a href="<?= base_url('changepassword') ?>">
+            <i class="fa fa-key"></i> <span>Change Password</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= base_url('logout') ?>">
+            <i class="fa fa-sign-out"></i> <span>Sign Out</span>
+          </a>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -142,12 +136,8 @@
 </div>
 <!-- ./wrapper -->
 
-<<<<<<< HEAD
-=======
-
 <!-- jQuery UI 1.11.4 -->
 <script src="<?= base_url() ?>assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
->>>>>>> 6d5d5301db670f3d86141afd7df6be5ab03cee70
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
