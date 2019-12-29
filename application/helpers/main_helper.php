@@ -140,3 +140,89 @@
         $userName = $CI->db->where('nik', $nik)->get('employes')->row()->name;
         return $userName;
     }
+
+    /**
+     * Get skill type name by its id
+     * @param int $id
+     * @return string
+     */
+    function get_skill_type_name(int $id) : string
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $id);
+		return $CI->db->get('skill_types', 1)->row()->name;
+	}
+
+	/**
+	 * Get competency dictionary name
+	 * @param int $dictionaryId
+	 * @return string
+	 */
+	function get_dictionary_detail(int $dictionaryId) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $dictionaryId);
+		return $CI->db->get('skill_dictionaries', 1)->row();
+	}
+
+	/**
+	 * Get skill type base on dixtionary id
+	 * @param int $dictionaeryId
+	 * @return array
+	 */
+	function skill_type_by_dictionary(int $dictionaryId) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $dictionaryId);
+		return $CI->db->get('skill_types')->row();
+	}
+	
+	/**
+	 * Change date format to yyyy-mm-dd
+	 * @param string $date
+	 * @param string $delimiter
+	 * @return string
+	 */
+	
+	function date_format_ymd(string $date, string $delimiter) : string
+	{
+		$source = explode($delimiter, $date);
+		return $source[2].'-'.$source[1].'-'.$source[0];
+	}
+
+	/**
+	 * Get detail department
+	 * @param int $id
+	 * @return object
+	 */
+	function department_detail(int $id) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $id);
+		return $CI->db->get('departements')->row();
+	}
+	
+
+	/**
+	 * Get section detail by department id
+	 * @param int $id
+	 * @return object
+	 */
+	function section_by_department(int $id) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('dept_id', $id);
+		return $CI->db->get('sections')->row();
+	}
+	
+	/**
+	 * Get section id detail
+	 * @param int $id
+	 * @return object
+	 */
+	function section_detail(int $id) : object
+	{
+		$CI =& get_instance();
+		$CI->db->where('id', $id);
+		return $CI->db->get('sections')->row();
+	}

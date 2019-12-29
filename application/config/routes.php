@@ -68,3 +68,37 @@ $route['assessment/(:num)/competency/(:any)/nik'] = 'assessment/see_poin/$1/$2';
 $route['store_poin'] = 'assessment/insert_poin';
 $route['submit_form/(:num)'] = 'assessment/submit_form/$1';
 $route['export_to_excel/(:num)'] = 'assessment/export_assessment_to_excel/$1';
+
+$route['dictionary'] = 'competency/dictionary';
+$route['dictionary/(:num)/detail'] = 'competency/dictionary/get_dictionary/$1';
+$route['dictionary/store'] = 'competency/dictionary/store_competency';
+$route['dictionary/(:num)/edit'] = 'competency/dictionary/edit_competency/$1';
+$route['dictionary/(:num)/remove'] = 'competency/dictionary/remove_competency/$1';
+$route['dictionary/(:num)/print'] = 'competency/dictionary/print_dictionary/$1';
+
+$route['skill_unit/(:num)/dictionary'] = 'competency/skill_unit/get_skill_unit/$1';
+$route['skill_unit/store'] = 'competency/skill_unit/store';
+$route['skill_unit/(:num)/print'] = 'competency/skill_unit/print_skill_unit/$1';
+$route['skill_unit/(:num)/detail'] = 'competency/skill_unit/detail/$1';
+$route['skill_unit/(:num)/remove/(:num)/dictionary'] = 'competency/skill_unit/remove/$1/$2';
+
+$route['assessment_year'] = 'manage/assessment_year';
+$route['assessment_year/store'] = 'manage/assessment_year/store';
+$route['assessment_year/(:num)/edit'] = 'manage/assessment_year/edit/$1';
+$route['assessment_year/(:num)/set_active'] = 'manage/assessment_year/set_active_year/$1';
+$route['assessment_year/(:num)/remove'] = 'manage/assessment_year/remove/$1';
+$route['assessment_year/set_period'] = 'manage/assessment_year/set_period';
+$route['assessment_year/(:num)/period'] = 'manage/assessment_year/detail_period/$1';
+
+$route['department'] = 'manage/department';
+$route['department/store'] = 'manage/department/store';
+$route['department/(:num)/detail'] = 'manage/department/detail/$1';
+$route['department/(:num)/section'] = 'manage/section/sections/$1';
+
+$route['section/store']  ='manage/section/store';
+$route['section/(:num)/detail'] = 'manage/section/detail/$1';
+$route['section/(:num)/jobtitle'] = 'manage/jobtitle/jobtitles/$1';
+
+$route['jobtitle/update_section'] = 'manage/jobtitle/update_section';
+$route['jobtitle/store'] = 'manage/jobtitle/store';
+$route['jobtitle/(:num)/detail'] = 'manage/jobtitle/detail/$1';
