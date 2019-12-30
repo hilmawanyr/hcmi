@@ -36,24 +36,32 @@
                     <?= $year->is_active == '1' ? '<span class="label bg-green">Active</span>' : '<span class="label bg-red">Inactive</span>' ?>
                   </td>
                   <td>
-                    <button 
-                      class="btn btn-default"
-                      data-toggle="modal"
-                      data-target="#periodModal"
-                      onclick="set_period(<?= $year->id ?>)">
-                      <i class="fa fa-calendar"></i>
-                    </button>
+                    <span data-toggle="modal"data-target="#periodModal">
+                      <button 
+                        class="btn btn-default"
+                        data-toggle="tooltip"
+                        title="set period"
+                        onclick="set_period(<?= $year->id ?>)">
+                        <i class="fa fa-calendar"></i>
+                      </button>
+                    </span>
                   </td>
                   <td>
-                      <button
-                        data-toggle="modal"
-                        data-target="#editModal"
-                        onclick="edit(<?= $year->id ?>)"
-                        class="btn btn-default"><i class="fa fa-edit"></i></button>
+                      <span data-toggle="modal" data-target="#editModal">
+                        <button
+                          data-toggle="tooltip"
+                          title="edit"
+                          onclick="edit(<?= $year->id ?>)"
+                          class="btn btn-default"><i class="fa fa-edit"></i></button>
+                      </span>
                       <a
+                        data-toggle="tooltip"
+                        title="activate this year setting"
                         href="<?= base_url('assessment_year/'.$year->id.'/set_active') ?>"
                         class="btn btn-default"><i class="fa fa-refresh"></i></a>
                       <a
+                        data-toggle="tooltip"
+                        title="remove year"
                         onclick="return confirm('Are You sure want to remove this data?')"
                         href="<?= base_url('assessment_year/'.$year->id.'/remove') ?>"
                         class="btn btn-default"><i class="fa fa-trash"></i></a>

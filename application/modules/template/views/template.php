@@ -161,6 +161,7 @@
 <script>
   $(function () {
     $('#example1').DataTable()
+    $('[data-toggle="tooltip"]').tooltip()
   })
 </script>
 </body>
