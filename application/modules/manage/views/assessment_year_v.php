@@ -1,6 +1,3 @@
-<!-- bootstrap datepicker -->
-<link rel="stylesheet" href="<?= base_url('assets') ?>bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-
 <section class="content-header">
   <h3 class="box-title">Assessment Year <small>Set your assessment year configuration here</small></h3>
   <?php $this->load->view('template/action_message'); ?>    
@@ -191,9 +188,6 @@
     </div>
   </div>
 </div>
-
-<!-- bootstrap datepicker -->
-<script src="<?= base_url('assets') ?>bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
 <script>
   function isNumber(evt) {

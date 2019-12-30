@@ -29,6 +29,9 @@
 
   <!-- jQuery UI 1.11.4 -->
   <script src="<?= base_url() ?>assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
+  
+  <!-- Datepicker -->
+  <link rel="stylesheet" href="<?= base_url('assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') ?>">
 
   <!-- HighChart -->
   <script src="<?= base_url() ?>assets/dist/js/highcharts/highcharts.js"></script>
@@ -151,6 +154,9 @@
 <!-- DataTables -->
 <script src="<?= base_url('assets/') ?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url('assets/') ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+<!-- bootstrap datepicker -->
+<script src="<?= base_url('assets/') ?>bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
 <script>
   $(function () {
