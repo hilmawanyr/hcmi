@@ -47,8 +47,8 @@
 				<table class="table table-hover table-bordered">
 					<thead>
                         <tr>
-                            <th style="white-space:nowrap;" rowspan="2">NIK</th>
-                            <th style="white-space:nowrap;" rowspan="2">Nama Pegawai</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">NIK</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nama Pegawai</th>
 
                             <?php foreach ($dictionary->result() as $dictlist) : ?>
                                 <th style="text-align:center;" colspan="2">
@@ -56,7 +56,7 @@
                                 </th>
                             <?php endforeach; ?>
 
-                            <th style="white-space:nowrap;" rowspan="2">Nilai Absolut</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nilai Absolut</th>
                         </tr>
                         <tr>
 
@@ -82,18 +82,18 @@
                                     $isFullfilled = is_value_complete(count($dictionary->result()),$employe->nik,$active_year);
                                     if (!$isFullfilled) {
                                         $columnColor = 'background: #fabacf;';
-                                        $info = 'data-toggle="tooltip" data-placement="left" data-original-title="Penilaian untuk karyawan ini belum terisi penuh!"';
+                                        $info = 'data-toggle="tooltip" title="Penilaian untuk karyawan ini belum terisi penuh!"';
                                     } else {
                                         $columnColor = '';
                                         $info = '';
                                     }
                                  ?>
 
-                                <td style="white-space:nowrap; <?= $columnColor ?>" <?=$info?>>
-                                    <?= $employe->nik; ?>
+                                <td style="white-space:nowrap; <?= $columnColor ?>">
+                                    <span <?=$info?>><?= $employe->nik; ?></span>
                                 </td>
-                                <td style="white-space:nowrap; <?= $columnColor ?>" <?=$info?>>
-                                    <?= $employe->name; ?>
+                                <td style="white-space:nowrap; <?= $columnColor ?>">
+                                    <span <?=$info?>><?= $employe->name; ?></span>
                                 </td>
 
                                 <?php foreach ($dictionary->result() as $dicts) : ?>

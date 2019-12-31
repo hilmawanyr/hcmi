@@ -54,14 +54,14 @@ class Assessment extends CI_Controller {
 		// load competency
 		$data['dictionary'] = $this->assessment->get_competency($jobtitle);
 
-		// check whether assessment formhas generate or not
+		// check whether assessment form has generate or not
 		$isFormExist = $this->assessment->is_assessment_form_exist($data['active_year'], $jobtitle);
 
 		// generate form if job title has competency
 		if ($data['dictionary']->num_rows() > 0) {
 			// insert form assessment if those doesn't exist
 			if ($isFormExist->num_rows() < 1) {
-				$this->_generate_form_assessment($get_employes, $jobtitle);
+				$this->_generate_form_assessment($get_employes->result(), $jobtitle);
 			}
 
 			// change value of $get_employe if job_titles has competency matrixes
@@ -117,6 +117,7 @@ class Assessment extends CI_Controller {
 
 		// insert assesment question
 		$this->_insert_assessment_question($activeYear, $jobtitle);
+		return;
 	}
 
 	/**
@@ -127,16 +128,16 @@ class Assessment extends CI_Controller {
 	 */
 	private function _insert_assessment_question(string $activeYear, int $jobtitle)
 	{
-		$getForm = $this->assessment->is_assessment_form_exist($activeYear, $jobtitle);
+		$getForm = $this->assessment->is_assessment_form_exist($activeYear, $jobtitle)->result();
 		foreach ($getForm as $form) {
 			// check is assessment question form has exist
-			$isQuestionExist = $this->db->where('form_id', $form->id)->get('assessment_form_question');
+			$isQuestionExist = $this->db->where('form_id', $form->id)->get('assessment_form_questions');
 
 			// if question doesn't exist, create it
 			if ($isQuestionExist->num_rows() < 1) {
-				$questionCompetency = $this->assessmentForm->create_assessment_question($form->job_id);
+				$questionCompetency = $this->assessment->create_assessment_question($form->job_id);
 
-				foreach ($questionCompetency->result() as $competency) {
+				foreach ($questionCompetency as $competency) {
 					$assessmentQuestion[] = [
 						'form_id' => $form->id,
 						'skill_unit_id' => $competency->unit_id,
