@@ -123,15 +123,15 @@ class Assessment_model extends CI_Model {
 	 * @param string $nik
 	 * @return int
 	 */
-	// public function _is_employe_has_form(int $jobtitle, string $activeYear, string $nik) : int
-	// {
-	// 	// assessment form code
-	// 	$code = 'AF-'.$employe->job_title_id.'-'.$activeYear;
-	// 	$this->db->where('code', $code);
-	// 	$this->db->where('nik', $nik);
-	// 	$this->db->where('job_id', $jobtitle);
-	// 	return $this->db->get('assessment_forms')->num_rows();
-	// }
+	public function is_employe_has_form(int $jobtitle, string $activeYear, string $nik) : int
+	{
+		// assessment form code
+		$code = 'AF-'.$jobtitle.'-'.$activeYear;
+		$this->db->where('code', $code);
+		$this->db->where('nik', $nik);
+		$this->db->where('job_id', $jobtitle);
+		return $this->db->get('assessment_forms')->num_rows();
+	}
 	
 	/**
 	 * Create question competency
@@ -160,7 +160,7 @@ class Assessment_model extends CI_Model {
 		$this->db->where('skill_units.deleted_at');
 		$this->db->where('skill_matrix.deleted_at');
 		$this->db->where('job_titles.id', $jobtitle);
-		return $this->db->get();
+		return $this->db->get()->result();
 	}
 
 	/**
