@@ -70,7 +70,7 @@
             </button>
           <?php }  ?>
           <hr>
-          <table class="table table-hover table-bordered example">
+          <table class="table table-hover table-bordered" id="example1">
             <thead>
                 <tr>
                     <th>Name</th>

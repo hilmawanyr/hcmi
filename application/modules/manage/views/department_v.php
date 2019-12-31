@@ -17,7 +17,7 @@
               <i class="fa fa-plus"></i> Add Department
           </button>
           <hr>
-          <table class="table table-hover table-bordered example1">
+          <table class="table table-hover table-bordered" id="example1">
             <thead>
               <tr>
                   <th>No</th>

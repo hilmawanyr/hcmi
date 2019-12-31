@@ -1,5 +1,5 @@
 <section class="content-header">
-    <h3 class="box-title">Section <small>of <?= department_detail($departmentID)->name; ?></small></h3>
+    <h3 class="box-title">Section <small>of <?= strtoupper(department_detail($departmentID)->name); ?></small></h3>
     <?php $this->load->view('template/action_message'); ?>
 </section>
 
@@ -59,13 +59,14 @@
             </button>
           <?php }  ?>
           <hr>
-          <table class="table table-hover table-bordered example">
+          <table class="table table-hover table-bordered" id="example1">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
-                      <th>Action</th>
-                    <?php } ?>
+                  <th>No</th>
+                  <th>Name</th>
+                  <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
+                    <th>Action</th>
+                  <?php } ?>
                 </tr>
             </thead>
             <tbody>
