@@ -56,6 +56,10 @@ class Assessment_year extends CI_Controller {
 			$this->db->insert('assessment_years', $storedData);
 			$this->session->set_flashdata('success_save_data', 'Saved successfully!');
 		} else {
+			/* check whether assessment process is ongoing. if true, edit can not doing */
+			$yearName = $this->db->where('id', $isUpdate)->get('assessment_years')->row()->year;
+			$this->_is_assessment_ongoing($yearName);
+			
 			$this->db->where('id', $isUpdate);
 			$this->db->update('assessment_years', $storedData);
 			$this->session->set_flashdata('success_update_data', 'Update successfully!');
@@ -94,6 +98,21 @@ class Assessment_year extends CI_Controller {
 				$this->session->set_flashdata('fail_save_data', 'Data not updated. The same year name has exist!');
 			}
 			
+			redirect('assessment_year');
+		}
+		return;
+	}
+
+	/**
+	 * Validation when edit year name. If year name in use, edit cannot doing
+	 * @param string $name
+	 * @return void
+	 */
+	private function _is_assessment_ongoing(string $name) : void
+	{
+		$isYearNameInUse = $this->db->like('code', $name, 'before')->get('assessment_forms')->num_rows();
+		if ($isYearNameInUse > 0) {
+			$this->session->set_flashdata('fail_save_data', 'Data can not update. Year is in use!');
 			redirect('assessment_year');
 		}
 		return;
