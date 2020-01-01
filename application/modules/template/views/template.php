@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="<?= base_url() ?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?= base_url() ?>assets/bower_components/font-awesome/css/font-awesome.min.css">
+
+   <!-- Select2 -->
+  <link rel="stylesheet" href="<?= base_url('assets/bower_components/select2/dist/css/select2.min.css') ?>">
+  
   <!-- Theme style -->
   <link rel="stylesheet" href="<?= base_url() ?>assets/dist/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -104,6 +108,11 @@
             <i class="fa fa-book"></i> <span>Competency Dictionary</span>
           </a>
         </li>
+        <li>
+          <a href="<?= base_url('competency_matrix') ?>">
+            <i class="fa fa-th-large"></i> <span>Competency Matrix</span>
+          </a>
+        </li>
         <hr>
         <li>
           <a href="<?= base_url('changepassword') ?>">
@@ -158,10 +167,14 @@
 <!-- bootstrap datepicker -->
 <script src="<?= base_url('assets/') ?>bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
+<!-- Select2 -->
+<script src="<?= base_url('assets/') ?>bower_components/select2/dist/js/select2.full.min.js"></script>
+
 <script>
   $(function () {
     $('#example1').DataTable()
     $('[data-toggle="tooltip"]').tooltip()
+    $('.select2').select2()
   })
 </script>
 </body>

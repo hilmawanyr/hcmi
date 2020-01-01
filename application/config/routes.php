@@ -102,3 +102,9 @@ $route['section/(:num)/jobtitle'] = 'manage/jobtitle/jobtitles/$1';
 $route['jobtitle/update_section'] = 'manage/jobtitle/update_section';
 $route['jobtitle/store'] = 'manage/jobtitle/store';
 $route['jobtitle/(:num)/detail'] = 'manage/jobtitle/detail/$1';
+
+$route['competency_matrix'] = 'competency/matrix';
+$route['competency_matrix/(:num)/manage'] = 'competency/matrix/manage/$1';
+$route['competency_matrix/store'] = 'competency/matrix/store';
+$route['competency_matrix/store_competency'] = 'competency/matrix/store_competency';
+$route['competency_matrix/(:num)/remove/(:num)/jobtitle'] = 'competency/matrix/remove_competency/$1/$2';
