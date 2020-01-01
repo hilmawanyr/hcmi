@@ -34,8 +34,9 @@ class Assessment extends CI_Controller {
 				$getJobtitleList = $this->assessment->jobtitle_by_grade_and_section(3, $this->section);
 				break;
 		}
+		$data['section']      = $this->section;
 		$data['jobtitleList'] = $getJobtitleList;
-		$data['page'] = 'assessment_v';
+		$data['page']         = 'assessment_v';
 		$this->load->view('template/template', $data);
 	}
 

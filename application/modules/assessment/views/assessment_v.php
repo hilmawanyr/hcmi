@@ -2,9 +2,9 @@
 
 <section class="content-header">
   <?php if ($this->session->userdata('login_session')['group'] == 3) { ?>
-    <h3 class="box-title">Department : <?= $jobtitleList->dept_name ?></h3>
+    <h3 class="box-title">Department : <?= get_department_by_section($section) ?></h3>
     <ol class="breadcrumb">
-      <h3 class="box-title pull-right">Section : <?= $jobtitleList->dept_name ?></h3>
+      <h3 class="box-title pull-right">Section : <?= get_section($section)->name ?></h3>
     </ol>
   <?php } else { ?>
     <h3 class="box-title">Job Title List</h3>

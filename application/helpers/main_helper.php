@@ -38,6 +38,21 @@
 	}
 
 	/**
+	 * Get name of department by its section ID
+	 * @param int $id
+	 * @return string
+	 */
+	function get_department_by_section(int $id) : string
+	{
+		$CI =& get_instance();
+		$CI->db->select('a.name');
+		$CI->db->from('departements a');
+		$CI->db->join('sections b', 'a.id = b.dept_id');
+		$CI->db->where('b.id', $id);
+		return $CI->db->get()->row()->name;
+	}
+
+	/**
 	 * Convert number to roman numeral
 	 * @param int $number
 	 * @return string
