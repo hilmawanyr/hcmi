@@ -90,29 +90,36 @@
             <i class="fa fa-file-text-o"></i> <span>Assessment Form</span>
           </a>
         </li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-gear"></i>
-            <span>Manage</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
-            <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
-          </ul>
-        </li>
+
+        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-gear"></i>
+              <span>Manage</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
+              <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
+            </ul>
+          </li>
+        <?php endif; ?>
+        
         <li>
           <a href="<?= base_url('dictionary') ?>">
             <i class="fa fa-book"></i> <span>Competency Dictionary</span>
           </a>
         </li>
-        <li>
-          <a href="<?= base_url('competency_matrix') ?>">
-            <i class="fa fa-th-large"></i> <span>Competency Matrix</span>
-          </a>
-        </li>
+
+        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+          <li>
+            <a href="<?= base_url('competency_matrix') ?>">
+              <i class="fa fa-th-large"></i> <span>Competency Matrix</span>
+            </a>
+          </li>
+        <?php endif; ?>
         <hr>
         <li>
           <a href="<?= base_url('changepassword') ?>">
