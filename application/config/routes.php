@@ -59,7 +59,8 @@ $route['changepassword'] = 'auth/authentication/edit_pass';
 $route['storenewpass'] = 'auth/authentication/update_pass';
 
 $route['dashboard'] = 'dashboard';
-$route['dashboard/ratioFormFelling/(:string)'] = 'dashboard/ratioFormFelling/$1';
+$route['dashboard/(:any)/is_admin_or_hr/(:int)/section'] = 'dashboard/jobtitle_chart/$1/$2';
+$route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
 $route['form/(:num)'] = 'assessment/form/$1';

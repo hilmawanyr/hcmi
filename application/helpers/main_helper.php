@@ -226,3 +226,11 @@
 		$CI->db->where('id', $id);
 		return $CI->db->get('sections')->row();
 	}
+
+	function get_jobtitle_name($id)
+	{
+		error_reporting(0);
+		$CI =& get_instance();
+		$CI->db->where('id', $id);
+		return $CI->db->get('job_titles')->row()->name;
+	}

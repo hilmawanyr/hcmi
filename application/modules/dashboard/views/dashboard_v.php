@@ -1,3 +1,11 @@
+<?php if ($group == 1 || $group == 2) { ?>
+  <input type="hidden" id="group" value="0">
+  <?php $groupLog = 0; ?>
+<?php } else { ?>
+  <input type="hidden" id="group" value="<?= $section ?>">
+  <?php $groupLog = $section; ?>
+<?php } ?>
+
 <section class="content-header">
   <h1>
     Dashboard
@@ -17,14 +25,17 @@
       <!-- small box -->
       <div class="small-box bg-aqua">
         <div class="inner">
-          <h3>150</h3>
+          <h3><?= $participants ?></h3>
 
           <p>Peserta Assessment</p>
         </div>
         <div class="icon">
           <i class="ion ion-bag"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        <a 
+          href="<?= base_url('dashboard/ALL_PARTICIPANTS/status/'.$groupLog.'/section') ?>" 
+          class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
       </div>
     </div>
     <!-- ./col -->
@@ -32,14 +43,17 @@
       <!-- small box -->
       <div class="small-box bg-red">
         <div class="inner">
-          <h3>44</h3>
-
+          <small style="font-size: 20px" class="pull-right"><?= number_format($uncompletePercentage, 2) ?>%</small>
+          <h3><?= $assessmentThatUncomplete ?></h3>
           <p>Belum Dinilai</p>
         </div>
         <div class="icon">
           <i class="ion ion-person-add"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        <a 
+          href="<?= base_url('dashboard/UNCOMPLETE/status/'.$groupLog.'/section') ?>" 
+          class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
+        </a>
       </div>
     </div>
     <!-- ./col -->
@@ -47,14 +61,17 @@
       <!-- small box -->
       <div class="small-box bg-green">
         <div class="inner">
-          <h3>53<sup style="font-size: 20px">%</sup></h3>
-
+          <small style="font-size: 20px" class="pull-right"><?= number_format($completePercentage, 2) ?>%</small>
+          <h3><?= $completedAssessment ?></h3>
           <p>Sudah Dinilai </p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
         </div>
-        <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        <a 
+          href="<?= base_url('dashboard/COMPLETE/status/'.$groupLog.'/section') ?>" 
+          class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
+        </a>
       </div>
     </div>
   </div>
@@ -80,64 +97,54 @@
 
 
 <script type="text/javascript">
-Highcharts.chart('piechart1', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Jumlah Pegawai Per Job Title'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+  var isAdminOrHR = $('#group').val() === '0' ? true : false;
+  var section     = $('#group').val();
+  var url         = '<?= base_url() ?>dashboard/jobtitle_chart/'+isAdminOrHR+'/'+section;
+  $.get(url, function (response) {
+
+    var respon = JSON.parse(response)
+
+    var chartContent = respon.map(function(data) {
+      return {
+        name: data.name,
+        y: parseInt(data.y)
+      }
+    })
+
+    Highcharts.chart('piechart1', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Jumlah Pegawai Per Job Title'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:.f} orang</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y:.f}'
+                }
             }
-        }
-    },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data: [{
-            name: 'Chrome',
-            y: 61.41,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Internet Explorer',
-            y: 11.84
-        }, {
-            name: 'Firefox',
-            y: 10.85
-        }, {
-            name: 'Edge',
-            y: 4.67
-        }, {
-            name: 'Safari',
-            y: 4.18
-        }, {
-            name: 'Sogou Explorer',
-            y: 1.64
-        }, {
-            name: 'Opera',
-            y: 1.6
-        }, {
-            name: 'QQ',
-            y: 1.2
-        }, {
-            name: 'Other',
-            y: 2.61
+        },
+        series: [{
+            name: 'Total',
+            colorByPoint: true,
+            data: chartContent
         }]
-    }]
-});
+    });
+  });
+
+  console.log(url)
+
+
 
 Highcharts.chart('piechart2', {
     chart: {
@@ -172,7 +179,7 @@ Highcharts.chart('piechart2', {
             selected: true
         }, {
             name: 'Internet Explorer',
-            y: 11.84
+            y: 11.96
         }, {
             name: 'Firefox',
             y: 10.85
