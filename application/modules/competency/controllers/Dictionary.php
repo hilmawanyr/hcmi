@@ -35,6 +35,7 @@ class Dictionary extends CI_Controller {
 	 */
 	public function get_dictionary(int $skillTypeId) : void
 	{
+		$data['group']        = $this->group;
 		$data['skillTypes']   = $this->dictionary->get_skill_types();
 		$data['skillTypeId']  = $skillTypeId;
 		$data['dictionaries'] = $this->dictionary->get_dictionary_competency($skillTypeId);

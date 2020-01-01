@@ -1,12 +1,15 @@
 <div class="table-wrap">
     <div class="table-responsive">
-        <button 
-            data-toggle="modal" 
-            data-target="#addModal<?= $skillTypeId ?>" 
-            onclick="load_modal(1,<?= $skillTypeId ?>)" 
-            class="btn btn-info">
-            <i class="fa fa-plus"></i> Add Competency
-        </button>
+        <?php if ($group == 1 || $group == 2) : ?>
+            <button 
+                data-toggle="modal" 
+                data-target="#addModal<?= $skillTypeId ?>" 
+                onclick="load_modal(1,<?= $skillTypeId ?>)" 
+                class="btn btn-info">
+                <i class="fa fa-plus"></i> Add Competency
+            </button>
+        <?php endif; ?>
+        
         <a 
             href="<?= base_url('dictionary/'.$skillTypeId.'/print') ?>" 
             class="btn btn-primary">
@@ -34,15 +37,18 @@
                             <a 
                                 href="<?= base_url('skill_unit/'.$dictionary->id.'/dictionary') ?>" 
                                 class="btn btn-primary"><i class="fa fa-list"></i></a>
-                            <a 
-                                data-toggle="modal" 
-                                class="btn btn-warning"
-                                href="#addModal<?= $dictionary->skill_group ?>" 
-                                onclick="load_modal(2, <?= $dictionary->id ?>)"><i class="fa fa-pencil"></i></a>
-                            <a 
-                                href="<?= base_url('dictionary/'.$dictionary->id.'/remove') ?>" 
-                                class="btn btn-danger"
-                                onclick="return confirm('Are you sure to remove this competency?')"><i class="fa fa-trash"></i></a>
+                            <?php if ($group == 1 || $group == 2) : ?>
+                                <a 
+                                    data-toggle="modal" 
+                                    class="btn btn-warning"
+                                    href="#addModal<?= $dictionary->skill_group ?>" 
+                                    onclick="load_modal(2, <?= $dictionary->id ?>)"><i class="fa fa-pencil"></i></a>
+                                <a 
+                                    href="<?= base_url('dictionary/'.$dictionary->id.'/remove') ?>" 
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Are you sure to remove this competency?')">
+                                    <i class="fa fa-trash"></i></a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php $no++; endforeach; ?>
