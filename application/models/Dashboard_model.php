@@ -213,14 +213,42 @@ class Dashboard_model extends CI_Model {
 										a.name AS job_title, 
 										count(b.nik) AS amount 
 									FROM job_titles a JOIN employes b ON a.id = b.job_title_id
+									WHERE b.name <> 'admin'
 									GROUP BY b.job_title_id")->result();
 		} else {
 			return $this->db->query("SELECT 
 										a.name AS job_title, 
 										count(b.nik) AS amount 
 									FROM job_titles a JOIN employes b ON a.id = b.job_title_id
-									WHERE b.section_id = $section
+									WHERE b.name <> 'admin'
+									AND b.section_id = $section
 									GROUP BY b.job_title_id")->result();
+		}
+	}
+
+	/**
+	 * Get number of employes in each job title
+	 * @param bool $adminOrHR
+	 * @param int $section
+	 * @return array
+	 */
+	public function employe_per_grade(bool $adminOrHR=true, int $section=0) : array
+	{
+		if ($adminOrHR) {
+			return $this->db->query("SELECT 
+										grade AS level, 
+										count(nik) AS amount 
+									FROM employes
+									WHERE name <> 'admin'
+									GROUP BY grade")->result();
+		} else {
+			return $this->db->query("SELECT 
+										grade AS level, 
+										count(nik) AS amount 
+									FROM employes
+									WHERE section_id = $section
+									AND name <> 'admin'
+									GROUP BY grade")->result();
 		}
 	}
 

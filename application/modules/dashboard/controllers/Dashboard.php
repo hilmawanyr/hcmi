@@ -70,6 +70,30 @@ class Dashboard extends CI_Controller {
     }
 
     /**
+     * Get ratio from number of employes that grouped by their grade
+     * @param string $adminOrHR
+     * @param int $section
+     * @return void
+     */
+    public function employes_grade(string $adminOrHR='true', int $section=0) : void
+    {
+        if ($adminOrHR == 'true') {
+            $datas = $this->dashboard->employe_per_grade();    
+        } else {
+            $datas = $this->dashboard->employe_per_grade(false, $section);
+        }
+
+        foreach ($datas as $data) {
+            $object[] = [
+                'name' => 'Level '.$data->level,
+                'y' => $data->amount
+            ];
+        }
+
+        echo json_encode($object);
+    }
+
+    /**
      * See detail of complete and uncomplete assessment
      * @param string $status
      * @param int $section
