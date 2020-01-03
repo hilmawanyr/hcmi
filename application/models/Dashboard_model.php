@@ -248,6 +248,8 @@ class Dashboard_model extends CI_Model {
 									FROM employes
 									WHERE section_id = $section
 									AND name <> 'admin'
+									AND position_id NOT IN
+									(SELECT id FROM positions where name LIKE '%manager%')
 									GROUP BY grade")->result();
 		}
 	}
