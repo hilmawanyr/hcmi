@@ -35,6 +35,8 @@
     </div>
   <?php } ?>
 
+  <?php $this->load->view('template/action_message'); ?>
+
   <div class="login-box-body">
     <p class="login-box-msg">Sign in</p>
 

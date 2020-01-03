@@ -42,7 +42,18 @@ class Login extends CI_Model {
 		return $this->db->get()->row();
 	}
 	
-
+	/**
+	 * Change password
+	 * @param string $nik
+	 * @param string $pass
+	 * @return void
+	 */
+	public function update_password(string $nik,string $pass) : void
+	{
+		$this->db->where('nik', $nik);
+		$this->db->update('users', ['password' => $pass]);
+		return; 
+	}
 }
 
 /* End of file Login.php */

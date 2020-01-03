@@ -104,33 +104,33 @@ class Authentication extends CI_Controller {
 	public function update_pass()
 	{	
 		$nik 			= $this->input->post('nik');
-		$password 		= $this->input->post('old_pass');
+		$password 		= $this->input->post('current_pass');
 		$new_pass 		= $this->input->post('new_pass');
-		// $repeat_pass 	= $this->input->post('repeat_pass');
-		// $isUserExist 	= $this->login->is_user_exist($nik);
+		$repeat_pass 	= $this->input->post('repeat_pass');
+		$isUserExist 	= $this->login->is_user_exist($nik);
+
+		// validation for  new pass and repeate pass
+		if ($new_pass != $repeat_pass) {
+			$this->session->set_flashdata('fail_save_data', 'New pasword do not match with repeated password!');
+			redirect(base_url('changepassword'));
+		}
 		
-		// if ($isUserExist) {
-		// 	// do verification for user's password
-		// 	if (password_verify($password, $isUserExist->password)) {
-		// 		$hash_new_pass = password_hash($new_pass, 1, null);
+		if ($isUserExist) {
+			// do verification for user's password
+			if (password_verify($password, $isUserExist->password)) {
+				$hash_new_pass = password_hash($new_pass, PASSWORD_DEFAULT);
 
-		// 		$this->login->update_password($nik, $new_pass);
-		// 		$this->session->set_flashdata('result', true);
-		// 		$this->session->set_flashdata('alert_class', "alert alert-success alert-dismissible");
-		// 		$this->session->set_flashdata('result_message', "Success change password");
-		// 		redirect('auth/authentication/edit_pass');
-		// 	}
-			
-		// 	$this->session->set_flashdata('result', false);
-		// 	$this->session->set_flashdata('alert_class', "alert alert-danger alert-dismissible");
-		// 	$this->session->set_flashdata('result_message', "Failed, old password not match");
-		// 	redirect('auth/authentication/edit_pass');
-		// }
+				$this->login->update_password($nik, $hash_new_pass);
+				$this->session->set_flashdata('success_update_data', 'Password updated successfully! Please logout and relogin to try your new password!');
+				redirect('changepassword');
+			}
 
-		$this->session->set_flashdata('result', false);
-		$this->session->set_flashdata('alert_class', "alert alert-danger alert-dismissible");
-		$this->session->set_flashdata('result_message', "Error user session, please contact administrator");
-		redirect('auth/authentication/edit_pass');
+			$this->session->set_flashdata('fail_save_data', "Failed, old password not match");
+			redirect('changepassword');
+		}
+
+		$this->session->set_flashdata('fail_save_data', "Error user session, please contact administrator");
+		redirect('changepassword');
 	}
 	
 }

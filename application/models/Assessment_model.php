@@ -232,15 +232,6 @@ class Assessment_model extends CI_Model {
 									AND assessment_form_questions.poin IS NOT NULL ")->result();
         return $poin;
 	}
-	
-	
-	public function update_password(string $nik,string $pass) {
-		$this->db->set('password',$pass);
-		$this->db->where('nik', $nik);
-		$this->db->update('users');
-
-		return; 
-	}
 }
 
 /* End of file Assessment.php */
