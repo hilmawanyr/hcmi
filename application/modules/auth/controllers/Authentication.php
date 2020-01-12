@@ -32,6 +32,8 @@ class Authentication extends CI_Controller {
 		if (count($isUserExist) > 0) {
 			// do verification for user's password
 			if (password_verify($password, $isUserExist->password)) {
+				// create log for success login
+				$this->_auth_log($nik);
 				// create login session and redirect them to dahsboard
 				$this->_login_success($isUserExist);
 			}
@@ -54,6 +56,18 @@ class Authentication extends CI_Controller {
 		$createDataLogin = $this->_prepare_user_data($userData->nik);
 		$this->session->set_userdata('login_session',$createDataLogin);
 		redirect('dashboard');
+	}
+
+	/**
+	 * Store auth log to db, for success login
+	 * @param int $nik
+	 * @return void
+	 */
+	private function _auth_log(int $nik) : void
+	{
+		$this->db->where('nik', $nik);
+		$this->db->update('users', ['last_login' => date('Y-m-d H:i:s')]);
+		return;
 	}
 
 	/**
