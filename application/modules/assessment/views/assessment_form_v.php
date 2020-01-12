@@ -1,4 +1,9 @@
 <?php $sess_login = $this->session->userdata('login_session'); ?>
+<style>
+    .header_competency:hover {
+        background-color: #ecf0f5;
+    }
+</style>
 
 <section class="content-header">
 	<h3 class="box-title">Form Penilaian | <?= $jobTitleName->name ?></h3>
@@ -51,12 +56,20 @@
                             <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nama Pegawai</th>
 
                             <?php foreach ($dictionary->result() as $dictlist) : ?>
-                                <th style="text-align:center;" colspan="2">
+                                <th 
+                                    style="text-align:center; vertical-align: middle; cursor: pointer;" 
+                                    class="header_competency"
+                                    colspan="2" 
+                                    data-toggle="modal" 
+                                    data-target="#descriptionCompetency" 
+                                    onclick="showCompetencyDescription(<?= $dictlist->id ?>)"
+                                >
                                     <?= $dictlist->name_id  ?>
                                 </th>
                             <?php endforeach; ?>
 
                             <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nilai Absolut</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Grade</th>
                         </tr>
                         <tr>
 
@@ -176,6 +189,9 @@
                                         <input type='text' name='absolutepoint' style='width:4em' min='1' value="<?= $assessmentForm->row()->total_poin ?>" max='100' readonly>
                                     <?php endif; ?>
                                 </td>
+                                <td style="text-align:center; vertical-align: middle;">
+                                    <?= get_assessment_grade($assessmentForm->row()->total_poin) ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -233,6 +249,14 @@
     </div>
 </div>
 
+<div id="descriptionCompetency" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="descriptionCompetency-content">
+
+        </div>
+    </div>
+</div>
+
 <script>
     var pathArray = window.location.pathname.split('/');
 
@@ -242,5 +266,9 @@
 
     function loadDetailPoin(skill_id,nik) {
         $('#detailpoin-content').load(location.origin + '/' + pathArray[1] +'/assessment/'+skill_id+'/competency/'+nik+'/nik');
+    }
+
+    function showCompetencyDescription($id) {
+        $('#descriptionCompetency-content').load(location.origin + '/' + pathArray[1] + '/competency_description/' + $id)
     }
 </script>

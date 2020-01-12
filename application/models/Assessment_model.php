@@ -62,6 +62,7 @@ class Assessment_model extends CI_Model {
 			a.job_id,
 			a.skill_id,
 			a.level,
+			b.id,
 			b.name_id,
 			b.description');
 		$this->db->from('skill_matrix a');

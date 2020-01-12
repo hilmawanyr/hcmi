@@ -242,10 +242,38 @@
 		return $CI->db->get('sections')->row();
 	}
 
+	/**
+	 * Get name of job title
+	 * @param $id
+	 * @return -
+	 */
 	function get_jobtitle_name($id)
 	{
 		error_reporting(0);
 		$CI =& get_instance();
 		$CI->db->where('id', $id);
 		return $CI->db->get('job_titles')->row()->name;
+	}
+
+	/**
+	 * Get grade for absolute poin in assessment
+	 * @param int $poin
+	 * @return string
+	 */
+	function get_assessment_grade(int $poin = null) : string
+	{
+		if ($poin > 0 && $poin < 101) {
+			$grade = '1';
+		} elseif ($poin > 100 && $poin < 201) {
+			$grade = '2';
+		} elseif ($poin > 200 && $poin < 301) {
+			$grade = '3';
+		} elseif ($poin > 300 && $poin < 401) {
+			$grade = '4';
+		} elseif ($poin > 400 && $poin < 501) {
+			$grade = '5';
+		} else {
+			$grade = '-';
+		}
+		return $grade;
 	}

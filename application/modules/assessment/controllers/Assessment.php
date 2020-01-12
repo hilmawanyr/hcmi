@@ -289,6 +289,17 @@ class Assessment extends CI_Controller {
         $this->load->view('assessment_modal_view_poin', $data);
     }
 
+    /**
+     * Load competency description in table header of assessment
+     * @param int $id
+     * @return void
+     */
+    public function competency_description(int $id) : void
+    {
+		$data['description'] = $this->db->where('id', $id)->get('skill_dictionaries')->row();
+		$this->load->view('competency_description_modal', $data);    	
+    }
+
 }
 
 /* End of file Assessment.php */
