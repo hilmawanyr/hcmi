@@ -54,6 +54,24 @@ class Login extends CI_Model {
 		$this->db->update('users', ['password' => $pass]);
 		return; 
 	}
+
+	/**
+	 * Get auth log
+	 * @param int $nik; default NULL
+	 * @return array
+	 */
+	public function get_auth_log(int $nik = NULL) : array
+	{
+		switch ($nik) {
+			case NULL:
+				return $this->db->order_by('nik', 'asc')->get('log_auth')->result();
+				break;
+			
+			default:
+				return $this->db->where('nik', $nik)->order_by('nik', 'asc')->get('log_auth')->result();
+				break;
+		}
+	}
 }
 
 /* End of file Login.php */

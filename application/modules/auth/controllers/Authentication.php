@@ -63,7 +63,7 @@ class Authentication extends CI_Controller {
 	 * @param int $nik
 	 * @return void
 	 */
-	private function _auth_log(int $nik) : void
+	private function _auth_log(string $nik) : void
 	{
 		$time = date('Y-m-d H:i:s');
 		// update last_login in users table
@@ -161,6 +161,19 @@ class Authentication extends CI_Controller {
 		$data['logs'] = $this->db->get('users')->result();
 		$data['page'] = 'auth_log';
 		$this->load->view('template/template', $data);		
+	}
+
+	/**
+	 * Print auth log
+	 * @param int $nik
+	 * @return void
+	 */
+	public function print_log(string $nik = NULL) : void
+	{
+		// set file name if print is for specific users
+		$data['nik']  = $nik;
+		$data['logs'] = $this->login->get_auth_log($nik);
+		$this->load->view('log_auth_excel', $data);
 	}
 	
 }
