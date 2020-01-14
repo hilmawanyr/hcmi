@@ -67,8 +67,7 @@ class Authentication extends CI_Controller {
 	{
 		$time = date('Y-m-d H:i:s');
 		// update last_login in users table
-		$this->db->where('nik', $nik);
-		$this->db->update('users', ['last_login' => $time]);
+		$this->db->where('nik', $nik)->update('users', ['last_login' => $time]);
 		// store log to log_auth table
 		$this->db->insert('log_auth', ['nik' => $nik, 'last_login' => $time]);
 		return;
@@ -115,12 +114,16 @@ class Authentication extends CI_Controller {
 	 */
 	public function edit_pass()
 	{
+		$this->_auth_verification();
+
 		$data['page'] = "change_password_v";
 		$this->load->view('template/template', $data);
 	}
 
 	public function update_pass()
 	{	
+		$this->_auth_verification();
+
 		$nik 			= $this->input->post('nik');
 		$password 		= $this->input->post('current_pass');
 		$new_pass 		= $this->input->post('new_pass');
@@ -158,6 +161,8 @@ class Authentication extends CI_Controller {
 	 */
 	public function auth_log() : void
 	{
+		$this->_auth_verification(1);
+
 		$data['logs'] = $this->db->get('users')->result();
 		$data['page'] = 'auth_log';
 		$this->load->view('template/template', $data);		
@@ -170,12 +175,30 @@ class Authentication extends CI_Controller {
 	 */
 	public function print_log(string $nik = NULL) : void
 	{
+		$this->_auth_verification();
 		// set file name if print is for specific users
 		$data['nik']  = $nik;
 		$data['logs'] = $this->login->get_auth_log($nik);
 		$this->load->view('log_auth_excel', $data);
 	}
 	
+	/**
+	 * Auth verification fo some method
+	 * @param int $checkForAuthLogMenu; default NULL
+	 * @return void
+	 */
+	private function _auth_verification(int $checkForAuthLogMenu = NULL) : void
+	{
+		if (!$this->session->userdata('login_session')) {
+			$this->logout();
+		}
+		if (!is_null($checkForAuthLogMenu)) {
+			if ($this->session->userdata('sess_login')['group'] != 1 || $this->session->userdata('sess_login')['group'] != 2) {
+				redirect('dashboard');
+			}	
+		}
+		return;
+	}
 }
 
 /* End of file Authentication.php */

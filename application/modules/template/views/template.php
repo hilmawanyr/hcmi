@@ -130,6 +130,13 @@
             <i class="fa fa-key"></i> <span>Change Password</span>
           </a>
         </li>
+        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+          <li>
+            <a href="<?= base_url('auth_log') ?>">
+              <i class="fa fa-file"></i> <span>Authentication Log</span>
+            </a>
+          </li>
+        <?php endif; ?>
         <li>
           <a href="<?= base_url('logout') ?>">
             <i class="fa fa-sign-out"></i> <span>Sign Out</span>
