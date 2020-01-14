@@ -57,6 +57,7 @@ $route['attemptlogin'] = 'auth/authentication/attempt_login';
 $route['logout'] = 'auth/authentication/logout';
 $route['changepassword'] = 'auth/authentication/edit_pass';
 $route['storenewpass'] = 'auth/authentication/update_pass';
+$route['print_auth_log'] = 'auth/authentication/auth_log';
 
 $route['dashboard'] = 'dashboard';
 $route['dashboard/(:any)/is_admin_or_hr/(:int)/section'] = 'dashboard/jobtitle_chart/$1/$2';

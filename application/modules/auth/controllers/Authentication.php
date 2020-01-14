@@ -65,8 +65,12 @@ class Authentication extends CI_Controller {
 	 */
 	private function _auth_log(int $nik) : void
 	{
+		$time = date('Y-m-d H:i:s');
+		// update last_login in users table
 		$this->db->where('nik', $nik);
-		$this->db->update('users', ['last_login' => date('Y-m-d H:i:s')]);
+		$this->db->update('users', ['last_login' => $time]);
+		// store log to log_auth table
+		$this->db->insert('log_auth', ['nik' => $nik, 'last_login' => $time]);
 		return;
 	}
 
@@ -145,6 +149,18 @@ class Authentication extends CI_Controller {
 
 		$this->session->set_flashdata('fail_save_data', "Error user session, please contact administrator");
 		redirect('changepassword');
+	}
+
+	/**
+	 * See detail of authentication login
+	 * 
+	 * @return void
+	 */
+	public function auth_log() : void
+	{
+		$data['logs'] = $this->db->get('users')->result();
+		$data['page'] = 'auth_log';
+		$this->load->view('template/template', $data);		
 	}
 	
 }
