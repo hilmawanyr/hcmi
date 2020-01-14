@@ -64,6 +64,24 @@ class Manage_model extends CI_Model {
 		$this->db->where('section', $id);
 		return $this->db->get('job_titles')->result();
 	}
+
+	/**
+	 * Get specific or all information from informations table
+	 * @param int $id; default null
+	 * @return object
+	 */
+	public function get_information(int $id = null) : object
+	{
+		switch ($id) {
+			case null:
+				return $this->db->where('deleted_at')->get('informations');
+				break;
+			
+			default:
+				return $this->db->where('id', $id)->get('informations');
+				break;
+		}		
+	}
 	
 }
 

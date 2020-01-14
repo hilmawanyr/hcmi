@@ -37,10 +37,14 @@
   <!-- Datepicker -->
   <link rel="stylesheet" href="<?= base_url('assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') ?>">
 
+  <!-- summernote -->
+  <link rel="stylesheet" href="<?= base_url('assets/summernote-master/dist/summernote.min.css') ?>">
+
   <!-- HighChart -->
   <script src="<?= base_url() ?>assets/dist/js/highcharts/highcharts.js"></script>
   <script src="<?= base_url() ?>assets/dist/js/highcharts/modules/exporting.js"></script>
   <script src="<?= base_url() ?>assets/dist/js/highcharts/modules/export-data.js"></script>
+
 </head>
 <body class="hold-transition skin-yellow sidebar-mini">
 <div class="wrapper">
@@ -177,12 +181,19 @@
 <!-- Select2 -->
 <script src="<?= base_url('assets/') ?>bower_components/select2/dist/js/select2.full.min.js"></script>
 
+<!-- summernote -->
+<script src="<?= base_url('assets/summernote-master/dist/summernote.min.js') ?>"></script>
+
 <script>
   $(function () {
     $('#example1').DataTable()
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'})
     $('.select2').select2()
   })
+
+  $(document).ready(function() {
+    $('#summernote').summernote();
+  });
 </script>
 </body>
 </html>

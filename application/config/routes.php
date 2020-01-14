@@ -111,3 +111,10 @@ $route['competency_matrix/(:num)/manage'] = 'competency/matrix/manage/$1';
 $route['competency_matrix/store'] = 'competency/matrix/store';
 $route['competency_matrix/store_competency'] = 'competency/matrix/store_competency';
 $route['competency_matrix/(:num)/remove/(:num)/jobtitle'] = 'competency/matrix/remove_competency/$1/$2';
+
+$route['information'] = 'manage/information_board';
+$route['infomation/create'] = 'manage/information_board/create';
+$route['information/store'] = 'manage/information_board/create_store';
+$route['information/(:num)/detail'] = 'manage/information_board/detail/$1';
+$route['information/(:num)/edit']  = 'manage/information_board/edit/$1';
+$route['information/(:num)/delete'] = 'manage/information_board/delete/$1';
