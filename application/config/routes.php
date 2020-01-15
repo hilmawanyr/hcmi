@@ -120,3 +120,6 @@ $route['information/store'] = 'manage/information_board/create_store';
 $route['information/(:num)/detail'] = 'manage/information_board/detail/$1';
 $route['information/(:num)/edit']  = 'manage/information_board/edit/$1';
 $route['information/(:num)/delete'] = 'manage/information_board/delete/$1';
+$route['information/(:num)/public'] = 'manage/information_board/public_information/$1';
+$route['information/read_all'] = 'manage/information_board/read_all';
+$route['information/restricted/all'] = 'manage/information_board/list_restricted_informations';

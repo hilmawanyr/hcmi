@@ -82,6 +82,31 @@ class Manage_model extends CI_Model {
 				break;
 		}		
 	}
+
+	/**
+	 * Get specific type information
+	 * @param string $type
+	 * @param string $orderBy
+	 * @param int $limit
+	 * @return object
+	 */
+	public function get_specific_type_information(string $type, string $orderBy = NULL, string $limit = NULL) : object
+	{
+		$this->db->where('type', $type);
+		$this->db->where('deleted_at');
+
+		if (!is_null($orderBy)) {
+			$this->db->order_by('id', $orderBy);
+		}
+
+		if (!is_null($limit)) {
+			$informations = $this->db->get('informations', $limit);
+		} else {
+			$informations = $this->db->get('informations');
+		}
+
+		return $informations;
+	}
 	
 }
 

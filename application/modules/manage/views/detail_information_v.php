@@ -1,25 +1,28 @@
+<?php $userSession = $this->session->userdata('login_session'); ?>
 <section class="content-header">
   
   <h3 class="box-title">
-    <a href="<?= base_url('information') ?>" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Back</a>
-    <a 
-      href="<?= base_url('information/'.$information->id.'/edit') ?>" 
-      class="btn btn-primary pull-right" 
-      data-toggle="tooltip" 
-      data-placement="left" 
-      title="edit information">
-      <i class="fa fa-pencil"></i>
-    </a>
-     <a 
-      href="<?= base_url('information/'.$information->id.'/delete') ?>" 
-      class="btn btn-danger pull-right" 
-      style="margin-right: 5px"
-      onclick="return confirm('Are You sure want to delete this data?')"
-      data-toggle="tooltip" 
-      data-placement="left" 
-      title="delete information">
-      <i class="fa fa-trash"></i>
-    </a>
+    <a href="javascript:history.go(-1)" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Back</a>
+    <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+      <a 
+        href="<?= base_url('information/'.$information->id.'/edit') ?>" 
+        class="btn btn-primary pull-right" 
+        data-toggle="tooltip" 
+        data-placement="left" 
+        title="edit information">
+        <i class="fa fa-pencil"></i>
+      </a>
+       <a 
+        href="<?= base_url('information/'.$information->id.'/delete') ?>" 
+        class="btn btn-danger pull-right" 
+        style="margin-right: 5px"
+        onclick="return confirm('Are You sure want to delete this data?')"
+        data-toggle="tooltip" 
+        data-placement="left" 
+        title="delete information">
+        <i class="fa fa-trash"></i>
+      </a>
+    <?php endif; ?>
   </h3>
   <?php $this->load->view('template/action_message'); ?>
 </section>

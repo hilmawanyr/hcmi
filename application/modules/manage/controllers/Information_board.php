@@ -3,27 +3,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Information_board extends CI_Controller {
 
-	private $group, $level, $grade, $section, $userid;
+	private $group, $level, $userid;
 
 	public function __construct()
 	{
 		parent::__construct();
-		if (!$this->session->userdata('login_session')) {
-			redirect(base_url('logout'));
-		}
 
-		$loginSession  = $this->session->userdata('login_session');
-		$this->userid  = $loginSession['nik'];
-		$this->group   = $loginSession['group'];
-		$this->level   = $loginSession['level'];
-		$this->grade   = $loginSession['grade'];
-		$this->section = $loginSession['section'];
+		$loginSession = $this->session->userdata('login_session');
+		$this->userid = $loginSession['nik'];
+		$this->group  = $loginSession['group'];
 
 		$this->load->model('manage_model','manage');
 	}
 
 	public function index()
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification(1);
+
 		$data['informations'] = $this->_get_information()->result();
 		$data['page']         = "information_board_v";
 		$this->load->view('template/template', $data);
@@ -47,6 +44,9 @@ class Information_board extends CI_Controller {
 	 */
 	public function create() : void
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification(1);
+
 		$isUpdate          = 0;
 		$data['positions'] = $this->db->like('name', 'manager', 'BOTH')->get('positions')->result();
 		$data['page']      = "create_information_v";
@@ -60,6 +60,9 @@ class Information_board extends CI_Controller {
 	 */
 	public function create_store() : void
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification(1);
+
 		$title    = $this->input->post('title');
 		$content  = $this->input->post('content');
 		$type     = $this->input->post('type');
@@ -113,6 +116,9 @@ class Information_board extends CI_Controller {
 	 */
 	public function detail(int $id) : void
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification();
+
 		$data['information'] = $this->_get_information($id)->row();
 		$data['page']        = "detail_information_v";
 		$this->load->view('template/template', $data);		
@@ -125,6 +131,9 @@ class Information_board extends CI_Controller {
 	 */
 	public function edit(int $id) : void
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification(1);
+
 		$data['isUpdate']    = $id;
 		$data['positions']   = $this->db->like('name', 'manager', 'BOTH')->get('positions')->result();
 		$data['information'] = $this->_get_information($id)->row();
@@ -139,10 +148,72 @@ class Information_board extends CI_Controller {
 	 */
 	public function delete(int $id) : void
 	{
+		// prevent from access without login or user who don't have access right
+		$this->_auth_verification(1);
+
 		$updatedData = ['deleted_at' => date('Y-m-d H:i:s'), 'deleted_by' => $this->userid];
 		$this->db->where('id', $id)->update('informations', $updatedData);
 		$this->session->set_flashdata('success_remove_data', 'Data successfully removed!');
 		redirect(base_url('information'));		
+	}
+
+	/**
+	 * Page for public informations
+	 * @param int $id
+	 * @return void
+	 */
+	public function public_information(int $id) : void
+	{
+		$data['information'] = $this->db->where('id', $id)->order_by('id','desc')->get('informations',5)->row();
+		$data['page']        = 'public_information_v';
+		$this->load->view('template/information_template', $data);		
+	}
+
+	/**
+	 * List all public informations
+	 * 
+	 * @return void
+	 */
+	public function read_all() : void
+	{
+		$data['informations'] = $this->manage->get_specific_type_information('PUBLIC','desc')->result();
+		$data['page']         = "read_all_information_v";
+		$this->load->view('template/information_template', $data);	
+	}
+
+	/**
+	 * List all restricted information
+	 * 
+	 * @return void
+	 */
+	public function list_restricted_informations() : void
+	{
+		$this->_auth_verification(1);
+
+		$data['informations'] = $this->manage->get_specific_type_information('RESTRICTED','desc')->result();
+		$data['page']         = "restricted_information_v";
+		$this->load->view('template/template', $data);
+	}
+
+	/**
+	 * Auth verification fo some method. If param is not null, then also check for restricted information access
+	 * @param int $isHaveAccess; default NULL
+	 * @return void
+	 */
+	private function _auth_verification(int $isHaveAccess = NULL) : void
+	{
+		$login_sess = $this->session->userdata('login_session');
+		if (!$login_sess) {
+			redirect('logout');
+		}
+		if (!is_null($isHaveAccess)) {
+			// HR: level = 1, group = 2
+			// Admin: level 1, group = 1
+			if ($this->group != 1 && $this->group != 2) {
+				redirect('dashboard');
+			}	
+		}
+		return;
 	}
 
 }

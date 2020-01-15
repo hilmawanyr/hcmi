@@ -23,6 +23,8 @@ class Dashboard extends CI_Controller {
 
 	public function index()
 	{
+        $this->load->model('manage_model','manage');
+        $data['informations'] = $this->manage->get_specific_type_information('RESTRICTED','desc',4)->result();
         $data['group']   = $this->group;
         $data['section'] = $this->section;
         // for login as admin or HR

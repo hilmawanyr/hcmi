@@ -68,84 +68,90 @@
         <ul class="nav navbar-nav">
 
           <!-- User Account: style can be found in dropdown.less -->
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle">
-              <span class="hidden-xs"><?= $userSession['name'] ?></span>
-            </a>
-          </li>
+          <?php if ($userSession) { ?>
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle">
+                <span class="hidden-xs"><?= $userSession['name'] ?></span>
+              </a>
+            </li>
+          <?php } ?>
+          
         </ul>
       </div>
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu" data-widget="tree">
-        <!-- <li class="header">MAIN NAVIGATION</li> -->
-        <li>
-          <a href="<?= base_url() ?>">
-            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="<?= base_url('assessment') ?>">
-            <i class="fa fa-file-text-o"></i> <span>Assessment Form</span>
-          </a>
-        </li>
-
-        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-gear"></i>
-              <span>Manage</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
-              <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
-            </ul>
-          </li>
-        <?php endif; ?>
-        
-        <li>
-          <a href="<?= base_url('dictionary') ?>">
-            <i class="fa fa-book"></i> <span>Competency Dictionary</span>
-          </a>
-        </li>
-
-        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+  <?php if ($userSession) { ?>
+    <aside class="main-sidebar">
+      <!-- sidebar: style can be found in sidebar.less -->
+      <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+          <!-- <li class="header">MAIN NAVIGATION</li> -->
           <li>
-            <a href="<?= base_url('competency_matrix') ?>">
-              <i class="fa fa-th-large"></i> <span>Competency Matrix</span>
+            <a href="<?= base_url() ?>">
+              <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
           </li>
-        <?php endif; ?>
-        <hr>
-        <li>
-          <a href="<?= base_url('changepassword') ?>">
-            <i class="fa fa-key"></i> <span>Change Password</span>
-          </a>
-        </li>
-        <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
           <li>
-            <a href="<?= base_url('auth_log') ?>">
-              <i class="fa fa-file"></i> <span>Authentication Log</span>
+            <a href="<?= base_url('assessment') ?>">
+              <i class="fa fa-file-text-o"></i> <span>Assessment Form</span>
             </a>
           </li>
-        <?php endif; ?>
-        <li>
-          <a href="<?= base_url('logout') ?>">
-            <i class="fa fa-sign-out"></i> <span>Sign Out</span>
-          </a>
-        </li>
-      </ul>
-    </section>
-    <!-- /.sidebar -->
-  </aside>
+
+          <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-gear"></i>
+                <span>Manage</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
+                <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
+                <li><a href="<?= base_url('information') ?>"><i class="fa fa-circle-o"></i> Information</a></li>
+              </ul>
+            </li>
+          <?php endif; ?>
+          
+          <li>
+            <a href="<?= base_url('dictionary') ?>">
+              <i class="fa fa-book"></i> <span>Competency Dictionary</span>
+            </a>
+          </li>
+
+          <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+            <li>
+              <a href="<?= base_url('competency_matrix') ?>">
+                <i class="fa fa-th-large"></i> <span>Competency Matrix</span>
+              </a>
+            </li>
+          <?php endif; ?>
+          <hr>
+          <li>
+            <a href="<?= base_url('changepassword') ?>">
+              <i class="fa fa-key"></i> <span>Change Password</span>
+            </a>
+          </li>
+          <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
+            <li>
+              <a href="<?= base_url('auth_log') ?>">
+                <i class="fa fa-file"></i> <span>Authentication Log</span>
+              </a>
+            </li>
+          <?php endif; ?>
+          <li>
+            <a href="<?= base_url('logout') ?>">
+              <i class="fa fa-sign-out"></i> <span>Sign Out</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <!-- /.sidebar -->
+    </aside>
+  <?php } ?>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

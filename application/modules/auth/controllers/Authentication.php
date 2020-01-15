@@ -15,7 +15,8 @@ class Authentication extends CI_Controller {
 			redirect('dashboard','refresh');
 		}
 
-		$this->load->view('authentication_v');
+		$data['informations'] = $this->db->where('deleted_at')->where('type', 'PUBLIC')->get('informations')->result();
+		$this->load->view('authentication_v', $data);
 	}
 
 	/**
@@ -189,11 +190,14 @@ class Authentication extends CI_Controller {
 	 */
 	private function _auth_verification(int $checkForAuthLogMenu = NULL) : void
 	{
-		if (!$this->session->userdata('login_session')) {
+		$login_sess = $this->session->userdata('login_session');
+		if (!$login_sess) {
 			$this->logout();
 		}
 		if (!is_null($checkForAuthLogMenu)) {
-			if ($this->session->userdata('sess_login')['group'] != 1 || $this->session->userdata('sess_login')['group'] != 2) {
+			// HR: level = 1, group = 2
+			// Admin: level 1, group = 1
+			if (($login_sess['level'] == 1 && $login_sess['group'] == 2) || ($login_sess['level'] == 1 && $login_sess['group'] == 1)) {
 				redirect('dashboard');
 			}	
 		}
