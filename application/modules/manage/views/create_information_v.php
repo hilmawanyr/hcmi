@@ -49,6 +49,8 @@
 </section>
 
 <script>
+  $('#position').hide();
+  /**
   <?php if ($information->type == 'PUBLIC' && $isUpdate == 1) { ?>
     $('#position').hide();
   <?php } elseif ($information->type == 'RESTRICTED' && $isUpdate == 1) { ?>
@@ -65,5 +67,5 @@
     } else {
       $('#position').show('fast');
     }
-  })
+  }) */
 </script>

@@ -66,13 +66,13 @@ class Information_board extends CI_Controller {
 		$title    = $this->input->post('title');
 		$content  = $this->input->post('content');
 		$type     = $this->input->post('type');
-		$position = $this->input->post('position');
+		// $position = $this->input->post('position');
 		$isUpdate = (int)$this->input->post('is_update');
 
 		$storedData['title']      = $title;
 		$storedData['content']    = $content;
 		$storedData['type']       = $type;
-		$storedData['position']   = $position;
+		// $storedData['position']   = $position;
 
 		if ($isUpdate != '') {
 			$storedData['updated_at'] = date('Y-m-d H:i:s');
@@ -186,11 +186,11 @@ class Information_board extends CI_Controller {
 	 * 
 	 * @return void
 	 */
-	public function list_restricted_informations() : void
+	public function list_informations() : void
 	{
 		$this->_auth_verification(1);
 
-		$data['informations'] = $this->manage->get_specific_type_information('RESTRICTED','desc')->result();
+		$data['informations'] = $this->manage->get_information()->result();
 		$data['page']         = "restricted_information_v";
 		$this->load->view('template/template', $data);
 	}
@@ -209,7 +209,7 @@ class Information_board extends CI_Controller {
 		if (!is_null($isHaveAccess)) {
 			// HR: level = 1, group = 2
 			// Admin: level 1, group = 1
-			if ($this->group != 1 && $this->group != 2) {
+			if (!in_array($this->group, [1,2,3])) {
 				redirect('dashboard');
 			}	
 		}
