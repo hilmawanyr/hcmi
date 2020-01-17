@@ -49,6 +49,7 @@
 	                <?php endif; ?>
 	            <?php endif; ?>
 	            <hr>
+                <?php $this->load->view('template/action_message'); ?>
 				<table class="table table-hover table-bordered">
 					<thead>
                         <tr>

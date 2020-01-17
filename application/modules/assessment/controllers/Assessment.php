@@ -182,7 +182,20 @@ class Assessment extends CI_Controller {
      */
     public function insert_poin() : void
     {
+    	$id_form = $this->input->post('idform');
         $inputamount = count($this->input->post('nilai_mentah'));
+
+        // prevent if poin that inputed > 1
+        $checkEmptyArray = array_filter($this->input->post('nilai_mentah'), function ($val) {
+        	return $val == "";
+        });
+
+        if (count($checkEmptyArray) < 4) {
+        	$this->session->set_flashdata('fail_save_data', 'Data not saved. Only one poin per competency is allow to assesst!');
+			redirect(base_url('form/'.$this->input->post('job')));
+        }
+        // prevent end
+
         for ($i=0; $i < $inputamount; $i++) {
 
             // compulate data in array 2 dimension
@@ -192,8 +205,15 @@ class Assessment extends CI_Controller {
         // get poin based on assessed competency
         $assessedCompetency = max($poin);
 
+        // prevent for freak input after edit
+        $dictionaryId = $this->db->where('id', $assessedCompetency[1])->get('skill_units')->row()->id_dictionary;
+        // set poin to null
+        $this->db->query("UPDATE assessment_form_questions SET poin = NULL 
+						WHERE form_id =  $id_form
+						AND skill_unit_id IN (SELECT id FROM skill_units WHERE id_dictionary = $dictionaryId)");
+
         $data = ['poin' => $assessedCompetency[0]];
-        $this->db->where('form_id', $this->input->post('idform'));
+        $this->db->where('form_id', $id_form);
         $this->db->where('skill_unit_id', $assessedCompetency[1]);
         $this->db->update('assessment_form_questions', $data);
 
