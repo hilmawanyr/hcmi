@@ -28,6 +28,9 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="<?= base_url('assets/dist/google-font.css') ?>">
 
+  <!-- custom css -->
+  <link rel="stylesheet" href="<?=  base_url('assets/hcmi-custom.css') ?>">
+
   <!-- jQuery 3 -->
   <script src="<?= base_url() ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
 
