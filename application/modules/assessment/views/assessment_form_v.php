@@ -194,9 +194,15 @@
                                             </button>
 
                                         <?php } else { ?>
-                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
-                                                    <i class="fa fa-eye"></i>
-                                                </button>
+                                            <button 
+                                                class="btn btn-sm" 
+                                                type="button" 
+                                                data-toggle="modal" 
+                                                data-target="#detailPoin" 
+                                                onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" 
+                                                title="Lihat detail nilai">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
 
                                         <?php } ?>
                                     
@@ -214,9 +220,15 @@
                                             </button>
 
                                         <?php } else { ?>
-                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
-                                                    <i class="fa fa-eye"></i>
-                                                </button>
+                                            <button 
+                                                class="btn btn-sm" 
+                                                type="button" 
+                                                data-toggle="modal" 
+                                                data-target="#detailPoin" 
+                                                onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" 
+                                                title="Lihat detail nilai">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
 
                                         <?php } ?>
                                     
@@ -234,9 +246,15 @@
                                             </button>
 
                                         <?php } else { ?>
-                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
-                                                    <i class="fa fa-eye"></i>
-                                                </button>
+                                            <button 
+                                                class="btn btn-sm" 
+                                                type="button" 
+                                                data-toggle="modal" 
+                                                data-target="#detailPoin" 
+                                                onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" 
+                                                title="Lihat detail nilai">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
                                             
                                         <?php } ?>
                                     <?php } ?>

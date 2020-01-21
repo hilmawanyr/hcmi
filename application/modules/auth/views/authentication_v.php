@@ -22,11 +22,11 @@
 </head>
 <body class="hold-transition">
 
-  <div class="col-md-8 bg-yellow" style="height: 100%">
+  <div class="col-md-8 bg-yellow" style="height: 100%;">
     <div class="col-md-12">
       <h1>
         <b>INFORMATIONS</b>Board 
-        <a class="btn btn-success btn-xs" href="<?= base_url('information/read_all') ?>">Read all</a>
+        <!-- <a class="btn btn-success btn-xs" href="<?= base_url('information/read_all') ?>">Read all</a> -->
       </h1>
       
       <ul class="timeline">
@@ -38,11 +38,8 @@
               <span class="time"><i class="fa fa-clock-o"></i> <?= $information->created_at ?></span>
               <h3 class="timeline-header"><?= $information->title ?></h3>
               <div class="timeline-body">
-                <?= substr($information->content, 0,200) ?>
-              </div>
-              <div class="timeline-footer">
-                <a class="btn btn-primary btn-xs" href="<?= base_url('information/'.$information->id.'/public') ?>">
-                  Read more
+                <?= substr($information->content, 0,400) ?> <a href="<?= base_url('information/'.$information->id.'/public') ?>">
+                  ... Read more
                 </a>
               </div>
             </div>
