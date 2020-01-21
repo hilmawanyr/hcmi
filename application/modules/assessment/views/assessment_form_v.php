@@ -23,8 +23,7 @@
 	            </a>
 
 	            <!-- {{-- submit button just show if user is participant --}} -->
-	            <?php if($sess_login['group'] == 3 && $sess_login['level'] == 2) : ?>
-	                <!-- {{-- check whether form has submited or no --}} -->
+	            <!-- <?php if($sess_login['group'] == 3 && $sess_login['level'] == 2) : ?>
 	                <?php if ($isSubmited > 0) : ?>
 	                    <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
 	                        <i class="fa fa-check"></i> Form has submitted
@@ -47,7 +46,69 @@
                             </a>
 	                    <?php endif; ?>
 	                <?php endif; ?>
-	            <?php endif; ?>
+	            <?php endif; ?> -->
+    
+                <!-- submit button just for participant user -->
+                <?php if ($sess_login['group'] == 3) {
+                    // as asistant manager and has submited
+                    if ($sess_login['level'] == 1 && $isSubmited > 0) { ?>
+                        <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
+                            <i class="fa fa-check"></i> Form has submitted
+                        </button>
+                        
+                    <!-- as asistant manager and not submited yet -->
+                    <?php } elseif ($sess_login['level'] == 1 && $isSubmited < 1) { ?>
+                        <?php if ($statementAmount == 0 && $completeAssessment == 0) : ?>
+                            <button type="button" class="btn btn-warning pull-right" onclick="alert('There\'s no competency for this job title!')">
+                                <i class="fa fa-check"></i> Submit Form
+                            </button>
+                        <?php elseif ($statementAmount != $completeAssessment) : ?>
+                            <button type="button" class="btn btn-warning pull-right" onclick="alert('Please complete the form before submit!')">
+                                <i class="fa fa-check"></i> Submit Form
+                            </button>
+                        <?php else : ?>
+                            <a 
+                                href="<?= base_url('submit_form/'.$jobTitleName->id) ?>" 
+                                class="btn btn-warning pull-right" 
+                                onclick="return confirm('Dengan ini anda menyatakan bahwa penilaian yang dilakukan adalah benar. Anda Yakin?')">
+                                <i class="fa fa-check"></i> Submit Form
+                            </a>
+                        <?php endif; ?>
+
+                    <!-- as manager and not submited yet-->
+                    <?php } elseif ($sess_login['level'] == 2 && $submitStatus == 1) { ?>
+                        <a 
+                            href="<?= base_url('submit_form/'.$jobTitleName->id) ?>" 
+                            class="btn btn-warning pull-right" 
+                            onclick="return confirm('Dengan ini anda menyatakan bahwa penilaian yang dilakukan adalah benar. Anda Yakin?')">
+                            <i class="fa fa-check"></i> Submit Form
+                        </a>
+
+                    <!-- as manager and have submited -->
+                    <?php } elseif ($sess_login['level'] == 2 && $submitStatus == 2) { ?>
+                        <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
+                            <i class="fa fa-check"></i> Form has submitted
+                        </button>
+                    
+                    <!-- as GM and not submitted yet -->
+                    <?php } elseif ($sess_login['level'] == 3 && $submitStatus == 2) { ?>
+                        <a 
+                            href="<?= base_url('submit_form/'.$jobTitleName->id) ?>" 
+                            class="btn btn-warning pull-right" 
+                            onclick="return confirm('Dengan ini anda menyatakan bahwa penilaian yang dilakukan adalah benar. Anda Yakin?')">
+                            <i class="fa fa-check"></i> Submit Form
+                        </a>
+                    
+                    <!-- as GM and have submitted yet -->
+                    <?php } elseif ($sess_login['level'] == 3 && $submitStatus == 2) { ?>
+                        <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
+                            <i class="fa fa-check"></i> Form has submitted
+                        </button>
+
+                    <?php } ?>
+                        
+                <?php } ?>
+
 	            <hr>
                 <?php $this->load->view('template/action_message'); ?>
 				<table class="table table-hover table-bordered">
@@ -62,6 +123,7 @@
                                     class="header_competency"
                                     colspan="2" 
                                     data-toggle="modal" 
+                                    width="300"
                                     data-target="#descriptionCompetency" 
                                     onclick="showCompetencyDescription(<?= $dictlist->id ?>)"
                                 >
@@ -112,10 +174,73 @@
 
                                 <?php foreach ($dictionary->result() as $dicts) : ?>
                                 <!-- {{-- button edit poin just show if user is assessment participant --}} -->
-                                <?php if ($sess_login['group'] == 3 && $sess_login['level'] == 2) : ?>
+                                <?php if ($sess_login['group'] == 3) : ?>
                                 <!-- {{-- cannot edit poin when form has submitted --}} -->
                                 <td style="text-align:center">
+    
+                                    <!-- if login as asistant manager -->
+                                    <?php if ($sess_login['group'] == 3 && $sess_login['level'] == 1) {
+                                        if ($isSubmited < 1) { ?>
+                                            <button 
+                                                class='btn btn-sm btn-default' 
+                                                type="button" 
+                                                title='input nilai' 
+                                                data-toggle='modal' 
+                                                data-target='#addModal' 
+                                                onclick="loadCompetency('<?= $dicts->skill_id ?>','<?= $employe->nik ?>','<?= $employe->job_title_id ?>')">
+                                                <i class='fa fa-pencil'></i>
+                                            </button>
 
+                                        <?php } else { ?>
+                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+
+                                        <?php } ?>
+                                    
+                                    <!-- if login as manager -->
+                                    <?php } elseif ($sess_login['group'] == 3 && $sess_login['level'] == 2) {
+                                        if ($submitStatus == 1) { ?>
+                                            <button 
+                                                class='btn btn-sm btn-default' 
+                                                type="button" 
+                                                title='input nilai' 
+                                                data-toggle='modal' 
+                                                data-target='#addModal' 
+                                                onclick="loadCompetency('<?= $dicts->skill_id ?>','<?= $employe->nik ?>','<?= $employe->job_title_id ?>')">
+                                                <i class='fa fa-pencil'></i>
+                                            </button>
+
+                                        <?php } else { ?>
+                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+
+                                        <?php } ?>
+                                    
+                                    <!-- if login as GM -->
+                                    <?php } elseif ($sess_login['group'] == 3 && $sess_login['level'] == 3) {
+                                        if ($submitStatus == 2) { ?>
+                                            <button 
+                                                class='btn btn-sm btn-default' 
+                                                type="button" 
+                                                title='input nilai' 
+                                                data-toggle='modal' 
+                                                data-target='#addModal' 
+                                                onclick="loadCompetency('<?= $dicts->skill_id ?>','<?= $employe->nik ?>','<?= $employe->job_title_id ?>')">
+                                                <i class='fa fa-pencil'></i>
+                                            </button>
+
+                                        <?php } else { ?>
+                                                <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            
+                                        <?php } ?>
+                                    <?php } ?>
+                                    
+                                    <!-- before v.0.0.1 -->
+                                    <!--
                                     <?php if ($isSubmited > 0) : ?>
                                     <button class='btn btn-sm btn-default' type="button" title='input nilai'>
                                         <i class='fa fa-edit'></i>
@@ -125,13 +250,13 @@
                                     <button class='btn btn-sm btn-default' type="button" title='input nilai' data-toggle='modal' data-target='#addModal' onclick="loadCompetency('<?= $dicts->skill_id ?>','<?= $employe->nik ?>','<?= $employe->job_title_id ?>')">
                                         <i class='fa fa-pencil'></i>
                                     </button>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
 
                                 </td>
                                 <!-- {{-- if user login is admin/PA, show detail poin --}} -->
                                 <?php elseif ($sess_login['group'] == 1 || $sess_login['group'] == 2) : ?>
                                 <td style="text-align:center">
-                                    <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>')" title="Lihat detail nilai">
+                                    <button class="btn btn-sm" type="button" data-toggle="modal" data-target="#detailPoin" onclick="loadDetailPoin('<?= $dicts->skill_id ?>','<?=$employe->nik ?>','<?= $employe->job_title_id ?>')" title="Lihat detail nilai">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </td>
@@ -265,8 +390,8 @@
         $('#field-poin').load(location.origin + '/' + pathArray[1] + '/nik/'+nik+'/jobtitle/'+job_id+'/competency/'+skill_id+'/assessment');
     }
 
-    function loadDetailPoin(skill_id,nik) {
-        $('#detailpoin-content').load(location.origin + '/' + pathArray[1] +'/assessment/'+skill_id+'/competency/'+nik+'/nik');
+    function loadDetailPoin(skill_id,nik,jobid) {
+        $('#detailpoin-content').load(location.origin + '/' + pathArray[1] +'/assessment/'+skill_id+'/competency/'+nik+'/nik/'+jobid+'/jobid');
     }
 
     function showCompetencyDescription($id) {

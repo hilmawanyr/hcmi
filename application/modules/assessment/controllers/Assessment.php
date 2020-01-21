@@ -74,6 +74,12 @@ class Assessment extends CI_Controller {
 										->get('assessment_validations')
 										->num_rows();
 
+		if ($data['isSubmited'] > 0) {
+			$data['submitStatus'] = $this->db->where('code', 'AF-'.$jobtitle.'-'.$data['active_year'])->get('assessment_validations')->row()->is_valid;
+		} else {
+			$data['submitStatus'] = 0;
+		}
+
 		/** then check number of assessment per job title
          * and compare with number of complete assessment
          * to get the comparison which will be use
@@ -191,13 +197,17 @@ class Assessment extends CI_Controller {
         });
 
         if (count($checkEmptyArray) < 4) {
-        	$this->session->set_flashdata('fail_save_data', 'Data not saved. Only one poin per competency is allow to assesst!');
+        	$this->session->set_flashdata('fail_save_data', 'Gagal menyimpan data! Hanya boleh mengisi satu pernyataan');
 			redirect(base_url('form/'.$this->input->post('job')));
         }
         // prevent end
 
         for ($i=0; $i < $inputamount; $i++) {
-
+        	// prevent poin that bigger than 5
+        	if ($this->input->post('nilai_mentah')[$i] > 5) {
+        		$this->session->set_flashdata('fail_save_data', 'Gagal menyimpan data! Nilai tidak boleh lebih dari 5');
+				redirect(base_url('form/'.$this->input->post('job')));
+        	}
             // compulate data in array 2 dimension
             $poin[] = [$this->input->post('nilai_mentah')[$i],$this->input->post('skill_id')[$i]];
         }
@@ -263,9 +273,25 @@ class Assessment extends CI_Controller {
      */
     public function submit_form(int $jobtitleId) : void
     {
+    	// set validation flag
+    	if ($this->group == 3 && $this->level == 1) {
+    		$flag = 1; // for asistant manager
+    	} elseif($this->group == 3 && $this->level == 2) {
+    		$flag = 2; // for manager
+    	} elseif ($this->group == 3 && $this->level == 3) {
+    		$flag = 3; // for GM
+    	}
         // get active year of assessment
         $activeyear = get_active_year();
-        $this->db->insert('assessment_validations', ['code' => 'AF-'.$jobtitleId.'-'.$activeyear, 'is_valid' => 1]);
+
+        // is validation exist ?
+        $isValidationExist = $this->db->where('code', 'AF-'.$jobtitleId.'-'.$activeyear)->get('assessment_validations')->num_rows();
+
+        if ($isValidationExist > 0) {
+        	$this->db->where('code', 'AF-'.$jobtitleId.'-'.$activeyear)->update('assessment_validations', ['is_valid' => $flag]);
+        } else {
+        	$this->db->insert('assessment_validations', ['code' => 'AF-'.$jobtitleId.'-'.$activeyear, 'is_valid' => $flag]);	
+        }
 
         redirect(base_url('form/'.$jobtitleId));
     }
@@ -300,13 +326,27 @@ class Assessment extends CI_Controller {
 	 * @param string $nik
 	 * @return void
 	 */
-	public function see_poin(int $skillId, string $nik) : void
+	public function see_poin(int $skillId, string $nik, int $jobId) : void
     {
-        $data['dictionary']= $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
-        $data['nik']       = $nik;
-        $data['poin']      = $this->assessment->get_poin($skillId, $nik);
+        // $data['dictionary']= $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
+        // $data['nik']       = $nik;
+        // $data['poin']      = $this->assessment->get_poin($skillId, $nik);
 
-        $this->load->view('assessment_modal_view_poin', $data);
+        // $this->load->view('assessment_modal_view_poin', $data);
+
+        $activeYear = get_active_year();
+        $data['dict'] = $skillId;
+        $data['nik'] = $nik;
+        $data['job'] = $jobId;
+
+        $competency = $this->assessment->get_competency_for_assessment($nik, $jobId, $skillId, $activeYear);
+
+        $data['dictionary'] = $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
+        
+        // get employe name
+        $data['employname'] = $this->db->where('nik', $nik)->get('employes')->row();
+        $data['competency'] = $competency;
+        $this->load->view('assessment_modal_view_poin2', $data);
     }
 
     /**

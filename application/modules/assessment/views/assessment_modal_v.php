@@ -1,6 +1,7 @@
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <h4 class="modal-title" id="title-mod"><?= $dictionary->name_id ?> | <?= $employname->name ?></h4>
+    <h5><?= $dictionary->description ?></h5>
 </div>
 <div class="modal-body">
     <div class="row">
