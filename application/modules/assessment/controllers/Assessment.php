@@ -49,6 +49,8 @@ class Assessment extends CI_Controller {
 	{
 		$data['active_year'] = get_active_year();
 
+		$data['sectionId'] = get_section_by_jobtitle($jobtitle);
+
 		$get_employes = $this->db->where('job_title_id', $jobtitle)->get('employes');
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 

@@ -23,6 +23,15 @@
 		return $CI->db->get()->row()->section_id;
 	}
 
+	function get_section_by_jobtitle(int $id) : int
+	{
+		$CI =& get_instance();
+		$CI->db->select('section');
+		$CI->db->from('job_titles');
+		$CI->db->where('id', $id);
+		return $CI->db->get()->row()->section;
+	}
+
 	/**
 	 * Get name of department by its ID department
 	 * @param int $id
