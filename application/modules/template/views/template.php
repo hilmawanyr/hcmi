@@ -115,6 +115,7 @@
                 <li><a href="<?= base_url('assessment_year') ?>"><i class="fa fa-circle-o"></i> Assessment Year</a></li>
                 <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
                 <li><a href="<?= base_url('information') ?>"><i class="fa fa-circle-o"></i> Information</a></li>
+                <li><a href="<?= base_url('employes') ?>"><i class="fa fa-circle-o"></i> Employee</a></li>
               </ul>
             </li>
           <?php endif; ?>

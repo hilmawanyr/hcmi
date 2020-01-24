@@ -123,3 +123,9 @@ $route['information/(:num)/delete'] = 'manage/information_board/delete/$1';
 $route['information/(:num)/public'] = 'manage/information_board/public_information/$1';
 $route['information/read_all'] = 'manage/information_board/read_all';
 $route['information/all'] = 'manage/information_board/list_informations';
+
+$route['employes'] = 'manage/employes';
+$route['employe/(:any)/detail'] = 'manage/employes/detail/$1';
+$route['employe/store'] = 'manage/employes/store_preparation';
+$route['employe/(:num)/section/(:num)/position'] = 'manage/employes/get_jobtitle/$1/$2';
+$route['employe/(:any)/set_status'] = 'manage/employes/set_employe_status/$1';

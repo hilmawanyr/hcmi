@@ -107,6 +107,22 @@ class Manage_model extends CI_Model {
 
 		return $informations;
 	}
+
+	/**
+	 * Get all employes
+	 * 
+	 * @return object
+	 */
+	public function get_employes() : object
+	{
+		$this->db->select('a.*, b.name as section, c.name as position, d.name as jobtitle');
+		$this->db->from('employes a');
+		$this->db->join('sections b', 'a.section_id = b.id');
+		$this->db->join('positions c', 'a.position_id = c.id');
+		$this->db->join('job_titles d', 'a.job_title_id = d.id');
+		// $this->db->where('a.deleted_at');
+		return $this->db->get();
+	}
 	
 }
 
