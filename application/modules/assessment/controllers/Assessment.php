@@ -190,15 +190,16 @@ class Assessment extends CI_Controller {
      */
     public function insert_poin() : void
     {
-    	$id_form = $this->input->post('idform');
-        $inputamount = count($this->input->post('nilai_mentah'));
+        $id_form        = $this->input->post('idform');
+        $inputamount    = count($this->input->post('nilai_mentah'));
+        $limitEmptyPoin = $inputamount-1;
 
         // prevent if poin that inputed > 1
         $checkEmptyArray = array_filter($this->input->post('nilai_mentah'), function ($val) {
         	return $val == "";
         });
 
-        if (count($checkEmptyArray) < 4) {
+        if (count($checkEmptyArray) < $limitEmptyPoin) {
         	$this->session->set_flashdata('fail_save_data', 'Gagal menyimpan data! Hanya boleh mengisi satu pernyataan');
 			redirect(base_url('form/'.$this->input->post('job')));
         }

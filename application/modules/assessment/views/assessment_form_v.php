@@ -63,7 +63,7 @@
 
                             <?php for ($i = 0; $i < count($dictionary->result()); $i++) : ?>
                                 <!-- edit poin just show if user is assessment participant -->
-                                <?php if($sess_login['group'] == 3 && $sess_login['level'] == 2) : ?>
+                                <?php if($sess_login['group'] == 3 && ($sess_login['level'] == 2 || $sess_login['level'] == 1)) : ?>
                                     <th style="text-align:center; position: sticky; top: 150px;">Isi Nilai</th>
                                 <!-- see detail poin show if user admin/PA -->
                                 <?php elseif ($sess_login['group'] == 1 || $sess_login['group'] == 2) : ?>
