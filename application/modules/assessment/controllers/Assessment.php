@@ -308,21 +308,22 @@ class Assessment extends CI_Controller {
      */
     public function export_assessment_to_excel(int $jobtitleId)
     {
+        $this->load->library('excel');
         // active assessment year
-        $data['activeyear']    = get_active_year();
-
-        // get job title name
-        $data['jobtitlename']  = $this->db->where('id', $jobtitleId)->get('job_titles')->row();
-
-        // load competency base on job title
-        $data['dictionary']    = $this->assessment->get_assessment_matrix($jobtitleId);
-
-        $data['numberofcolumn']= count($data['dictionary']) + 3;
-
-        // get emlployee base on job title
-        $data['employee']      = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
+        $data['activeyear']     = get_active_year();
         
-        $this->load->view('excel_assessment_form', $data);
+        // get job title name
+        $data['jobtitlename']   = $this->db->where('id', $jobtitleId)->get('job_titles')->row();
+        
+        // load competency base on job title
+        $data['dictionary']     = $this->assessment->get_assessment_matrix($jobtitleId);
+        
+        $data['numberofcolumn'] = count($data['dictionary']) + 3;
+        
+        // get emlployee base on job title
+        $data['employee']       = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
+        
+        $this->load->view('excel_assessment_form2', $data);
     }
     
 	/**
