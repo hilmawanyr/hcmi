@@ -90,3 +90,18 @@ if ($sess_login['level'] == 1) {
         
     <?php } ?>
 <?php } ?>
+
+<!-- GM -->
+<?php if ($sess_login['level'] == 99) { ?>
+    <td style="text-align: center">
+        <button 
+            class="btn btn-sm" 
+            type="button" 
+            data-toggle="modal" 
+            data-target="#detailPoin" 
+            onclick="loadDetailPoin('<?= $skill ?>','<?=$nik ?>','<?= $jobtitle ?>')" 
+            title="Lihat detail nilai">
+            <i class="fa fa-eye"></i>
+        </button>
+    </td>
+<?php } ?>

@@ -23,11 +23,12 @@
 	            </a>
     
                 <!-- submit button just for participant user -->
-                <?php if ($sess_login['group'] == 3) {
+                <?php if ($sess_login['group'] == 3 || ($sess_login['group'] == 2 && $sess_login['level'] == 2)) {
                     $dataButton = [
-                        'statementAmount' => $statementAmount,
+                        'statementAmount'    => $statementAmount,
                         'completeAssessment' => $completeAssessment,
-                        'jobtitle' => $jobTitleName->id
+                        'submitStatus'       => $submitStatus,
+                        'jobtitle'           => $jobTitleName->id
                     ];
                     $this->load->view('_partial/submit_button_v', $dataButton);
                 } ?>
@@ -108,7 +109,8 @@
                                         'nik'          => $employe->nik,
                                         'jobtitle'     => $employe->job_title_id,
                                         'isSubmited'   => $isSubmited,
-                                        'submitStatus' => $submitStatus
+                                        'submitStatus' => $submitStatus,
+                                        'sectionId'    => $sectionId
                                     ];
 
                                     // if login as participant
@@ -117,11 +119,11 @@
 
                                     // if login as admin
                                     elseif ($sess_login['group'] == 1) :
-                                        $this->load->view('_partial/submit_button_participant_v', $data);
+                                        $this->load->view('_partial/button_poin_admin_v', $data);
 
                                     // if HR but not in his section
                                     elseif ($sess_login['group'] == 2 && $sess_login['section'] != $sectionId) :
-                                        $this->load->view('_partial/submit_button_participant_v', $data);
+                                        $this->load->view('_partial/button_poin_admin_v', $data);
 
                                     // if HR and in his section
                                     elseif ($sess_login['group'] == 2 && $sess_login['section'] == $sectionId) :

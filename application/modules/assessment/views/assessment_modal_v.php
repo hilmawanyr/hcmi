@@ -61,30 +61,40 @@
         $('.input-nilai').prop('readonly',true);
         $(this).removeAttr('readonly');
 
-        var nilai0 = document.getElementsByName('nilai_mentah[]')[0].value;
-        var nilai1 = document.getElementsByName('nilai_mentah[]')[1].value;
-        var nilai2 = document.getElementsByName('nilai_mentah[]')[2].value;
-        var nilai3 = document.getElementsByName('nilai_mentah[]')[3].value;
-        var nilai4 = document.getElementsByName('nilai_mentah[]')[4].value;
+        <?php for ($n=0; $n < count($competency); $n++) {
+            echo "var nilai".$n." = document.getElementsByName('nilai_mentah[]')[".$n."].value;";
+         } ?>
+        
+        // var nilai1 = document.getElementsByName('nilai_mentah[]')[1].value;
+        // var nilai2 = document.getElementsByName('nilai_mentah[]')[2].value;
+        // var nilai3 = document.getElementsByName('nilai_mentah[]')[3].value;
+        // var nilai4 = document.getElementsByName('nilai_mentah[]')[4].value;
 
-        if(nilai0 == "" && nilai1 == "" && nilai2 == "" && nilai3 == "" && nilai4 == "") {
+        if($(this).val() === "") {
             $('.input-nilai').removeAttr('readonly');
             $('#submit').hide('fast');
         } else {
-            $('.input-nilai').prop('readonly',true);
+            $(this).attr('readonly',true);
             $(this).removeAttr('readonly');
             $('#submit').show('fast');
         }
 
-        if (nilai0 == 0 && nilai1 == 0 && nilai2 == 0 && nilai3 == 0 && nilai4 == 0) {
+        if ($(this).val() == 0) {
             $('#submit').hide();
         } else {
             $('#submit').show('fast');
         }
 
-        if(nilai0 > 5 || nilai1 > 5 || nilai2 > 5 || nilai3 > 5 || nilai4 > 5) {
+        if($(this).val() > 5) {
             $(this).val('');
             alert('Nilai maksimal adalah 5!');
+            $('.input-nilai').removeAttr('readonly');
+            $('#submit').hide('fast');
+        }
+
+        if($(this).val() < 1 && $(this).val() !== '') {
+            $(this).val('');
+            alert('Nilai minimal adalah 1!');
             $('.input-nilai').removeAttr('readonly');
             $('#submit').hide('fast');
         }

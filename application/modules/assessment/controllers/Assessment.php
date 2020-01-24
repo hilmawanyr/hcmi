@@ -282,7 +282,9 @@ class Assessment extends CI_Controller {
     		$flag = 2; // for manager
     	} elseif ($this->group == 3 && $this->level == 3) {
     		$flag = 3; // for GM
-    	}
+    	} elseif ($this->group == 2 && $this->level == 2) {
+            $flag = 2; // for manager in HR
+        }
         // get active year of assessment
         $activeyear = get_active_year();
 
