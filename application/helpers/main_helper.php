@@ -271,18 +271,15 @@
 	 */
 	function get_assessment_grade(int $poin = null) : string
 	{
-		if ($poin > 0 && $poin < 101) {
-			$grade = '1';
-		} elseif ($poin > 100 && $poin < 201) {
-			$grade = '2';
-		} elseif ($poin > 200 && $poin < 301) {
-			$grade = '3';
-		} elseif ($poin > 300 && $poin < 401) {
-			$grade = '4';
-		} elseif ($poin > 400 && $poin < 501) {
-			$grade = '5';
-		} else {
-			$grade = '-';
+		$CI =& get_instance();
+		$CI->load->model('assessment_model','assessment');
+		$getRange = $CI->assessment->get_poin_range();
+
+		foreach ($getRange as $keys => $value) {
+			if (in_array((double)$poin, range((double)$value->bottom_limit, (double)$value->top_limit, 0.1))) {
+				$poinGrade = $value->grade;
+				return $poinGrade;
+			}
 		}
-		return $grade;
+		return '-';
 	}

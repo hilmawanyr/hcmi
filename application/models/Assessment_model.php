@@ -233,6 +233,16 @@ class Assessment_model extends CI_Model {
 									AND assessment_form_questions.poin IS NOT NULL ")->result();
         return $poin;
 	}
+
+	/**
+	 * Get poin range
+	 * 
+	 * @return array
+	 */
+	public function get_poin_range() : array
+	{
+		return $this->db->get('poin_grades')->result();		
+	}
 }
 
 /* End of file Assessment.php */
