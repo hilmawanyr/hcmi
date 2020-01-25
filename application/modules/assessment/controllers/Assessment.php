@@ -311,6 +311,9 @@ class Assessment extends CI_Controller {
         $this->load->library('excel');
         // active assessment year
         $data['activeyear']     = get_active_year();
+
+        // job titlle id
+        $data['jobtitle'] = $jobtitleId;
         
         // get job title name
         $data['jobtitlename']   = $this->db->where('id', $jobtitleId)->get('job_titles')->row();

@@ -7,33 +7,38 @@ $BStyle = array(
     )
   )
 );
-//border
-$excel->getActiveSheet()->getStyle('A1:H'.(count($employee)+2).'')->applyFromArray($BStyle);
 
 $excel->setActiveSheetIndex(0);
+
+$excel->getActiveSheet()->setCellValue('A1', 'AF-'.$jobtitle.'-'.$activeyear);
+
+//border
+$excel->getActiveSheet()->getStyle('A2:H'.(count($employee)+3).'')->applyFromArray($BStyle);
+$excel->getActiveSheet()->getStyle('A1')->applyFromArray($BStyle);
+
 //name the worksheet
 $excel->getActiveSheet()->setTitle('Assessment Form');
 //header
-$excel->getActiveSheet()->setCellValue('A1', 'FORM PENILAIAN '.'| '.$jobtitlename->name.' | Tahun '.$activeyear);
-$excel->getActiveSheet()->setCellValue('A2', 'NIK');
-$excel->getActiveSheet()->setCellValue('B2', 'NAMA');
+$excel->getActiveSheet()->setCellValue('A2', 'FORM PENILAIAN '.'| '.$jobtitlename->name.' | Tahun '.$activeyear);
+$excel->getActiveSheet()->setCellValue('A3', 'NIK');
+$excel->getActiveSheet()->setCellValue('B3', 'NAMA');
 
 $arrayColumn      = ['A','B','C','D','E','F','G','H','I','J'];
 $initColumn       = "C";
 $dictionaryNumber = count($dictionary);
 
 foreach ($dictionary as $dict) {
-	$excel->getActiveSheet()->setCellValue($initColumn.'2', $dict->name_id);
-	$excel->getActiveSheet()->setCellValue($arrayColumn[$dictionaryNumber+2].'2', 'Nilai Absolut');
+	$excel->getActiveSheet()->setCellValue($initColumn.'3', $dict->name_id);
+	$excel->getActiveSheet()->setCellValue($arrayColumn[$dictionaryNumber+2].'3', 'Nilai Absolut');
 	$initColumn++;
 }
 
-$initColumn2 = "C";
-$num = 3;
+$num = 4;
 foreach ($employee as $employe) {
 	$excel->getActiveSheet()->setCellValue('A'.$num, $employe->nik);
 	$excel->getActiveSheet()->setCellValue('B'.$num, $employe->name);
 
+	$initColumn2 = "C";
 	foreach ($dictionary as $dicts) {
 		// get assessment form to get its ID
         $assessmentForm = $this->db->where('nik', $employe->nik)->like('code',$activeyear,'before')->get('assessment_forms')->row();
@@ -70,7 +75,7 @@ foreach ($employee as $employe) {
 	$num++;
 }
 
-$excel->getActiveSheet()->mergeCells('A1:H1');
+$excel->getActiveSheet()->mergeCells('A2:H2');
 
 //align
 $style = array(
@@ -79,7 +84,7 @@ $style = array(
     )
 );
 
-$excel->getActiveSheet()->getStyle("A1:H1")->applyFromArray($style);
+$excel->getActiveSheet()->getStyle("A2:H2")->applyFromArray($style);
 // $excel->getActiveSheet()->getStyle("A6:N7")->applyFromArray($style);
 // //$excel->getDefaultStyle()->applyFromArray($style);
 
