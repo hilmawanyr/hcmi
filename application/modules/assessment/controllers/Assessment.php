@@ -254,7 +254,14 @@ class Assessment extends CI_Controller {
                 $const = $const + ($val->poin * $val->weight);
             }
             $totalPoin = $const;
-            $this->db->where('id', $this->input->post('idform'))->update('assessment_forms',['total_poin' => $totalPoin, 'audit_by' => $this->session->userdata('login_session')['nik']]);
+            $grade = get_assessment_grade($totalPoin);
+            $this->db->where('id', $this->input->post('idform'))
+                    ->update('assessment_forms',
+                        [
+                            'total_poin' => $totalPoin, 
+                            'poin_grade' => $grade,
+                            'audit_by'   => $this->session->userdata('login_session')['nik']
+                        ]);
         /**
          * but if total_poin in assessment_forms has filled cause intentionally submit
          * update it to NULL
