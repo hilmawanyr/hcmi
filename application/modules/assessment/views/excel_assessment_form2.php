@@ -10,7 +10,7 @@ $BStyle = array(
 
 $excel->setActiveSheetIndex(0);
 
-$excel->getActiveSheet()->setCellValue('A1', 'AF-'.$jobtitle.'-'.$activeyear);
+$excel->getActiveSheet()->setCellValue('A1', ' Form No : AF-'.$jobtitle.'-'.$activeyear);
 
 //border
 $excel->getActiveSheet()->getStyle('A2:H'.(count($employee)+3).'')->applyFromArray($BStyle);
@@ -85,6 +85,9 @@ $style = array(
 );
 
 $excel->getActiveSheet()->getStyle("A2:H2")->applyFromArray($style);
+
+$excel->getActiveSheet()->mergeCells('A1:B1');
+$excel->getActiveSheet()->getStyle("A1:B1")->getFont()->setBold(true);
 // $excel->getActiveSheet()->getStyle("A6:N7")->applyFromArray($style);
 // //$excel->getDefaultStyle()->applyFromArray($style);
 
