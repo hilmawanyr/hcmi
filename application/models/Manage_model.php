@@ -119,8 +119,7 @@ class Manage_model extends CI_Model {
 		$this->db->from('employes a');
 		$this->db->join('sections b', 'a.section_id = b.id');
 		$this->db->join('positions c', 'a.position_id = c.id');
-		$this->db->join('job_titles d', 'a.job_title_id = d.id');
-		// $this->db->where('a.deleted_at');
+		$this->db->join('job_titles d', 'a.job_title_id = d.id', 'left');
 		return $this->db->get();
 	}
 	
