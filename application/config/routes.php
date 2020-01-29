@@ -53,6 +53,8 @@ $route['default_controller'] = 'auth/authentication';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+$route['manual_guide'] = 'download/manual_guide';
+
 $route['attemptlogin'] = 'auth/authentication/attempt_login';
 $route['logout'] = 'auth/authentication/logout';
 $route['changepassword'] = 'auth/authentication/edit_pass';

@@ -70,7 +70,7 @@
             <i class="fa fa-check"></i> Submit Form
         </a>
     <!-- for HR and in his section -->
-    <?php } elseif ($sess_login['group'] == 2 && $sess_login['section'] == $sectionId) { ?>
+    <?php } elseif ($sess_login['group'] == 2 && $sess_login['department'] == $department) { ?>
         <a 
             href="<?= base_url('submit_form/'.$jobtitle) ?>" 
             class="btn btn-warning pull-right" 
@@ -80,14 +80,14 @@
     <?php } ?>
 
 <!-- as GM and have submitted yet -->
-<?php } elseif ($sess_login['level'] == 3 && $submitStatus == 2) { ?>
+<?php } elseif ($sess_login['level'] == 3 && $submitStatus > 2) { ?>
     <!-- for non HR -->
     <?php if ($sess_login['group'] != 2) { ?>
         <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
             <i class="fa fa-check"></i> Form has submitted
         </button>
     <!-- for HR and in his section -->
-    <?php } elseif ($sess_login['group'] == 2 && $sess_login['section'] == $sectionId) { ?>
+    <?php } elseif ($sess_login['group'] == 2 && $sess_login['department'] == $department) { ?>
         <button type="button" class="btn btn-success pull-right" onclick="alert('Form has submitted!')">
             <i class="fa fa-check"></i> Form has submitted
         </button>

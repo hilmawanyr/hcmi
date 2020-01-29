@@ -62,7 +62,7 @@ if ($sess_login['level'] == 1) {
 
 <!-- GM -->
 <?php if ($sess_login['level'] == 3) {
-    if ($submitStatus >1) { ?>
+    if ($submitStatus == 2 && $department == $sess_login['department']) { ?>
         <td style="text-align: center">
             <button 
                 class='btn btn-sm btn-default' 
@@ -75,7 +75,7 @@ if ($sess_login['level'] == 1) {
             </button>
         </td>
 
-    <?php } else { ?>
+    <?php } elseif ($submitStatus > 2 && $department == $sess_login['department']) { ?>
         <td style="text-align: center">
             <button 
                 class="btn btn-sm" 
@@ -88,10 +88,22 @@ if ($sess_login['level'] == 1) {
             </button>
         </td>
         
+    <?php } else { ?>
+        <td style="text-align: center">
+            <button 
+                class="btn btn-sm" 
+                type="button" 
+                data-toggle="modal" 
+                data-target="#detailPoin" 
+                onclick="loadDetailPoin('<?= $skill ?>','<?=$nik ?>','<?= $jobtitle ?>')" 
+                title="Lihat detail nilai">
+                <i class="fa fa-eye"></i>
+            </button>
+        </td>
     <?php } ?>
 <?php } ?>
 
-<!-- GM -->
+<!-- admin -->
 <?php if ($sess_login['level'] == 99) { ?>
     <td style="text-align: center">
         <button 

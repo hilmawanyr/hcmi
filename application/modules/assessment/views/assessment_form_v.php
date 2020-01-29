@@ -27,14 +27,15 @@
                         data-target="#uploadForm" >
 	                <i class="fa fa-upload"></i> Upload Form
 	            </a>
-    
+
                 <!-- submit button just for participant user -->
-                <?php if ($sess_login['group'] == 3 || ($sess_login['group'] == 2 && $sess_login['level'] == 2)) {
+                <?php if ($sess_login['group'] == 3 || $sess_login['group'] == 2) {
                     $dataButton = [
                         'statementAmount'    => $statementAmount,
                         'completeAssessment' => $completeAssessment,
                         'submitStatus'       => $submitStatus,
-                        'jobtitle'           => $jobTitleName->id
+                        'jobtitle'           => $jobTitleName->id,
+                        'department'         => $department
                     ];
                     $this->load->view('_partial/submit_button_v', $dataButton);
                 } ?>
@@ -59,7 +60,7 @@
                             <?php endforeach; ?>
 
                             <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nilai Absolut</th>
-                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Grade</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Level</th>
                         </tr>
                         <div class="tableFicHeadR2">
                         <tr>
@@ -113,7 +114,8 @@
                                         'jobtitle'     => $employe->job_title_id,
                                         'isSubmited'   => $isSubmited,
                                         'submitStatus' => $submitStatus,
-                                        'sectionId'    => $sectionId
+                                        'sectionId'    => $sectionId,
+                                        'department'   => $department
                                     ];
 
                                     // if login as participant
@@ -130,6 +132,10 @@
 
                                     // if HR and in his section
                                     elseif ($sess_login['group'] == 2 && $sess_login['section'] == $sectionId) :
+                                        $this->load->view('_partial/button_poin_hr_v', $data);
+
+                                    // if HR and in his section
+                                    elseif ($sess_login['group'] == 2 && $sess_login['level'] == 3 && $sess_login['department'] == $department) :
                                         $this->load->view('_partial/button_poin_hr_v', $data);
                                         
                                     endif;

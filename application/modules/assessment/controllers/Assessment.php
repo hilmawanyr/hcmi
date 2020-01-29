@@ -51,6 +51,8 @@ class Assessment extends CI_Controller {
 
 		$data['sectionId'] = get_section_by_jobtitle($jobtitle);
 
+		$data['department'] = get_department_by_section($data['sectionId'])->id;
+
 		$get_employes = $this->db->where('job_title_id', $jobtitle)->get('employes');
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
@@ -296,6 +298,8 @@ class Assessment extends CI_Controller {
     		$flag = 3; // for GM
     	} elseif ($this->group == 2 && $this->level == 2) {
             $flag = 2; // for manager in HR
+        } elseif ($this->group == 2 && $this->level == 3) {
+        	$flag = 3; // for manager in HR
         }
         // get active year of assessment
         $activeyear = get_active_year();

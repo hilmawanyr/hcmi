@@ -49,16 +49,16 @@
 	/**
 	 * Get name of department by its section ID
 	 * @param int $id
-	 * @return string
+	 * @return object
 	 */
-	function get_department_by_section(int $id) : string
+	function get_department_by_section(int $id) : object
 	{
 		$CI =& get_instance();
-		$CI->db->select('a.name');
+		$CI->db->select('a.name, a.id');
 		$CI->db->from('departements a');
 		$CI->db->join('sections b', 'a.id = b.dept_id');
 		$CI->db->where('b.id', $id);
-		return $CI->db->get()->row()->name;
+		return $CI->db->get()->row();
 	}
 
 	/**

@@ -135,6 +135,11 @@
           <?php endif; ?>
           <hr>
           <li>
+            <a href="<?= base_url('manual_guide') ?>">
+              <i class="fa fa-book"></i> <span>Manual Guide</span>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url('changepassword') ?>">
               <i class="fa fa-key"></i> <span>Change Password</span>
             </a>

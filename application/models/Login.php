@@ -35,9 +35,12 @@ class Login extends CI_Model {
 			a.position_id, 
 			a.job_title_id, 
 			b.group_id, 
-			b.level');
+			b.level,
+			d.id');
 		$this->db->from('employes a');
 		$this->db->join('users b', 'a.nik = b.nik');
+		$this->db->join('sections c', 'a.section_id = c.id');
+		$this->db->join('departements d', 'd.id = c.dept_id', 'left');
 		$this->db->where('a.nik', $nik);
 		return $this->db->get()->row();
 	}
