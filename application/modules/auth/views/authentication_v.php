@@ -20,40 +20,11 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="<?= base_url('assets/dist/google-font.css') ?>">
 </head>
-<body class="hold-transition">
-
-  <div class="col-md-8 bg-yellow" style="height: 100%;">
-    <div class="col-md-12">
-      <h1>
-        <b>INFORMATIONS</b>Board 
-        <!-- <a class="btn btn-success btn-xs" href="<?= base_url('information/read_all') ?>">Read all</a> -->
-      </h1>
-      
-      <ul class="timeline">
-      <?php foreach ($informations as $information)  : ?>
-        
-          <li>
-            <i class="fa fa-bell bg-blue"></i>
-            <div class="timeline-item">
-              <span class="time"><i class="fa fa-clock-o"></i> <?= $information->created_at ?></span>
-              <h3 class="timeline-header"><?= $information->title ?></h3>
-              <div class="timeline-body">
-                <?= substr($information->content, 0,400) ?> <a href="<?= base_url('information/'.$information->id.'/public') ?>">
-                  ... Read more
-                </a>
-              </div>
-            </div>
-          </li>
-          <!-- END timeline item -->
-        
-      <?php endforeach; ?>
-      </ul>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="login-box" style="margin-top: 40%">
+<body>
+  <div class="col-md-12">
+    <div class="login-box">
       <div class="login-logo">
-        <a href="<?= base_url() ?>"><b>HRIS</b>HCMI</a>
+        <a href="<?= base_url() ?>"><b>HCMI</b> | SKILL SYSTEM</a>
       </div>
       <!-- /.login-logo -->
 
