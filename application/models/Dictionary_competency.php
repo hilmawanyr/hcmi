@@ -47,6 +47,19 @@ class Dictionary_competency extends CI_Model {
 	}
 
 	/**
+	 * Get detail competency dictionary by name
+	 * @param string $name
+	 * @return object
+	 */
+	public function get_dictionary_by_name(string $name) : object
+	{
+		$this->db->where('name_id', $name);
+		$this->db->where_or('name_en', $name);
+		$this->db->where('deleted_at');
+		return $this->db->get('skill_dictionaries')->row();
+	}
+
+	/**
 	 * Get skill unit by skill dictioanry id
 	 * @param int $dictioanryId
 	 * @return array

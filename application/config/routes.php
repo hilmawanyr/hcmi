@@ -67,6 +67,7 @@ $route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
 $route['form/(:num)'] = 'assessment/form/$1';
+$route['form/upload'] = 'assessment/upload';
 $route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';
 $route['assessment/(:num)/competency/(:any)/nik/(:num)/jobid'] = 'assessment/see_poin/$1/$2/$3';
 $route['store_poin'] = 'assessment/insert_poin';

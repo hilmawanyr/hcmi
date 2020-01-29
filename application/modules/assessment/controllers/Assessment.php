@@ -90,6 +90,10 @@ class Assessment extends CI_Controller {
 		// number of statement per job title
 		$data['statementAmount'] = $isFormExist->num_rows() * $data['dictionary']->num_rows();
 
+		// value for upload form
+		$data['job_title']=$jobtitle;
+		$data['form_code']='AF-'.$jobtitle.'-'.$data['active_year'];
+
 		// number of filled assessment
 		$data['completeAssessment'] = $this->assessment->complete_assessment($jobtitle);
 		$data['employes'] = $get_employes;
@@ -374,6 +378,91 @@ class Assessment extends CI_Controller {
     {
 		$data['description'] = $this->db->where('id', $id)->get('skill_dictionaries')->row();
 		$this->load->view('competency_description_modal', $data);    	
+	}
+	
+	/**
+     * Handle import assessment form
+     */
+    public function upload()
+    {
+		$this->load->model("dictionary_competancy", "dc");
+
+		$job_title_id = $this->input->post('job_title_id');
+		$form_code = $this->input->post('form_code');
+
+		$fileName = time().$_FILES['userfile']['name'];
+		$path_upload='./assets/excel/assessment/';
+         
+        $config['upload_path'] = $path_upload; //buat folder dengan nama assets di root folder
+        $config['file_name'] = $fileName;
+        $config['allowed_types'] = '*';
+		$config['max_size'] = 10000;
+		
+		$this->load->library('upload', $config);
+         
+        if (!$this->upload->do_upload('userfile'))
+		{
+				$error = array('error' => $this->upload->display_errors());
+				die($error);
+		}
+		else
+		{
+				$media = $this->upload->data();
+
+				$this->load->library('PHPExcel');
+				$tmpfname = $media['full_path'];
+				
+				
+				
+				try {
+					$excelReader = PHPExcel_IOFactory::createReaderForFile($tmpfname);
+					$excelObj = $excelReader->load($tmpfname);
+					$worksheet = $excelObj->getSheet(0);
+					$lastRow = $worksheet->getHighestRow();
+
+					$id_form = $worksheet->getCell('A1')->getValue();
+					$nik = $worksheet->getCell('A4')->getValue();
+					
+					$k1 = $worksheet->getCell('C3')->getValue();
+					$id_k1 = $this->dc->get_dictionary_by_name($k1)->id;
+
+					$k2 = $worksheet->getCell('C4')->getValue();
+					$id_k2 = $this->dc->get_dictionary_by_name($k2)->id;
+					
+					$k3 = $worksheet->getCell('C5')->getValue();
+					$id_k3 = $this->dc->get_dictionary_by_name($k3)->id;
+
+					$k4 = $worksheet->getCell('C6')->getValue();
+					$id_k4 = $this->dc->get_dictionary_by_name($k4)->id;
+
+					$k5 = $worksheet->getCell('C7')->getValue();
+					$id_k5 = $this->dc->get_dictionary_by_name($k5)->id;
+
+					for ($row = 1; $row <= $lastRow; $row++) {
+						$letter = 'A';
+						for ($col = 1; $col <= 8; $col++ ){
+
+							if ($row >= 4 && $letter == 'C') {
+								$k = $row - 3;
+
+								$poin = $worksheet->getCell($letter.$row)->getValue();
+
+								$this->db->query("UPDATE assessment_form_questions SET poin = $poin 
+													WHERE form_id =  $id_form
+													AND skill_unit_id IN (SELECT id FROM skill_units WHERE id_dictionary = $dictionaryId)");
+								
+							}
+							
+							$letter++;
+						}
+				   	}
+					
+				} catch (\Throwable $th) {
+					die($th);
+				}
+		}
+
+		redirect(base_url('form/'.$job_title_id));
     }
 
 }

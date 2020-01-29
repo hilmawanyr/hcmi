@@ -8,7 +8,7 @@
 <section class="content-header">
 	<h3 class="box-title">Form Penilaian | <?= $jobTitleName->name ?></h3>
 	<ol class="breadcrumb">
-		<h3 class="box-title pull-right">Waktu pengisian form penilaian skill 2 - 15 Mei 2019</h3>
+		<h3 class="box-title pull-right">Waktu pengisian form penilaian skill 2 - 15 Maret 2020</h3>
 	</ol>
 </section>
 
@@ -18,8 +18,14 @@
 	<!-- /.box-header -->
 		<div class="box-body">
 			<form action="" method="">
-				<a class="btn btn-primary mr-2" href="<?= base_url('export_to_excel/'.$jobTitleName->id) ?>">
-	                <i class="fa fa-print"></i> Print Form
+            <a class="btn btn-default mr-2" href="<?= base_url('export_to_excel/'.$jobTitleName->id) ?>">
+                <i class="fa fa-file-excel-o"></i> Export to Excel 
+                </a>
+                
+                <a style="margin-left:5px;" class="btn btn-success mr-2" 
+                        data-toggle="modal" 
+                        data-target="#uploadForm" >
+	                <i class="fa fa-upload"></i> Upload Form
 	            </a>
     
                 <!-- submit button just for participant user -->
@@ -46,10 +52,7 @@
                                 <th 
                                     style="text-align:center; vertical-align: middle; cursor: pointer; width: 300px; height: 150px !important;" 
                                     class="header_competency"
-                                    colspan="2" 
-                                    data-toggle="modal" 
-                                    data-target="#descriptionCompetency" 
-                                    onclick="showCompetencyDescription(<?= $dictlist->id ?>)"
+                                    colspan="2"
                                 >
                                     <?= strtoupper($dictlist->name_id)  ?>
                                 </th>
@@ -280,6 +283,36 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" id="descriptionCompetency-content">
 
+        </div>
+    </div>
+</div>
+
+<div id="uploadForm" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="title-mod">Import Assessment Form | <?= $jobTitleName->name ?> </h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('form/upload') ?>" id="formUpload" enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                            <label for="inputFile">Import File</label>
+                            <input type="file" name="userfile" id="inputFile" required>
+                            <input type="hidden" name="job_title_id" value="<?= $job_title?>">
+                            <input type="hidden" name="form_code" value="<?= $form_code?>">
+                            <p class="help-block">Pastikan file yang di upload sesuai dengan form yg sedang aktif (<?= $jobTitleName->name ?>).</p>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" id="submit">Upload</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </form>
         </div>
     </div>
 </div>
