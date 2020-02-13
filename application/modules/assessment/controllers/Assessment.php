@@ -224,6 +224,12 @@ class Assessment extends CI_Controller {
         // get poin based on assessed competency
         $assessedCompetency = max($poin);
 
+        // set to max poin for each competency that under filled competency
+        $filledArrayIndex = array_search($assessedCompetency, $poin);
+        for ($n = 0; $n < $filledArrayIndex; $n++) {
+        	$poin[$n][0] = 5;
+        }
+
         // prevent for freak input after edit
         $dictionaryId = $this->db->where('id', $assessedCompetency[1])->get('skill_units')->row()->id_dictionary;
         // set poin to null
@@ -231,10 +237,16 @@ class Assessment extends CI_Controller {
 						WHERE form_id =  $id_form
 						AND skill_unit_id IN (SELECT id FROM skill_units WHERE id_dictionary = $dictionaryId)");
 
-        $data = ['poin' => $assessedCompetency[0]];
-        $this->db->where('form_id', $id_form);
-        $this->db->where('skill_unit_id', $assessedCompetency[1]);
-        $this->db->update('assessment_form_questions', $data);
+        for ($j = 0; $j <= $filledArrayIndex; $j++) {
+        	$data = ['poin' => $poin[$j][0]];
+	        $this->db->where('form_id', $id_form);
+	        $this->db->where('skill_unit_id', $poin[$j][1]);
+	        $this->db->update('assessment_form_questions', $data);
+        }
+        // $data = ['poin' => $assessedCompetency[0]];
+        // $this->db->where('form_id', $id_form);
+        // $this->db->where('skill_unit_id', $assessedCompetency[1]);
+        // $this->db->update('assessment_form_questions', $data);
 
         /**
          * if amount of statement for each job title is not equal
