@@ -30,13 +30,39 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    <?php 
+                        // to get only poin that inserted by assessor
+                        foreach ($competency as $items) {
+                            $collectPoin[] = $items->poin;
+                            $collectId[]   = $items->unit_question;
+                        } 
+
+                        $checkEmptyArray = array_filter($collectPoin, function ($val) {
+                            return $val == NULL;
+                        });
+                        
+                        $numberofEmptyPoin = count($checkEmptyArray);
+                        $lastPoinPosition  = count($collectPoin) - $numberofEmptyPoin;
+                        $filledPoinId      = $collectId[$lastPoinPosition-1]; 
+                    ?>
+
                     <?php $no = 1; ?>
                     <?php foreach ($competency as $items) : ?>
                     <tr>
                         <td><?= $no ?></td>
                         <td><?= $items->description ?></td>
                         <td>
-                            <input type="text" class="input-nilai" id="inputid5" name="nilai_mentah[]" style="width:4em" maxlength="1" value="<?= $items->poin ?>" onkeypress="return isNumber(event)">
+                            <input 
+                                type="text" 
+                                class="input-nilai" 
+                                id="inputid5" 
+                                name="nilai_mentah[]" 
+                                style="width:4em" 
+                                maxlength="1" 
+                                value="<?= $items->unit_question == $filledPoinId ? $items->poin : ''; ?>" 
+                                onkeypress="return isNumber(event)"/>
+
                             <input type="hidden" name="idform" value="<?= $items->id ?>">
                             <input type="hidden" name="skill_id[]" value="<?= $items->unit_question ?>">
                             <input type="hidden" name="job" value="<?= $items->job_id ?>">
