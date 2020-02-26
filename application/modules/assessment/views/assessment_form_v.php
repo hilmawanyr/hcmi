@@ -1,5 +1,13 @@
 <?php $sess_login = $this->session->userdata('login_session'); ?>
 <style>
+    .header_competency {
+        text-align:center; 
+        vertical-align: middle !important; 
+        cursor: pointer; 
+        width: 300px; 
+        height: 150px !important;
+    }
+
     .header_competency:hover {
         background-color: #ecf0f5;
     }
@@ -7,9 +15,9 @@
 
 <section class="content-header">
 	<h3 class="box-title">Form Penilaian | <?= $jobTitleName->name ?></h3>
-	<ol class="breadcrumb">
+	<!-- <ol class="breadcrumb">
 		<h3 class="box-title pull-right">Waktu pengisian form penilaian skill 2 - 15 Maret 2020</h3>
-	</ol>
+	</ol> -->
 </section>
 
 <!-- Main content -->
@@ -51,9 +59,11 @@
 
                             <?php foreach ($dictionary->result() as $dictlist) : ?>
                                 <th 
-                                    style="text-align:center; vertical-align: middle; cursor: pointer; width: 300px; height: 150px !important;" 
+                                    data-toggle="modal"
+                                    data-target="#descriptionCompetency" 
                                     class="header_competency"
                                     colspan="2"
+                                    onclick="showCompetencyDescription('<?= $dictlist->id ?>')" 
                                 >
                                     <?= strtoupper($dictlist->name_id)  ?>
                                 </th>
@@ -162,7 +172,7 @@
                                     // count amount of each unit competency
                                     $const = 0;
                                     foreach ($detailPoint->result() as $value) {
-                                        $const = $const + ($value->weight * $value->poin);
+                                        $const = $const + ($value->weight / 5) * $value->poin;
                                     }
 
                                     // average point of each competency dictionary

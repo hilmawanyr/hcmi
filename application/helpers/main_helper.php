@@ -142,11 +142,15 @@
 	function is_value_complete($amount, $nik, $year)
     {
     	$CI =& get_instance();
-        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row();
+        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row()->id;
         
-        $filledCompetency = $CI->db->query("SELECT * from assessment_form_questions where form_id = '".$formId->id."' and poin IS NOT NULL")->result();
+        $filledCompetency = $CI->db->query("SELECT COUNT(distinct b.id_dictionary) AS totalFilled 
+        									FROM assessment_form_questions a 
+	        								JOIN skill_units b ON a.skill_unit_id  = b.id 
+	        								WHERE a.form_id = $formId 
+	        								AND a.poin IS NOT NULL")->row()->totalFilled;
 
-        if ($amount == count($filledCompetency)) {
+        if ($amount == $filledCompetency) {
             return true;
         }
 

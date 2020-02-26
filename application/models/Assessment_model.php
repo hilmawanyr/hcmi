@@ -109,12 +109,22 @@ class Assessment_model extends CI_Model {
 	 */
 	public function complete_assessment(int $jobtitle) : int
 	{
-		$this->db->select('a.code');
+		$this->db->distinct();
+		$this->db->select('c.id_dictionary, a.form_id');
+		$this->db->from('assessment_form_questions a');
+		$this->db->join('assessment_forms b', 'a.form_id = b.id');
+		$this->db->join('skill_units c', 'a.skill_unit_id = c.id');
+		$this->db->where('b.job_id', $jobtitle);
+		$this->db->where('a.poin is not null', NULL, FALSE);
+		$this->db->group_by('c.id_dictionary, a.form_id');
+		return $this->db->get()->num_rows();
+
+		/*$this->db->select('a.code');
 		$this->db->from('assessment_forms a');
 		$this->db->join('assessment_form_questions b', 'a.id = b.form_id');
 		$this->db->where('b.poin IS NOT NULL', NULL, FALSE);
 		$this->db->where('a.job_id', $jobtitle);
-		return $this->db->get()->num_rows();
+		return $this->db->get()->num_rows();*/
 	}
 
 	/**

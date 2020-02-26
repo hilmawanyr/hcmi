@@ -200,6 +200,12 @@ class Assessment extends CI_Controller {
         $inputamount    = count($this->input->post('nilai_mentah'));
         $limitEmptyPoin = $inputamount-1;
 
+        // prevent if user fill with empty poin for all statement
+        if (count(array_unique($this->input->post('nilai_mentah'))) == 1) {
+        	$this->session->set_flashdata('fail_save_data', 'Gagal menyimpan data! Minimal mengisi satu pernyataan!');
+			redirect(base_url('form/'.$this->input->post('job')));
+        }
+
         // prevent if poin that inputed > 1
         $checkEmptyArray = array_filter($this->input->post('nilai_mentah'), function ($val) {
         	return $val == "";
@@ -257,19 +263,35 @@ class Assessment extends CI_Controller {
         $jobTitle = $assessForm->job_id;
 
         /** amount of statement base on job title */
-        $statementAmountbyJobtitle = $this->db->where('job_id', $jobTitle)->where('deleted_at')->get('skill_matrix')->num_rows();
+        $statementAmountbyJobtitle = $this->db
+        									->where('job_id', $jobTitle)
+    										->where('deleted_at')
+    										->get('skill_matrix')
+    										->num_rows();
 
         /** check amount of filled statement  */
-        $filledFormAmount = $this->db->where('form_id', $this->input->post('idform'))->where('poin is NOT NULL', NULL, FALSE)->get('assessment_form_questions');
+        $filledFormAmount = $this->db
+        							->where('form_id', $this->input->post('idform'))
+        							->where('poin is NOT NULL', NULL, FALSE)
+        							->get('assessment_form_questions');
+
+        $filledStatementPerDictionary = $this->db
+			        							->select('COUNT(distinct b.id_dictionary) AS totalFilled')
+			        							->from('assessment_form_questions a')
+			        							->join('skill_units b','a.skill_unit_id = b.id')
+			        							->where('a.form_id',$id_form)
+			        							->where('a.poin IS NOT NULL', NULL, FALSE)
+			        							->get()->row()->totalFilled;
+
 
         /**
          * if amount of statement base on job title is equal with amount of filled statement
          * so update total_poin in assessment_forms
         */
-        if ($statementAmountbyJobtitle == $filledFormAmount->num_rows()) {
+        if ($statementAmountbyJobtitle == $filledStatementPerDictionary) {
             $const = 0;
             foreach ($filledFormAmount->result() as $val) {
-                $const = $const + ($val->poin * $val->weight);
+                $const = $const + ($val->weight / 5) * $val->poin;
             }
             $totalPoin = $const;
             $grade = get_assessment_grade($totalPoin);
@@ -284,10 +306,12 @@ class Assessment extends CI_Controller {
          * but if total_poin in assessment_forms has filled cause intentionally submit
          * update it to NULL
          */
-        } elseif ($statementAmountbyJobtitle > $filledFormAmount->num_rows()) {
+        } elseif ($statementAmountbyJobtitle > $filledStatementPerDictionary) {
             $isTotalPoinNull = $this->db->where('id', $this->input->post('idform'))->get('assessment_forms')->row();
             if (!is_null($isTotalPoinNull->total_poin)) {
-            	$this->db->where('id', $this->input->post('idform'))->update('assessment_forms',['total_poin' => NULL]);
+            	$this->db
+            			->where('id', $this->input->post('idform'))
+            			->update('assessment_forms',['total_poin' => NULL]);
             }
         }
 
