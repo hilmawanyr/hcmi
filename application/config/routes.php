@@ -73,7 +73,8 @@ $route['form/upload'] = 'assessment/upload';
 $route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';
 $route['assessment/(:num)/competency/(:any)/nik/(:num)/jobid'] = 'assessment/see_poin/$1/$2/$3';
 $route['store_poin'] = 'assessment/insert_poin';
-$route['submit_form/(:num)'] = 'assessment/submit_form/$1';
+// $route['submit_form/(:num)'] = 'assessment/submit_form/$1';
+$route['submit_form/(:num)'] = 'assessment/submit_form_2/$1';
 $route['export_to_excel/(:num)'] = 'assessment/export_assessment_to_excel/$1';
 $route['competency_description/(:num)'] = 'assessment/competency_description/$1';
 

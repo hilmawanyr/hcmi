@@ -159,11 +159,10 @@ class Assessment_model extends CI_Model {
                 skill_matrix.skill_id,
                 skill_units.id as unit_id,
                 skill_units.description,
-                (SELECT weight FROM assessment_form_weight JOIN job_groups 
-                ON job_groups.code = assessment_form_weight.job_group_code 
-                WHERE job_groups.id = job_titles.group 
-                AND assessment_form_weight.level = skill_matrix.level 
-                AND assessment_form_weight.unit = skill_units.level) as bobot'
+                (SELECT weight FROM assessment_form_weight 
+                WHERE job_group_code = "G99"
+                AND level = skill_matrix.level 
+                AND unit = skill_units.level) as bobot'
 			);
 		$this->db->from('job_titles');
 		$this->db->join('skill_matrix', 'skill_matrix.job_id = job_titles.id');

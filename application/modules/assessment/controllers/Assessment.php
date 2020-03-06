@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Assessment extends CI_Controller {
 
-	private $group, $level, $grade, $section;
+	private $nik, $group, $level, $grade, $section, $department;
 
 	public function __construct()
 	{
@@ -13,10 +13,12 @@ class Assessment extends CI_Controller {
 		}
 
 		$loginSession = $this->session->userdata('login_session');
-		$this->group = $loginSession['group'];
-		$this->level = $loginSession['level'];
-		$this->grade = $loginSession['grade'];
-		$this->section = $loginSession['section'];
+        $this->nik        = $loginSession['nik'];
+        $this->group      = $loginSession['group'];
+        $this->level      = $loginSession['level'];
+        $this->grade      = $loginSession['grade'];
+        $this->section    = $loginSession['section'];
+        $this->department = $loginSession['department'];
 
 		$this->load->model('assessment_model','assessment');
 	}
@@ -93,13 +95,24 @@ class Assessment extends CI_Controller {
 		$data['statementAmount'] = $isFormExist->num_rows() * $data['dictionary']->num_rows();
 
 		// value for upload form
-		$data['job_title']=$jobtitle;
-		$data['form_code']='AF-'.$jobtitle.'-'.$data['active_year'];
+		$data['job_title'] = $jobtitle;
+		$data['form_code'] = 'AF-'.$jobtitle.'-'.$data['active_year'];
+
+        $data['position_code']  = $this->db->query("SELECT pos.code FROM employes em 
+                                                    JOIN positions pos ON  em.position_id = pos.id
+                                                    WHERE em.nik = '$this->nik'")->row()->code;
+
+        $data['assessment_state'] = $this
+                                ->db
+                                ->get_where('assessment_form_state', ['code_form' => $data['form_code']])
+                                ->row()
+                                ->state;
 
 		// number of filled assessment
 		$data['completeAssessment'] = $this->assessment->complete_assessment($jobtitle);
 		$data['employes'] = $get_employes;
-		$data['page'] = 'assessment_form_v';
+		// $data['page'] = 'assessment_form_v';
+        $data['page'] = 'assessment_form_fill';
 		$this->load->view('template/template', $data);
 	}
 
@@ -120,20 +133,56 @@ class Assessment extends CI_Controller {
 									$employe->nik
 								);
 			if ($isEmployeHasForm < 1) {
+                $state = $this->_get_workflow_state();
+
 				// create an array of assessment form data to make insert batch
 				$assessmentForm[] = [
-					'code' => 'AF-'.$employe->job_title_id.'-'.$activeYear,
-					'nik' => $employe->nik,
-					'job_id' => $employe->job_title_id
+                    'code'   => 'AF-'.$employe->job_title_id.'-'.$activeYear,
+                    'nik'    => $employe->nik,
+                    'job_id' => $employe->job_title_id,
 				];
+
+                $assessmentState = [
+                    'code_form' => 'AF-'.$employe->job_title_id.'-'.$activeYear,
+                    'state'     => $state
+                ];
 			}
 		}
 		$this->db->insert_batch('assessment_forms', $assessmentForm);
+
+        // insert to assesment state
+        $this->db->insert('assessment_form_state', $assessmentState);
 
 		// insert assesment question
 		$this->_insert_assessment_question($activeYear, $jobtitle);
 		return;
 	}
+
+    /**
+     * Set workflow state when generate form
+     * 
+     * @return void
+     */
+    private function _get_workflow_state($state="")
+    {
+        if (empty($state)) {
+            $level = 0;
+        } else {
+            $level = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row();
+        }
+
+        $states = $this->db->query("SELECT * FROM workflow_state WHERE level > '$level->level' ORDER BY level ASC")->result();
+        foreach ($states as $value) {
+            $check  = $this->db->query("SELECT em.position_id FROM employes em 
+                                        JOIN positions pos ON em.position_id = pos.id
+                                        WHERE em.department_id = '$this->department'
+                                        AND pos.code = '$value->state'
+                                        GROUP BY em.position_id")->num_rows();
+            if ($check >= 1) {
+                return $value->state;
+            }
+        }
+    }
 
 	/**
 	 * Insert assessment question
@@ -352,6 +401,16 @@ class Assessment extends CI_Controller {
         redirect(base_url('form/'.$jobtitleId));
     }
 
+    public function submit_form_2(int $jobtitleId) : void
+    {
+        $code_form            = 'AF-'.$jobtitleId.'-'.get_active_year();
+        $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
+        $state                = $this->_get_workflow_state($get_assessment_state->state);
+
+        $this->db->where('code_form', $code_form);
+        $this->db->update('assessment_form_state', ['state' => $state]);
+        redirect(base_url('form/'.$jobtitleId));
+    }
     /**
      * Export assessment for to excel
      * @param int $jobtitleId
@@ -503,6 +562,120 @@ class Assessment extends CI_Controller {
 		}
 
 		redirect(base_url('form/'.$job_title_id));
+    }
+
+    function ldap()
+    {
+        $data = [
+            '23310566',
+            '70042890',
+            '22389854',
+            '22661244',
+            '22388583',
+            '22391927',
+            '22395246',
+            '22391597',
+            '22389409',
+            '24142277',
+            '70362761',
+            '70470211',
+            '23311628',
+            '24104598',
+            '24104618',
+            '24142204',
+            '24142205',
+            '24142206',
+            '24142207',
+            '24142210',
+            '24142211',
+            '24142212',
+            '24142223',
+            '24142224',
+            '24142227',
+            '24142229',
+            '24142231',
+            '24142232',
+            '24142234',
+            '24142235',
+            '24142236',
+            '24142237',
+            '24142243',
+            '24142256',
+            '24142260',
+            '24142261',
+            '24142262',
+            '24142268',
+            '24142269',
+            '24142270',
+            '24142273',
+            '24142274',
+            '24142280',
+            '24142281',
+            '24142287',
+            '24142288',
+            '24142291',
+            '24142293',
+            '24142294',
+            '24142296',
+            '24142297',
+            '24142298',
+            '24142301',
+            '24142306',
+            '24142317',
+            '24142324',
+            '24142326',
+            '24142340',
+            '24142348',
+            '24142350',
+            '24142357',
+            '70148878',
+            '70148881',
+            '70353484',
+            '70353485',
+            '70353487',
+            '70353494',
+            '70470169',
+            '70470178',
+            '70470179',
+            '70470181',
+            '70470185',
+            '70470204',
+            '70470207',
+            '70470209',
+            '70470216',
+            '70470219',
+            '70470224',
+            '70470225',
+            '70470235',
+            '70470236',
+            '70470239',
+            '70470243',
+            '70470247',
+            '70470267',
+            '70470274',
+            '70470276',
+            '70470285',
+            '70470295',
+            '70470297',
+            '70470299',
+            '70470303',
+            '70508230',
+            '71499589',
+            '22390125',
+            '22273062',
+            '24142217',
+            '24142230'
+        ];
+
+        foreach ($data as $val) {
+            $ldap[] = [
+                'ldap_id' => $val
+            ];
+        }
+
+        var_dump($ldap); exit();
+
+        $this->db->insert_batch('users', $ldap);
     }
 
 }

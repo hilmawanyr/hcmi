@@ -44,7 +44,11 @@
                         
                         $numberofEmptyPoin = count($checkEmptyArray);
                         $lastPoinPosition  = count($collectPoin) - $numberofEmptyPoin;
-                        $filledPoinId      = $collectId[$lastPoinPosition-1]; 
+                        $filledPoinId      = 0;
+
+                        if ($lastPoinPosition > 0) {
+                            $filledPoinId  = $collectId[$lastPoinPosition-1];
+                        }
                     ?>
 
                     <?php $no = 1; ?>

@@ -31,6 +31,7 @@ class Authentication extends CI_Controller {
 		$isUserExist 	= $this->login->is_user_exist($nik);
 		
 		if (count($isUserExist) > 0) {
+			die('nurfan is here!');
 			// do verification for user's password
 			if (password_verify($password, $isUserExist->password)) {
 				// create log for success login
@@ -45,6 +46,44 @@ class Authentication extends CI_Controller {
 		// handle fail login - wrong password
 		$this->session->set_flashdata('login_fail', 'Account not found!');
 		redirect('auth/authentication');
+	}
+
+	public function ldap_verification() : void
+	{
+		$ldap = "ldap://10.87.42.4";
+		$ldap_port = 389;
+
+		$ldap_dn = "uid=71470456,dc=kenki.global.hitachi,dc=net";
+		$ldap_password = "alexis66";
+
+		echo "# Connecting to".$ldap."\n";
+		$ldap_con = ldap_connect($ldap, $ldap_port) or die("cannot connect");
+		echo "Connection success\n";
+
+		if (!ldap_set_option($ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3)) {
+			echo 'Cannot set protocol v3';
+		}
+
+		if (!ldap_set_option($ldap_con, LDAP_OPT_REFERRALS, 0)) {
+			echo "Cannot set referral 0";
+		}
+
+		$bind = ldap_bind($ldap_con,"70470195@kenki.global.hitachi.net", $ldap_password);
+
+		ldap_get_option($ldap_con, LDAP_OPT_DIAGNOSTIC_MESSAGE, $err);
+
+		echo $err;
+
+		var_dump($bind);
+
+		if ($bind) {
+			if (ldap_get_option($ldap_con, LDAP_OPT_DIAGNOSTIC_MESSAGE, $err)) {
+				echo $err;
+			} else {
+				$filter = "()";
+				echo 'no err bind';
+			}
+		}
 	}
 
 	/**

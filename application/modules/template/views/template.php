@@ -139,11 +139,11 @@
               <i class="fa fa-book"></i> <span>Manual Guide</span>
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a href="<?= base_url('changepassword') ?>">
               <i class="fa fa-key"></i> <span>Change Password</span>
             </a>
-          </li>
+          </li> -->
           <?php if ($userSession['group'] == 1 || $userSession['group'] == 2) : ?>
             <li>
               <a href="<?= base_url('auth_log') ?>">
