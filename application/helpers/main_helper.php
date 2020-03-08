@@ -280,7 +280,8 @@
 		$getRange = $CI->assessment->get_poin_range();
 
 		foreach ($getRange as $keys => $value) {
-			if (in_array((double)$poin, range((double)$value->bottom_limit, (double)$value->top_limit, 0.1))) {
+
+			if (in_array((double)$poin, range((double)$value->bottom_limit, (double)$value->top_limit, 0.01))) {
 				$poinGrade = $value->grade;
 				return $poinGrade;
 			}

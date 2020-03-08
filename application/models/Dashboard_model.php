@@ -22,8 +22,8 @@ class Dashboard_model extends CI_Model {
 			case 0:
 				return $this->db->query("SELECT * FROM employes 
 										WHERE name <> 'admin' 
-										AND position_id NOT IN 
-										(SELECT id FROM positions where name > 6)");
+										AND position_id IN 
+										(SELECT id FROM positions WHERE grade <= 3)");
 				break;
 			
 			default:
@@ -32,15 +32,15 @@ class Dashboard_model extends CI_Model {
 					return $this->db->query("SELECT * FROM employes 
 											WHERE name <> 'admin' 
 											AND dept_id = $department
-											AND position_id NOT IN 
-											(SELECT id FROM positions where id > 6)");
+											AND position_id IN 
+											(SELECT id FROM positions WHERE grade <= 3)");
 				// login as manager and upper
 				} else {
 					return $this->db->query("SELECT * FROM employes 
 											WHERE name <> 'admin' 
 											AND section_id = $section
-											AND position_id NOT IN 
-											(SELECT id FROM positions where id > 6)");	
+											AND position_id IN 
+											(SELECT id FROM positions WHERE grade <= 3)");	
 				}
 				break;
 		}		
@@ -62,14 +62,13 @@ class Dashboard_model extends CI_Model {
 															WHERE nik NOT IN 
 															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
 															AND name NOT LIKE '%admin%'
-															AND position_id NOT IN 
-															(SELECT id FROM positions WHERE name LIKE '%manager')"
+															AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
 														)->num_rows();
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
 															WHERE code LIKE '%$activeYear' 
 															AND code NOT IN 
-															(SELECT code FROM assessment_validations 
+															(SELECT code FROM assessment_form_state 
 															WHERE code LIKE '%$activeYear')")->num_rows();
 				break;
 			
@@ -431,10 +430,8 @@ class Dashboard_model extends CI_Model {
 										AND a.nik IN 
 										(SELECT nik FROM employes where dept_id = '$sectOrDept')")->result();
 			}
-				
 		}
 	}
-	
 }
 
 /* End of file Dashboard_model.php */

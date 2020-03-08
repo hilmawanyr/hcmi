@@ -26,6 +26,31 @@ class Authentication extends CI_Controller {
 	 */
 	public function attempt_login()
 	{
+		// $ldap_id 			= $this->input->post('nik');
+		// $password 		= $this->input->post('password');
+		
+		// $user = $this->db->where('ldap_uid', $ldap_id)->get("users")->row();
+		// $nik = $user->nik;
+		
+		// $isUserExist 	= $this->login->is_user_exist($nik);
+
+		// if (count($isUserExist) > 0) {
+		// 	// do verification for user's password
+		// 	if ($this->ldap_verification($ldap_id, $password)) {
+		// 		// create log for success login
+		// 		$this->_auth_log($nik);
+		// 		// create login session and redirect them to dahsboard
+		// 		$this->_login_success($isUserExist);
+		// 	}
+		// 	// handle fail login - wrong password
+		// 	$this->session->set_flashdata('login_fail', 'Your password is wrong!');
+		// 	redirect('auth/authentication');
+		// }
+		// // handle fail login - wrong password
+		// $this->session->set_flashdata('login_fail', 'Account not found!');
+
+		// redirect('auth/authentication');
+
 		$nik 			= $this->input->post('nik');
 		$password 		= $this->input->post('password');
 		$isUserExist 	= $this->login->is_user_exist($nik);
@@ -48,17 +73,20 @@ class Authentication extends CI_Controller {
 		redirect('auth/authentication');
 	}
 
-	public function ldap_verification() : void
+	public function ldap_verification($ldap_id, $password)
 	{
 		$ldap = "ldap://10.87.42.4";
 		$ldap_port = 389;
 
-		$ldap_dn = "uid=71470456,dc=kenki.global.hitachi,dc=net";
-		$ldap_password = "alexis66";
+		// $ldap_dn = "uid=71470456,dc=kenki.global.hitachi,dc=net";
+		// $ldap_password = "alexis66";
 
-		echo "# Connecting to".$ldap."\n";
+		$ldap_dn = "uid=".$ldap_id.",dc=kenki.global.hitachi,dc=net";
+		$ldap_password = $password;
+
+		// echo "# Connecting to".$ldap."\n";
 		$ldap_con = ldap_connect($ldap, $ldap_port) or die("cannot connect");
-		echo "Connection success\n";
+		// echo "Connection success\n";
 
 		if (!ldap_set_option($ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3)) {
 			echo 'Cannot set protocol v3';
@@ -68,20 +96,19 @@ class Authentication extends CI_Controller {
 			echo "Cannot set referral 0";
 		}
 
-		$bind = ldap_bind($ldap_con,"70470195@kenki.global.hitachi.net", $ldap_password);
+		$bind = ldap_bind($ldap_con,$ldap_id."@kenki.global.hitachi.net", $ldap_password);
 
 		ldap_get_option($ldap_con, LDAP_OPT_DIAGNOSTIC_MESSAGE, $err);
 
-		echo $err;
-
-		var_dump($bind);
+		// check error lda connection
+		// echo $err;
+		// var_dump($bind);
 
 		if ($bind) {
 			if (ldap_get_option($ldap_con, LDAP_OPT_DIAGNOSTIC_MESSAGE, $err)) {
-				echo $err;
+				return false;
 			} else {
-				$filter = "()";
-				echo 'no err bind';
+				return true;
 			}
 		}
 	}
@@ -133,6 +160,8 @@ class Authentication extends CI_Controller {
 			'level'      => $getUserData->level,
 			'department' => $getUserData->id
 		];
+
+		// nurfan log var_dump($dataLogin);die();
 		
 		return $dataLogin;
 	}

@@ -68,7 +68,12 @@ class Assessment extends CI_Controller {
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
-		$data['dictionary'] = $this->assessment->get_competency($jobtitle);
+        $data['dictionary'] = $this->assessment->get_competency($jobtitle);
+
+        
+        
+        // Taruh pengecheckan kalo matrix belum ada
+        // var_dump($data['dictionary']);die();
 
 		// check whether assessment form has generate or not
 		$isFormExist = $this->assessment->is_assessment_form_exist($data['active_year'], $jobtitle);
@@ -105,7 +110,7 @@ class Assessment extends CI_Controller {
 
 		// value for upload form
 		$data['job_title'] = $jobtitle;
-		$data['form_code'] = 'AF-'.$jobtitle.'-'.$data['active_year'];
+        $data['form_code'] = 'AF-'.$jobtitle.'-'.$data['active_year'];
 
         $data['position_code']  = $this->db->query("SELECT pos.code FROM employes em 
                                                     JOIN positions pos ON  em.position_id = pos.id
@@ -172,12 +177,12 @@ class Assessment extends CI_Controller {
      * 
      * @return void
      */
-    private function _get_workflow_state($state="")
+    private function _get_workflow_state(string $state="")
     {
-        if (empty($state)) {
-            $level = 0;
-        } else {
-            $level = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row()->level;
+        $level = 0;
+        if ($state != "") {
+            $assment_state = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row();
+            $level = $assment_state->level;
         }
 
         $states = $this->db->query("SELECT * FROM workflow_state WHERE level > '$level' ORDER BY level ASC")->result();

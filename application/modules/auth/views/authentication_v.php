@@ -43,7 +43,7 @@
 
         <form action="<?= base_url('attemptlogin') ?>" method="post">
           <div class="form-group has-feedback">
-            <input type="text" class="form-control" name="nik" placeholder="NIK">
+            <input type="text" class="form-control" name="nik" placeholder="LDAP ID">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
