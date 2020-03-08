@@ -1,10 +1,24 @@
+<!-- if admin or HR -->
 <?php if ($group == 1 || $group == 2) { ?>
+
   <input type="hidden" id="group" value="0">
-  <?php $groupLog = 0; ?>
-<?php } else { ?>
-  <input type="hidden" id="group" value="<?= $section ?>">
-  <?php $groupLog = $section; ?>
-<?php } ?>
+  <?php $groupLog = 0; 
+
+// if participant
+} else { 
+  // if assistant manager or higher
+  if ($position ==  7 || $position ==  8) { ?>
+    
+    <input type="hidden" id="group" value="<?= $section ?>">
+    <?php $groupLog = $section;
+  // if manager and higher
+  } else { ?>
+
+    <input type="hidden" id="group" value="<?= $department ?>">
+    <?php $groupLog = $department;
+    
+  } 
+} ?>
 
 <section class="content-header">
   <h1>
