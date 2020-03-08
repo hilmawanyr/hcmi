@@ -60,6 +60,8 @@ class Assessment extends CI_Controller {
 
 		// load competency
         $data['dictionary'] = $this->assessment->get_competency($jobtitle);
+
+        
         
         // Taruh pengecheckan kalo matrix belum ada
         // var_dump($data['dictionary']);die();

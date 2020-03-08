@@ -56,6 +56,7 @@ class Authentication extends CI_Controller {
 		$isUserExist 	= $this->login->is_user_exist($nik);
 		
 		if (count($isUserExist) > 0) {
+			// die('nurfan is here!');
 			// do verification for user's password
 			if (password_verify($password, $isUserExist->password)) {
 				// create log for success login
