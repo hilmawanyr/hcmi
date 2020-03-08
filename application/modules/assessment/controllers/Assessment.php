@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Assessment extends CI_Controller {
 
-	private $nik, $group, $level, $grade, $section, $department;
+	private $nik, $group, $level, $grade, $section, $department, $position;
 
 	public function __construct()
 	{
@@ -19,6 +19,7 @@ class Assessment extends CI_Controller {
         $this->grade      = $loginSession['grade'];
         $this->section    = $loginSession['section'];
         $this->department = $loginSession['department'];
+        $this->position   = $loginSession['position'];
 
 		$this->load->model('assessment_model','assessment');
 	}
@@ -33,9 +34,17 @@ class Assessment extends CI_Controller {
 				break;
 			// for participant
 			default:
-				$getJobtitleList = $this->assessment->jobtitle_by_grade_and_section(3, $this->section);
+                // if AM or SAM
+                if ($this->position == 7 || $this->position == 8) {
+                    $getJobtitleList = $this->assessment->jobtitle_by_grade_and_section(3, $this->section);
+                } else {
+                    $getJobtitleList = $this->assessment->jobtitle_by_grade_and_department(3, $this->department);
+                }
+				
 				break;
 		}
+        $data['position']     = $this->position;
+        $data['department']   = $this->department;
 		$data['section']      = $this->section;
 		$data['jobtitleList'] = $getJobtitleList;
 		$data['page']         = 'assessment_v';
@@ -47,7 +56,7 @@ class Assessment extends CI_Controller {
 	 * @param int $jobtitle
 	 * @return void
 	 */
-	public function form(string $jobtitle) : void
+	public function form(string $jobtitle, int $grade) : void
 	{
 		$data['active_year'] = get_active_year();
 
@@ -55,7 +64,7 @@ class Assessment extends CI_Controller {
 
 		$data['department'] = get_department_by_section($data['sectionId'])->id;
 
-		$get_employes = $this->db->where('job_title_id', $jobtitle)->get('employes');
+		$get_employes = $this->db->get_where('employes',['job_title_id' => $jobtitle, 'grade' => $grade]);
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
@@ -72,7 +81,7 @@ class Assessment extends CI_Controller {
 			}
 
 			// change value of $get_employe if job_titles has competency matrixes
-			$get_employes = $this->assessment->competency_by_jobtitle($data['active_year'], $jobtitle);
+			$get_employes = $this->assessment->competency_by_jobtitle($data['active_year'], $jobtitle, $grade);
 		}
 
 		// check whether form has submited or not
@@ -103,10 +112,10 @@ class Assessment extends CI_Controller {
                                                     WHERE em.nik = '$this->nik'")->row()->code;
 
         $data['assessment_state'] = $this
-                                ->db
-                                ->get_where('assessment_form_state', ['code_form' => $data['form_code']])
-                                ->row()
-                                ->state;
+                                        ->db
+                                        ->get_where('assessment_form_state', ['code_form' => $data['form_code']])
+                                        ->row()
+                                        ->state;
 
 		// number of filled assessment
 		$data['completeAssessment'] = $this->assessment->complete_assessment($jobtitle);
@@ -168,14 +177,14 @@ class Assessment extends CI_Controller {
         if (empty($state)) {
             $level = 0;
         } else {
-            $level = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row();
+            $level = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row()->level;
         }
 
-        $states = $this->db->query("SELECT * FROM workflow_state WHERE level > '$level->level' ORDER BY level ASC")->result();
+        $states = $this->db->query("SELECT * FROM workflow_state WHERE level > '$level' ORDER BY level ASC")->result();
         foreach ($states as $value) {
             $check  = $this->db->query("SELECT em.position_id FROM employes em 
                                         JOIN positions pos ON em.position_id = pos.id
-                                        WHERE em.department_id = '$this->department'
+                                        WHERE em.dept_id = '$this->department'
                                         AND pos.code = '$value->state'
                                         GROUP BY em.position_id")->num_rows();
             if ($check >= 1) {

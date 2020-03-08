@@ -2,10 +2,22 @@
 
 <section class="content-header">
   <?php if ($this->session->userdata('login_session')['group'] == 3) { ?>
-    <h3 class="box-title">Department : <?= get_department_by_section($section)->name; ?></h3>
-    <ol class="breadcrumb">
-      <h3 class="box-title pull-right">Section : <?= get_section($section)->name ?></h3>
-    </ol>
+
+    <!-- if AM or SAM -->
+    <?php if ($position == 7 || $position == 8) { ?>
+
+      <h3 class="box-title">Department : <?= get_department_by_section($section)->name; ?></h3>
+      <ol class="breadcrumb">
+        <h3 class="box-title pull-right">Section : <?= get_section($section)->name ?></h3>
+      </ol>
+    
+    <!-- if GM or higher -->
+    <?php } elseif ($position > 8) { ?>
+      
+      <h3 class="box-title">Department : <?= get_department($department); ?></h3>
+
+    <?php } ?>
+    
   <?php } else { ?>
     <h3 class="box-title">Job Title List</h3>
   <?php } ?>
@@ -31,6 +43,7 @@
             <!-- end if -->
 
             <th>Percentage of Filling</th>
+            <th>Filled By</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -49,8 +62,11 @@
               <!-- end if -->
 
               <td><?= is_form_complete($row->job_title_id) ?> %</td>
+              <td></td>
               <td>
-                <a href="<?= base_url('form/'.$row->job_title_id) ?>" class="btn btn-info">
+                <a 
+                  href="<?= base_url('form/'.$row->job_title_id.'/jobtitle/'.$row->grade.'/grade') ?>" 
+                  class="btn btn-info">
                   <i class="fa fa-file-text-o"></i> Form
                 </a>
               </td>

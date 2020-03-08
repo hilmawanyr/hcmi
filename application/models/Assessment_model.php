@@ -50,6 +50,31 @@ class Assessment_model extends CI_Model {
 		$this->db->order_by('a.grade, b.name', 'asc');
 		return $this->db->get()->result();
 	}
+
+	/**
+	 * Get list of all jobtitle by group id and section id
+	 * @param int $group
+	 * @param int $section
+	 * @return array
+	 */
+	public function jobtitle_by_grade_and_department(int $grade, int $department) : array
+	{
+		$this->db->select('
+			a.job_title_id, 
+			a.dept_id,
+			a.grade,
+			b.name as jobtitleName,
+			c.name as sectionName,
+			count(a.id) as numberOfPeople');
+		$this->db->from('employes a');
+		$this->db->join('job_titles b', 'a.job_title_id = b.id');
+		$this->db->join('departements c', 'c.id = a.dept_id');
+		$this->db->where('a.grade <=', $grade);
+		$this->db->where('a.dept_id', $department);
+		$this->db->group_by('a.job_title_id, a.grade');
+		$this->db->order_by('a.grade, b.name', 'asc');
+		return $this->db->get()->result();
+	}
 	
 	/**
 	 * Get competency dictionary for each job title
@@ -91,12 +116,13 @@ class Assessment_model extends CI_Model {
 	 * @param int $jobtitle
 	 * @return array
 	 */
-	public function competency_by_jobtitle(string $activeYear, int $jobtitle) : object
+	public function competency_by_jobtitle(string $activeYear, int $jobtitle, int $grade) : object
 	{
 		$this->db->select('*');
 		$this->db->from('employes a');
 		$this->db->join('assessment_forms b', 'a.nik = b.nik', 'left');
 		$this->db->where('a.job_title_id', $jobtitle);
+		$this->db->where('a.grade', $grade);
 		$this->db->like('b.code', $activeYear, 'before');
 		$this->db->order_by('b.total_poin ASC, a.name ASC');
 		return $this->db->get();
