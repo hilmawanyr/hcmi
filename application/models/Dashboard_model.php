@@ -2,13 +2,14 @@
 
 class Dashboard_model extends CI_Model {
 
-	public $position;
+	public $position, $position_grade;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$loginSession = $this->session->userdata('login_session');
-		$this->position = $loginSession['position'];
+		$this->position       = $loginSession['position'];
+		$this->position_grade = $loginSession['position_grade'];
 	}
 
 	/**
@@ -74,7 +75,7 @@ class Dashboard_model extends CI_Model {
 			
 			default:
 				// if AM or SAM
-				if ($this->position == 7 || $this->position == 8) {
+				if ($this->position_grade > 3 && $this->position_grade < 7) {
 					$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
 																WHERE nik NOT IN 
 																(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
@@ -91,7 +92,7 @@ class Dashboard_model extends CI_Model {
 																AND code LIKE '%$activeYear'"
 															)->num_rows();
 				// if GM and higher
-				} else {
+				} elseif ($this->position_grade > 6) {
 					$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
 																WHERE nik NOT IN 
 																(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
@@ -135,14 +136,14 @@ class Dashboard_model extends CI_Model {
 			
 			default:
 				// if AM or SAM
-				if ($this->position == 7 || $this->position == 8) {
+				if ($this->position_grade > 3 && $this->position_grade < 7) {
 					return $this->db->query("SELECT * FROM assessment_forms
 											WHERE code LIKE '%$activeYear'
 											AND total_poin IS NOT NULL
 											AND nik IN 
 											(SELECT nik FROM employes where section_id = '$sectOrDept')")->num_rows();
 				// if MGR and higher
-				} else {
+				} elseif ($this->position_grade > 6) {
 					return $this->db->query("SELECT * FROM assessment_forms
 											WHERE code LIKE '%$activeYear'
 											AND total_poin IS NOT NULL
@@ -168,14 +169,14 @@ class Dashboard_model extends CI_Model {
 									(SELECT id FROM positions where id > 6)")->result();
 		} else {
 			// assistant manager or senior assistant manager
-			if ($this->position == 7 || $this->position == 8) {
+			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				return $this->db->query("SELECT name, job_title_id FROM employes 
 										WHERE name <> 'admin' 
 										AND position_id NOT IN 
 										(SELECT id FROM positions where id > 6)
 										AND section_id = $sectOrDept")->result();
 			// assistant manager or senior assistant manager upper
-			} elseif ($this->position > 8) {
+			} elseif ($this->position_grade > 6) {
 				return $this->db->query("SELECT name, job_title_id FROM employes 
 										WHERE name <> 'admin' 
 										AND position_id NOT IN 
@@ -201,10 +202,10 @@ class Dashboard_model extends CI_Model {
 
 		} else {
 			// for AM or SAM
-			if ($this->position == 7 || $this->position == 8) {
+			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				$fixArray = $this->_uncomplete_viewed_assistant_manager($activeYear, $sectOrDept);
 			// for GM and higher
-			} else {
+			} elseif ($this->position_grade > 6) {
 				$fixArray = $this->_uncomplete_viewed_manager($activeYear, $sectOrDept);
 			}
 
@@ -320,10 +321,10 @@ class Dashboard_model extends CI_Model {
 	/**
 	 * Get number of employes in each job title
 	 * @param bool $adminOrHR
-	 * @param int $section
+	 * @param int $sectOrDept
 	 * @return array
 	 */
-	public function employe_per_jobtitle(bool $adminOrHR=true, int $section=0, int $positions) : array
+	public function employe_per_jobtitle(bool $adminOrHR=true, int $sectOrDept=0, int $positions) : array
 	{
 		if ($adminOrHR) {
 			return $this->db->query("SELECT 
@@ -334,22 +335,22 @@ class Dashboard_model extends CI_Model {
 									GROUP BY b.job_title_id")->result();
 		} else {
 			// if AM OR SAM
-			if ($positions == 7 || $positions == 8) {
+			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				return $this->db->query("SELECT 
 											a.name AS job_title, 
 											count(b.nik) AS amount 
 										FROM job_titles a JOIN employes b ON a.id = b.job_title_id
 										WHERE b.name <> 'admin'
-										AND b.section_id = $section
+										AND b.section_id = $sectOrDept
 										GROUP BY b.job_title_id")->result();
-			// if MGR or higher
-			} else {
+			// if DGM or higher
+			} elseif ($this->position_grade > 6) {
 				return $this->db->query("SELECT 
 											a.name AS job_title, 
 											count(b.nik) AS amount 
 										FROM job_titles a JOIN employes b ON a.id = b.job_title_id
 										WHERE b.name <> 'admin'
-										AND b.dept_id = $section
+										AND b.dept_id = $sectOrDept
 										GROUP BY b.job_title_id")->result();
 			}
 		}
@@ -372,7 +373,7 @@ class Dashboard_model extends CI_Model {
 									GROUP BY grade")->result();
 		} else {
 			// if AM or SAM
-			if ($this->position == 7 || $this->position == 8) {
+			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				return $this->db->query("SELECT 
 											grade AS level, 
 											count(nik) AS amount 
@@ -383,7 +384,7 @@ class Dashboard_model extends CI_Model {
 										(SELECT id FROM positions where id > 6)
 										GROUP BY grade")->result();
 			// if GM and higher
-			} elseif ($this->position > 8) {
+			} elseif ($this->position_grade > 6) {
 				return $this->db->query("SELECT 
 											grade AS level, 
 											count(nik) AS amount 
@@ -414,7 +415,7 @@ class Dashboard_model extends CI_Model {
 									WHERE a.code LIKE '%$activeYear'")->result();
 		} else {
 			// for AM or SAM
-			if ($this->position == 7 || $this->position == 8) {
+			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				return $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
 										JOIN employes b ON a.nik = b.nik
 										WHERE code LIKE '%$activeYear'
@@ -422,7 +423,7 @@ class Dashboard_model extends CI_Model {
 										AND a.nik IN 
 										(SELECT nik FROM employes where section_id = '$sectOrDept')")->result();
 			// for GM and higher
-			} else {
+			} elseif ($this->position_grade > 6) {
 				return $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
 										JOIN employes b ON a.nik = b.nik
 										WHERE code LIKE '%$activeYear'

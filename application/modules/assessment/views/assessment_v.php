@@ -4,7 +4,7 @@
   <?php if ($this->session->userdata('login_session')['group'] == 3) { ?>
 
     <!-- if AM or SAM -->
-    <?php if ($position == 7 || $position == 8) { ?>
+    <?php if ($position_grade > 3 && $position_grade < 7) { ?>
 
       <h3 class="box-title">Department : <?= get_department_by_section($section)->name; ?></h3>
       <ol class="breadcrumb">
@@ -12,7 +12,7 @@
       </ol>
     
     <!-- if GM or higher -->
-    <?php } elseif ($position > 8) { ?>
+    <?php } elseif ($position_grade > 6) { ?>
       
       <h3 class="box-title">Department : <?= get_department($department); ?></h3>
 
@@ -21,6 +21,8 @@
   <?php } else { ?>
     <h3 class="box-title">Job Title List</h3>
   <?php } ?>
+
+  <?php $this->load->view('template/action_message'); ?>
 </section>
 
 <!-- Main content -->
@@ -36,7 +38,7 @@
             <th>Employes</th>
 
             <!-- if user is not a participant -->
-            <?php if ($this->session->userdata('login_session')['group'] != 3) { ?>
+            <?php if ($position_grade > 7) { ?>
             <th>Section</th>
             <th>Department</th>
             <?php } ?>
@@ -55,17 +57,17 @@
               <td><?= $row->numberOfPeople ?></td>
 
               <!-- if user is not a participant -->
-              <?php if ($this->session->userdata('login_session')['group'] != 3) { ?>
+              <?php if ($position_grade > 7) { ?>
               <td><?= get_section($row->section_id)->name ?></td>
               <td><?= get_department(get_section($row->section_id)->dept_id) ?></td>
               <?php } ?>
               <!-- end if -->
 
               <td><?= is_form_complete($row->job_title_id) ?> %</td>
-              <td></td>
+              <td><?= get_filling_state('AF-'.$row->job_title_id.'-'.get_active_year()) ?></td>
               <td>
                 <a 
-                  href="<?= base_url('form/'.$row->job_title_id.'/jobtitle/'.$row->grade.'/grade') ?>" 
+                  href="<?= base_url('form/'.$row->job_title_id) ?>" 
                   class="btn btn-info">
                   <i class="fa fa-file-text-o"></i> Form
                 </a>

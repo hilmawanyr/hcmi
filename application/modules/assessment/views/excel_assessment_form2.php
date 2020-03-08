@@ -55,7 +55,7 @@ foreach ($employee as $employe) {
         // count amount of each unit competency
         $const = 0;
         foreach ($detailPoint as $value) {
-            $const = $const + ($value->weight * $value->poin);
+            $const = $const + (($value->weight * $value->poin) / 5);
         }
 
         // point of each competency dictionary
@@ -65,7 +65,7 @@ foreach ($employee as $employe) {
         $allPoint = $this->db->query("SELECT * from assessment_form_questions where poin IS NOT NULL AND form_id = '$formId'")->result();
         $constall = 0;
         foreach ($allPoint as $valpoint) {
-            $constall = $constall + ($valpoint->poin * $valpoint->weight);
+            $constall = $constall + (($valpoint->poin * $valpoint->weight) / 5);
         }
 		
 		$excel->getActiveSheet()->setCellValue($initColumn2.$num, $pointPerCompetency);

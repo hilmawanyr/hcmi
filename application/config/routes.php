@@ -68,7 +68,7 @@ $route['dashboard/(:any)/is_admin_or_hr/(:int)/section'] = 'dashboard/jobtitle_c
 $route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
-$route['form/(:num)/jobtitle/(:num)/grade'] = 'assessment/form/$1/$2';
+$route['form/(:num)'] = 'assessment/form/$1';
 $route['form/upload'] = 'assessment/upload';
 $route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';
 $route['assessment/(:num)/competency/(:any)/nik/(:num)/jobid'] = 'assessment/see_poin/$1/$2/$3';

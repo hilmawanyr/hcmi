@@ -142,18 +142,20 @@
 	function is_value_complete($amount, $nik, $year)
     {
     	$CI =& get_instance();
-        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row()->id;
+        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row();
         
-        $filledCompetency = $CI->db->query("SELECT COUNT(distinct b.id_dictionary) AS totalFilled 
-        									FROM assessment_form_questions a 
-	        								JOIN skill_units b ON a.skill_unit_id  = b.id 
-	        								WHERE a.form_id = $formId 
-	        								AND a.poin IS NOT NULL")->row()->totalFilled;
+        if (isset($formId)) {
+        	$filledCompetency = $CI->db->query("SELECT COUNT(distinct b.id_dictionary) AS totalFilled 
+	        									FROM assessment_form_questions a 
+		        								JOIN skill_units b ON a.skill_unit_id  = b.id 
+		        								WHERE a.form_id = $formId->id 
+		        								AND a.poin IS NOT NULL")->row()->totalFilled;
 
-        if ($amount == $filledCompetency) {
-            return true;
+	        if ($amount == $filledCompetency) {
+	            return true;
+	        }	
         }
-
+        
         return false;
     }
 	
@@ -287,4 +289,21 @@
 			}
 		}
 		return '-';
+	}
+
+	/**
+	 * Get progress filled status
+	 * @param string $state
+	 * @return string
+	 */
+	function get_filling_state($form_code)
+	{
+		$CI =& get_instance();
+		$state = $CI->db->get_where('assessment_form_state',['code_form' => $form_code])->row()->state;
+
+		if (!isset($state)) {
+			return 'AM';
+		}
+
+		return $state;
 	}

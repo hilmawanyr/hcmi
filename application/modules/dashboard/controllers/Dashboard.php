@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
 
-	private $group, $level, $grade, $section, $position, $department;
+	private $group, $level, $grade, $section, $position, $department, $position_grade;
 
     public function __construct()
     {
@@ -12,13 +12,14 @@ class Dashboard extends CI_Controller {
             redirect(base_url('logout'));
         }
 
-        $loginSession     = $this->session->userdata('login_session');
-        $this->group      = $loginSession['group'];
-        $this->level      = $loginSession['level'];
-        $this->grade      = $loginSession['grade'];
-        $this->section    = $loginSession['section'];
-        $this->position   = $loginSession['position'];
-        $this->department = $loginSession['department'];
+        $loginSession         = $this->session->userdata('login_session');
+        $this->group          = $loginSession['group'];
+        $this->level          = $loginSession['level'];
+        $this->grade          = $loginSession['grade'];
+        $this->section        = $loginSession['section'];
+        $this->position       = $loginSession['position'];
+        $this->department     = $loginSession['department'];
+        $this->position_grade = $loginSession['position_grade'];
 
         $this->load->model('dashboard_model','dashboard');
     }
@@ -26,11 +27,12 @@ class Dashboard extends CI_Controller {
 	public function index()
 	{
         $this->load->model('manage_model','manage');
-        $data['informations'] = $this->manage->get_information()->result();
-        $data['group']        = $this->group;
-        $data['section']      = $this->section;
-        $data['department']   = $this->department;
-        $data['position']     = $this->position;
+        $data['informations']   = $this->manage->get_information()->result();
+        $data['group']          = $this->group;
+        $data['section']        = $this->section;
+        $data['department']     = $this->department;
+        $data['position']       = $this->position;
+        $data['position_grade'] = $this->position_grade;
         // for login as admin or HR
         if ($this->group == 1 || $this->group == 2) {
             $data['participants']             = $this->dashboard->get_participants()->num_rows();
@@ -40,13 +42,13 @@ class Dashboard extends CI_Controller {
         // for login as participant
         } else {
             // if login as assisstant manager or senior assistant manager
-            if ($this->position == 7 || $this->position == 8) {
+            if ($this->position_grade > 3 && $this->position_grade < 7) {
                 $data['participants'] = $this->dashboard->get_participants($this->section)->num_rows();
                 $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->section);
                 $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->section);
 
             // if login upper of asisstant manager (MGR, GM, ...)
-            } elseif ($this->position > 8) {
+            } elseif ($this->position_grade > 6) {
                 $data['participants'] = $this->dashboard->get_participants(1, $this->department)->num_rows();
                 $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->department);
                 $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->department);

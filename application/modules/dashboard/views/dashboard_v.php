@@ -7,12 +7,12 @@
 // if participant
 } else { 
   // if assistant manager or higher
-  if ($position ==  7 || $position ==  8) { ?>
+  if ($position_grade > 3 && $position_grade < 7) { ?>
     
     <input type="hidden" id="group" value="<?= $section ?>">
     <?php $groupLog = $section;
   // if manager and higher
-  } else { ?>
+  } elseif ($position_grade > 6) { ?>
 
     <input type="hidden" id="group" value="<?= $department ?>">
     <?php $groupLog = $department;

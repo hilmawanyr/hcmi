@@ -150,15 +150,16 @@ class Authentication extends CI_Controller {
 		$getUserData = $this->login->get_user($nik);
 
 		$dataLogin = [
-			'nik'        => $getUserData->nik,
-			'name'       => $getUserData->name,
-			'section'    => $getUserData->section_id,
-			'position'   => $getUserData->position_id,
-			'job_title'  => $getUserData->job_title_id,
-			'grade'      => $getUserData->grade,
-			'group'      => $getUserData->group_id,
-			'level'      => $getUserData->level,
-			'department' => $getUserData->id
+			'nik'            => $getUserData->nik,
+			'name'           => $getUserData->name,
+			'section'        => $getUserData->section_id,
+			'position'       => $getUserData->position_id,
+			'position_grade' => $this->login->get_position_grade($getUserData->position_id),
+			'job_title'      => $getUserData->job_title_id,
+			'grade'          => $getUserData->grade,
+			'group'          => $getUserData->group_id,
+			'level'          => $getUserData->level,
+			'department'     => $getUserData->id
 		];
 
 		// nurfan log var_dump($dataLogin);die();

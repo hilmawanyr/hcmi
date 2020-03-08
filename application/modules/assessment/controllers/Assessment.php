@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Assessment extends CI_Controller {
 
-	private $nik, $group, $level, $grade, $section, $department, $position;
+	private $nik, $group, $level, $grade, $section, $department, $position, $position_grade;
 
 	public function __construct()
 	{
@@ -13,13 +13,14 @@ class Assessment extends CI_Controller {
 		}
 
 		$loginSession = $this->session->userdata('login_session');
-        $this->nik        = $loginSession['nik'];
-        $this->group      = $loginSession['group'];
-        $this->level      = $loginSession['level'];
-        $this->grade      = $loginSession['grade'];
-        $this->section    = $loginSession['section'];
-        $this->department = $loginSession['department'];
-        $this->position   = $loginSession['position'];
+        $this->nik            = $loginSession['nik'];
+        $this->group          = $loginSession['group'];
+        $this->level          = $loginSession['level'];
+        $this->grade          = $loginSession['grade'];
+        $this->section        = $loginSession['section'];
+        $this->department     = $loginSession['department'];
+        $this->position       = $loginSession['position'];
+        $this->position_grade = $loginSession['position_grade'];
 
 		$this->load->model('assessment_model','assessment');
 	}
@@ -43,11 +44,13 @@ class Assessment extends CI_Controller {
 				
 				break;
 		}
-        $data['position']     = $this->position;
-        $data['department']   = $this->department;
-		$data['section']      = $this->section;
-		$data['jobtitleList'] = $getJobtitleList;
-		$data['page']         = 'assessment_v';
+
+        $data['position_grade'] = $this->position_grade;
+        $data['position']       = $this->position;
+        $data['department']     = $this->department;
+        $data['section']        = $this->section;
+        $data['jobtitleList']   = $getJobtitleList;
+        $data['page']           = 'assessment_v';
 		$this->load->view('template/template', $data);
 	}
 
@@ -56,7 +59,7 @@ class Assessment extends CI_Controller {
 	 * @param int $jobtitle
 	 * @return void
 	 */
-	public function form(string $jobtitle, int $grade) : void
+	public function form(string $jobtitle) : void
 	{
 		$data['active_year'] = get_active_year();
 
@@ -64,16 +67,17 @@ class Assessment extends CI_Controller {
 
 		$data['department'] = get_department_by_section($data['sectionId'])->id;
 
-		$get_employes = $this->db->get_where('employes',['job_title_id' => $jobtitle, 'grade' => $grade]);
+		$get_employes = $this->db->get_where('employes',['job_title_id' => $jobtitle]);
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
         $data['dictionary'] = $this->assessment->get_competency($jobtitle);
 
-        
-        
         // Taruh pengecheckan kalo matrix belum ada
-        // var_dump($data['dictionary']);die();
+        if ($data['dictionary']->num_rows() < 1) {
+            $this->session->set_flashdata('fail_save_data', 'Matriks kompetensi tidak ditemukan!');
+            redirect('assessment','refresh');
+        }
 
 		// check whether assessment form has generate or not
 		$isFormExist = $this->assessment->is_assessment_form_exist($data['active_year'], $jobtitle);
@@ -86,7 +90,7 @@ class Assessment extends CI_Controller {
 			}
 
 			// change value of $get_employe if job_titles has competency matrixes
-			$get_employes = $this->assessment->competency_by_jobtitle($data['active_year'], $jobtitle, $grade);
+			$get_employes = $this->assessment->competency_by_jobtitle($data['active_year'], $jobtitle);
 		}
 
 		// check whether form has submited or not
@@ -121,7 +125,7 @@ class Assessment extends CI_Controller {
                                         ->get_where('assessment_form_state', ['code_form' => $data['form_code']])
                                         ->row()
                                         ->state;
-
+        
 		// number of filled assessment
 		$data['completeAssessment'] = $this->assessment->complete_assessment($jobtitle);
 		$data['employes'] = $get_employes;
@@ -420,6 +424,10 @@ class Assessment extends CI_Controller {
         $code_form            = 'AF-'.$jobtitleId.'-'.get_active_year();
         $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
         $state                = $this->_get_workflow_state($get_assessment_state->state);
+
+        if ($state == 'GM' ||  $state == 'DIR') {
+            $state = 'DONE';
+        }
 
         $this->db->where('code_form', $code_form);
         $this->db->update('assessment_form_state', ['state' => $state]);

@@ -64,6 +64,7 @@ class Assessment_model extends CI_Model {
 			a.dept_id,
 			a.grade,
 			b.name as jobtitleName,
+			b.section as section_id,
 			c.name as sectionName,
 			count(a.id) as numberOfPeople');
 		$this->db->from('employes a');
@@ -116,13 +117,12 @@ class Assessment_model extends CI_Model {
 	 * @param int $jobtitle
 	 * @return array
 	 */
-	public function competency_by_jobtitle(string $activeYear, int $jobtitle, int $grade) : object
+	public function competency_by_jobtitle(string $activeYear, int $jobtitle) : object
 	{
 		$this->db->select('*');
 		$this->db->from('employes a');
 		$this->db->join('assessment_forms b', 'a.nik = b.nik', 'left');
 		$this->db->where('a.job_title_id', $jobtitle);
-		$this->db->where('a.grade', $grade);
 		$this->db->like('b.code', $activeYear, 'before');
 		$this->db->order_by('b.total_poin ASC, a.name ASC');
 		return $this->db->get();

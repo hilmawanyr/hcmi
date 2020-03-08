@@ -45,6 +45,12 @@ class Login extends CI_Model {
 
 		return $this->db->get()->row();
 	}
+
+	public function get_position_grade($position_id) : int
+	{
+		$grade = $this->db->get_where('positions', ['id' => $position_id])->row()->grade;
+		return $grade;
+	}
 	
 	/**
 	 * Change password
