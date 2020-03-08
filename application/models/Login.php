@@ -15,9 +15,9 @@ class Login extends CI_Model {
 	 * @param string $nik
 	 * @return object stdClass
 	 */
-	public function is_user_exist(string $nik) : ?object
+	public function is_user_exist(string $ldap_uid) : ?object
 	{
-		return $this->db->select('nik, password')->from('users')->where('nik', $nik)->get()->row();
+		return $this->db->select('nik, password')->from('users')->where('ldap_uid', $ldap_uid)->get()->row();
 	}
 
 	/**
@@ -30,7 +30,7 @@ class Login extends CI_Model {
 		$this->db->select('
 			a.nik, 
 			a.name, 
-			a.section_id, 
+			a.section_id,
 			a.grade, 
 			a.position_id, 
 			a.job_title_id, 
@@ -39,9 +39,10 @@ class Login extends CI_Model {
 			d.id');
 		$this->db->from('employes a');
 		$this->db->join('users b', 'a.nik = b.nik');
-		$this->db->join('sections c', 'a.section_id = c.id');
-		$this->db->join('departements d', 'd.id = c.dept_id', 'left');
+		$this->db->join('sections c', 'a.section_id = c.id', 'left');
+		$this->db->join('departements d', 'd.id = a.department_id', 'left');
 		$this->db->where('a.nik', $nik);
+
 		return $this->db->get()->row();
 	}
 	

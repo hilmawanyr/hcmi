@@ -21,16 +21,14 @@ class Dashboard_model extends CI_Model {
 			case 0:
 				return $this->db->query("SELECT * FROM employes 
 										WHERE name <> 'admin' 
-										AND position_id NOT IN 
-										(SELECT id FROM positions where name LIKE '%manager%')");
+										AND position_id <= 6");
 				break;
 			
 			default:
 				return $this->db->query("SELECT * FROM employes 
 										WHERE name <> 'admin' 
 										AND section_id = $section
-										AND position_id NOT IN 
-										(SELECT id FROM positions where name LIKE '%manager%')");
+										AND position_id <= 6");
 				break;
 		}		
 	}
@@ -51,14 +49,13 @@ class Dashboard_model extends CI_Model {
 															WHERE nik NOT IN 
 															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
 															AND name NOT LIKE '%admin%'
-															AND position_id NOT IN 
-															(SELECT id FROM positions WHERE name LIKE '%manager')"
+															AND position_id <= 6"
 														)->num_rows();
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
 															WHERE code LIKE '%$activeYear' 
 															AND code NOT IN 
-															(SELECT code FROM assessment_validations 
+															(SELECT code FROM assessment_form_state 
 															WHERE code LIKE '%$activeYear')")->num_rows();
 				break;
 			
@@ -67,14 +64,13 @@ class Dashboard_model extends CI_Model {
 															WHERE nik NOT IN 
 															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
 															AND name NOT LIKE '%admin%'
-															AND position_id NOT IN 
-															(SELECT id FROM positions WHERE name LIKE '%manager')
+															AND position_id <= 6
 															AND section_id = '$section'"
 														)->num_rows();
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
 															WHERE total_poin IS NULL 
-															AND nik IN 
+															AND nik IN
 															(SELECT nik FROM employes where section_id = '$section')
 															AND code LIKE '%$activeYear'"
 														)->num_rows();

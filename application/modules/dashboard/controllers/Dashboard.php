@@ -40,8 +40,11 @@ class Dashboard extends CI_Controller {
             $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->section);
         }
 
-        $data['uncompletePercentage'] = ($data['assessmentThatUncomplete']/$data['participants']) * 100;
-        $data['completePercentage']   = ($data['completedAssessment']/$data['participants']) * 100;
+        // $data['uncompletePercentage'] = ($data['assessmentThatUncomplete']/$data['participants']) * 100;
+        // $data['completePercentage']   = ($data['completedAssessment']/$data['participants']) * 100;
+
+        $data['uncompletePercentage'] = 0;
+        $data['completePercentage']   = 0;
 
 		$data['page'] = "dashboard_v";
 		$this->load->view('template/template', $data);
