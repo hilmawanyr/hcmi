@@ -75,7 +75,7 @@ class Assessment extends CI_Controller {
 
         // Taruh pengecheckan kalo matrix belum ada
         if ($data['dictionary']->num_rows() < 1) {
-            $this->session->set_flashdata('fail_save_data', 'Matriks kompetensi tidak ditemukan!');
+            $this->session->set_flashdata('fail_save_data', 'Matriks kompetensi tidak ditemukan , mohon lengkapi terlebih dahulu matriks kompetensi untuk job posisi tersebut!');
             redirect('assessment','refresh');
         }
 
