@@ -43,6 +43,18 @@ class Manage_model extends CI_Model {
 	}
 
 	/**
+	 * Get all departments
+	 * 
+	 * @return array
+	 */
+	public function get_all_sections() : array
+	{
+		$this->db->where('deleted_at');
+		$this->db->order_by('name');
+		return $this->db->get('sections')->result();
+	}
+
+	/**
 	 * Get section by department
 	 * @param int $id
 	 * @return array
@@ -62,7 +74,14 @@ class Manage_model extends CI_Model {
 	public function get_jobtitles_list(int $id) : array
 	{
 		$this->db->where('section', $id);
+		$this->db->order_by('name');
 		return $this->db->get('job_titles')->result();
+	}
+
+	public function get_jobtitle(int $id) : object
+	{
+		$this->db->where('id', $id);
+		return $this->db->get('job_titles');
 	}
 
 	/**

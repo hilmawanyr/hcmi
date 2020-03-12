@@ -26,7 +26,7 @@
                         <th>No</th>
                         <th style="white-space:nowrap;">Pernyataan</th>
                         <th style="white-space:nowrap;">Nilai Mentah</th>
-                        <th style="white-space:nowrap;">Bobot</th>
+                        <!-- <th style="white-space:nowrap;">Bobot</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +36,7 @@
                         <td><?= $no ?></td>
                         <td><?= $items->description ?></td>
                         <td><input type="text" style="width:4em"  value="<?= $items->poin ?>" disabled=""></td>
-                        <td><input style="width:4em" type="text" value="<?= $items->weight ?>" disabled=""></td>
+                        <td><input style="width:4em" type="hidden" value="<?= $items->weight ?>" disabled=""></td>
                     </tr>
                     <?php $no++; ?>
                     <?php endforeach; ?>

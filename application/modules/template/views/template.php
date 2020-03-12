@@ -116,6 +116,7 @@
                 <li><a href="<?= base_url('department') ?>"><i class="fa fa-circle-o"></i> Department</a></li>
                 <li><a href="<?= base_url('information') ?>"><i class="fa fa-circle-o"></i> Information</a></li>
                 <li><a href="<?= base_url('employes') ?>"><i class="fa fa-circle-o"></i> Employee</a></li>
+                <li><a href="<?= base_url('assessment/reset') ?>"><i class="fa fa-circle-o"></i> Reset Assessment Data</a></li>
               </ul>
             </li>
           <?php endif; ?>
