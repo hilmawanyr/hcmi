@@ -48,8 +48,14 @@ class Dashboard extends CI_Controller {
                 $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->section);
 
             // if login upper of asisstant manager (MGR, GM, ...)
-            } elseif ($this->position_grade > 6) {
+            } elseif ($this->position_grade > 6 && $this->position_grade < 9) {
                 $data['participants'] = $this->dashboard->get_participants(1, $this->department)->num_rows();
+                $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->department);
+                $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->department);
+
+            // if login as DIR and higher
+            } elseif ($this->position_grade > 8) {
+                $data['participants'] = $this->dashboard->get_participants(1)->num_rows();
                 $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->department);
                 $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->department);
             }
