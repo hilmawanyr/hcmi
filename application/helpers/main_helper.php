@@ -164,8 +164,12 @@
      * @param string $nik
      * @return string
      */
-    function user_name(string $nik) : string
+    function user_name($nik="") : string
     {
+    	if (empty($nik)) {
+    		return '';
+    	}
+
     	$CI =& get_instance();
         $userName = $CI->db->where('nik', $nik)->get('employes')->row()->name;
         return $userName;
