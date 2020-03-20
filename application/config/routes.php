@@ -68,6 +68,9 @@ $route['dashboard/(:any)/is_admin_or_hr/(:int)/section'] = 'dashboard/jobtitle_c
 $route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
+$route['assessment/reset'] = 'manage/reset';
+$route['assessment/reset/submit'] = 'manage/reset/submit';
+$route['assessment/reset/list/job'] = 'manage/reset/list_job';
 $route['form/(:num)'] = 'assessment/form/$1';
 $route['form/upload'] = 'assessment/upload';
 $route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';

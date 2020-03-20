@@ -30,11 +30,11 @@
                 <i class="fa fa-file-excel-o"></i> Export to Excel 
                 </a>
                 
-                <a style="margin-left:5px;" class="btn btn-success mr-2" 
+                <!-- <a style="margin-left:5px;" class="btn btn-success mr-2" 
                         data-toggle="modal" 
                         data-target="#uploadForm" >
 	                <i class="fa fa-upload"></i> Upload Form
-	            </a>
+	            </a> -->
 
                 <!-- submit button just for participant user -->
                 <?php if ($sess_login['group'] == 3 || $sess_login['group'] == 2) {

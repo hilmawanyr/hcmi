@@ -10,7 +10,7 @@
                     <tr>
                         <th style="white-space:nowrap;">Pernyataan</th>
                         <th style="white-space:nowrap;">Poin</th>
-                        <th style="white-space:nowrap;">Bobot</th>
+                        <!-- <th style="white-space:nowrap;">Bobot</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -23,7 +23,7 @@
                             <tr>
                                 <td><?= $poins->description ?></td>
                                 <td><?= $poins->poin ?></td>
-                                <td><?= $poins->weight ?></td>
+                                <!-- <td><?= $poins->weight ?></td> -->
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

@@ -36,10 +36,9 @@
             <th>Grade</th>
             <th>Job Title</th>
             <th>Employes</th>
-
+            <th>Section</th>
             <!-- if user is not a participant -->
             <?php if ($position_grade > 7) { ?>
-            <th>Section</th>
             <th>Department</th>
             <?php } ?>
             <!-- end if -->
@@ -55,10 +54,9 @@
               <td><?= convert_to_roman($row->grade) ?></td>
               <td><?= $row->jobtitleName ?></td>
               <td><?= $row->numberOfPeople ?></td>
-
+              <td><?= get_section($row->section_id)->name ?></td>
               <!-- if user is not a participant -->
               <?php if ($position_grade > 7) { ?>
-              <td><?= get_section($row->section_id)->name ?></td>
               <td><?= get_department(get_section($row->section_id)->dept_id) ?></td>
               <?php } ?>
               <!-- end if -->
