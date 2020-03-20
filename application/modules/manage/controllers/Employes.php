@@ -190,8 +190,7 @@ class Employes extends CI_Controller {
 	 */
 	public function get_jobtitle(int $section, int $position) : void
 	{
-		$jobTitle = $this->db->where('section', $section)->where('position_id', $position)->get('job_titles')->result();
-
+		$jobTitle = $this->db->get_where('job_titles',['section' => $section,'position_id' => $position])->result();
 		$list = "<option value='' selected='' disabled=''></option>";
 		foreach($jobTitle as $row) {
 			$list .= "<option value='".$row->id."'>";

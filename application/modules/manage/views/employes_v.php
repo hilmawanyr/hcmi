@@ -119,7 +119,7 @@
           </div>
           <div class="form-group">
             <label for="jobtitle">Job Title</label>
-            <select name="jobtitle" class="form-control select2" style="width: 100%" id="jobtitle" required="">
+            <select name="jobtitle" class="form-control select2" style="width: 100%" id="jobtitle">
               <option value="" disabled="" selected=""></option>
             </select>
           </div>
