@@ -1,3 +1,9 @@
+<style>
+  .ui-autocomplete {
+    z-index: 9999 !important;
+  }
+</style>
+
 <section class="content-header">
     <h3 class="box-title">Employes <small>Manage employes here.</small></h3>
     <?php $this->load->view('template/action_message'); ?>
@@ -29,7 +35,7 @@
                   <th>Job Title</th>
                   <th>Grade</th>
                   <th>Status</th>
-                  <th width="70">Action</th>
+                  <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,19 +61,18 @@
                       onclick="action('<?= $employe->nik ?>','1')">
                       <i class="fa fa-pencil"></i>
                     </button>
-                    <a
+                    <!-- <a
                       class="btn <?= is_null($employe->deleted_at) ? 'btn-primary' : 'btn-default' ?>"
                       href="<?= base_url('employe/'.$employe->nik.'/set_status') ?>"
                       onclick="return confirm('Are You sure to change this employee status?')">
                       <i class="fa <?= is_null($employe->deleted_at) ? 'fa-toggle-on' : 'fa-toggle-off' ?>"></i>
-                    </a>
+                    </a> -->
                   </td>
                 </tr>
               <?php $no++; endforeach; ?>
             </tbody>
           </table>
         </div>
-        <!-- /.box-body -->
       </div>
     </section>
   </div>
@@ -78,61 +83,65 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title"></h4>
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"></h4>
+      </div>
+      <form action="<?= base_url('employe/store') ?>" id="formAction" method="post">
+        <div class="modal-body">
+          <input type="hidden" id="isUpdate" name="isUpdate" value="">
+          <div class="form-group">
+            <label for="jobtitle">NIK</label>
+            <input type="text" class="form-control" id="nik" value="" name="nik" required="">
+            <input type="hidden" name="hidden_nik" value="" id="hidden_nik">
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" value="" name="name" required="">
+          </div>
+          <div class="form-group">
+            <label for="section">Section</label>
+            <select name="section" class="form-control select2" style="width: 100%" id="section" required="">
+              <option value="" disabled="" selected=""></option>
+              <?php foreach ($sections as $section) : ?>
+                <option value="<?= $section->id ?>"><?= $section->name ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="position">Position</label>
+            <select name="position" class="form-control select2" style="width: 100%" id="position" required="">
+              <option value="" disabled="" selected=""></option>
+              <?php foreach ($positions as $position) : ?>
+                <option value="<?= $position->id ?>"><?= $position->name ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobtitle">Job Title</label>
+            <select name="jobtitle" class="form-control select2" style="width: 100%" id="jobtitle">
+              <option value="" disabled="" selected=""></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobtitle">Grade</label>
+            <select name="grade" class="form-control" style="width: 100%" id="grade" required="">
+              <option value="" disabled="" selected=""></option>
+              <?php for ($i=1; $i < 8; $i++) : ?>
+                <option value="<?= $i ?>"><?= $i ?></option>
+              <?php endfor; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobtitle">Head</label>
+            <input type="text" class="form-control" id="head" value="" name="head" required="">
+          </div>
         </div>
-        <form action="<?= base_url('employe/store') ?>" id="formAction" method="post">
-            <div class="modal-body">
-                <input type="hidden" id="isUpdate" name="isUpdate" value="">
-                <div class="form-group">
-                  <label for="jobtitle">NIK</label>
-                  <input type="text" class="form-control" id="nik" value="" name="nik" required="">
-                  <input type="hidden" name="hidden_nik" value="" id="hidden_nik">
-                </div>
-                <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control" id="name" value="" name="name" required="">
-                </div>
-                <div class="form-group">
-                  <label for="section">Section</label>
-                  <select name="section" class="form-control select2" style="width: 100%" id="section" required="">
-                    <option value="" disabled="" selected=""></option>
-                    <?php foreach ($sections as $section) : ?>
-                      <option value="<?= $section->id ?>"><?= $section->name ?></option>
-                    <?php endforeach; ?>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="position">Position</label>
-                  <select name="position" class="form-control select2" style="width: 100%" id="position" required="">
-                    <option value="" disabled="" selected=""></option>
-                    <?php foreach ($positions as $position) : ?>
-                      <option value="<?= $position->id ?>"><?= $position->name ?></option>
-                    <?php endforeach; ?>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="jobtitle">Job Title</label>
-                  <select name="jobtitle" class="form-control select2" style="width: 100%" id="jobtitle" required="">
-                    <option value="" disabled="" selected=""></option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="jobtitle">Grade</label>
-                  <select name="grade" class="form-control" style="width: 100%" id="grade" required="">
-                    <option value="" disabled="" selected=""></option>
-                    <?php for ($i=1; $i < 8; $i++) : ?>
-                      <option value="<?= $i ?>"><?= $i ?></option>
-                    <?php endfor; ?>
-                  </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="btnSubmit"></button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </form>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" id="btnSubmit"></button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form>
     </div>
 
   </div>
@@ -143,7 +152,7 @@
     if (activity === '') {
       $('.modal-title').text('Add Employe');
       $('#btnSubmit').text('Save');
-      $('#isUpdate, #nik, #name').val('');
+      $('#isUpdate, #nik, #name, #head').val('');
       $('#section, #position, #jobtitle, #grade').val(null).trigger('change');
 
     } else {
@@ -159,13 +168,13 @@
         $('#position').val(employe.position).trigger('change');
         $('#jobtitle').val(employe.jobtitle).trigger('change');
         $('#grade').val(employe.grade);
+        $('#head').val(employe.head);
       })
     }
   }
 
-  $(function() {
+  $(document).ready(function($) {
     $('#section').change(function() {
-      // $.get('<?= base_url() ?>' +'employe/'+ $(this).val() +'/section/'+ $('#position').val() +'/position',
       $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $(this).val() +'/'+ $('#position').val(),
         {}, 
         function(response) {
@@ -174,12 +183,19 @@
     });
 
     $('#position').change(function() {
-      // $.get('<?= base_url() ?>' +'employe/'+ $('#section').val() +'/section/'+ $(this).val() +'/position',
       $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $('#section').val() +'/'+ $(this).val(),
         {}, 
         function(response) {
           $('#jobtitle').html(response)
       })
     })
-  })
+
+    $('#head').autocomplete({
+      source: '<?= base_url('manage/employes/get_employe');?>',
+      minLength: 3,
+      select: function (evt, ui) {
+        this.form.head.value = ui.item.value;
+      }
+    });
+  });
 </script>

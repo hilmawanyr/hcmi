@@ -31,11 +31,14 @@
   <!-- custom css -->
   <link rel="stylesheet" href="<?=  base_url('assets/hcmi-custom.css') ?>">
 
+  <!-- jQuery UI 1.11.4 -->
+  <link rel="stylesheet" href="<?= base_url() ?>assets/dist/css/jquery-ui.min.css" />
+
   <!-- jQuery 3 -->
   <script src="<?= base_url() ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
 
   <!-- jQuery UI 1.11.4 -->
-  <script src="<?= base_url() ?>assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <script src="<?= base_url() ?>assets/dist/js/jquery-ui.min.js"></script>
   
   <!-- Datepicker -->
   <link rel="stylesheet" href="<?= base_url('assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') ?>">
@@ -182,8 +185,6 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery UI 1.11.4 -->
-<script src="<?= base_url() ?>assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
