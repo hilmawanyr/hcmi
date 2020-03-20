@@ -28,20 +28,26 @@ class Dashboard_model extends CI_Model {
 				break;
 			
 			default:
-				// login as upper assistant manager
-				if (!empty($department)) {
-					return $this->db->query("SELECT * FROM employes 
-											WHERE name <> 'admin' 
-											AND dept_id = $department
-											AND position_id IN 
-											(SELECT id FROM positions WHERE grade <= 3)");
-				// login as manager and upper
-				} else {
+				// for AM or SAM
+				if ($this->position_grade > 3 && $this->position_grade < 7) {
 					return $this->db->query("SELECT * FROM employes 
 											WHERE name <> 'admin' 
 											AND section_id = $section
 											AND position_id IN 
-											(SELECT id FROM positions WHERE grade <= 3)");	
+											(SELECT id FROM positions WHERE grade <= 3)");
+				// for MGR, DGM, GM 
+				} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
+					return $this->db->query("SELECT * FROM employes 
+											WHERE name <> 'admin' 
+											AND dept_id IN ($department)
+											AND position_id IN 
+											(SELECT id FROM positions WHERE grade <= 3)");
+				// for DIR
+				} elseif ($this->position_grade > 8) {
+					return $this->db->query("SELECT * FROM employes 
+											WHERE name <> 'admin' 
+											AND position_id IN 
+											(SELECT id FROM positions WHERE grade <= 3)");
 				}
 				break;
 		}		
@@ -92,7 +98,7 @@ class Dashboard_model extends CI_Model {
 																AND code LIKE '%$activeYear'"
 															)->num_rows();
 				// if GM and higher
-				} elseif ($this->position_grade > 6) {
+				} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 					$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
 																WHERE nik NOT IN 
 																(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
@@ -109,6 +115,20 @@ class Dashboard_model extends CI_Model {
 																	WHERE dept_id = '$sectOrDept')
 																AND code LIKE '%$activeYear'"
 															)->num_rows();
+				} elseif ($this->position_grade > 8) {
+					$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
+																WHERE nik NOT IN 
+																(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
+																AND name NOT LIKE '%admin%'
+																AND position_id IN 
+																(SELECT id FROM positions WHERE grade < 4)"
+															)->num_rows();
+
+					$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
+																WHERE total_poin IS NULL 
+																AND code LIKE '%$activeYear'"
+															)->num_rows();
+
 				}
 
 				break;
@@ -143,12 +163,16 @@ class Dashboard_model extends CI_Model {
 											AND nik IN 
 											(SELECT nik FROM employes where section_id = '$sectOrDept')")->num_rows();
 				// if MGR and higher
-				} elseif ($this->position_grade > 6) {
+				} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 					return $this->db->query("SELECT * FROM assessment_forms
 											WHERE code LIKE '%$activeYear'
 											AND total_poin IS NOT NULL
 											AND nik IN 
 											(SELECT nik FROM employes where dept_id = '$sectOrDept')")->num_rows();
+				} elseif ($this->position_grade > 8) {
+					return $this->db->query("SELECT * FROM assessment_forms
+											WHERE code LIKE '%$activeYear'
+											AND total_poin IS NOT NULL")->num_rows();
 				}
 				
 				break;
@@ -176,12 +200,18 @@ class Dashboard_model extends CI_Model {
 										(SELECT id FROM positions where id > 6)
 										AND section_id = $sectOrDept")->result();
 			// assistant manager or senior assistant manager upper
-			} elseif ($this->position_grade > 6) {
+			} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 				return $this->db->query("SELECT name, job_title_id FROM employes 
 										WHERE name <> 'admin' 
 										AND position_id NOT IN 
 										(SELECT id FROM positions where id > 6)
 										AND dept_id = $sectOrDept")->result();
+			} elseif ($this->position_grade > 8) {
+				return $this->db->query("SELECT name, job_title_id FROM employes 
+										WHERE name <> 'admin' 
+										AND position_id NOT IN 
+										(SELECT id FROM positions where id > 6)
+										AND dept_id IN ($sectOrDept)")->result();
 			}
 		}
 	}
@@ -205,8 +235,10 @@ class Dashboard_model extends CI_Model {
 			if ($this->position_grade > 3 && $this->position_grade < 7) {
 				$fixArray = $this->_uncomplete_viewed_assistant_manager($activeYear, $sectOrDept);
 			// for GM and higher
-			} elseif ($this->position_grade > 6) {
+			} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 				$fixArray = $this->_uncomplete_viewed_manager($activeYear, $sectOrDept);
+			} elseif ($this->position_grade > 8) {
+				$fixArray = $this->_uncomplete_viewed_director($activeYear, $sectOrDept);
 			}
 
 			return $fixArray;
@@ -319,6 +351,41 @@ class Dashboard_model extends CI_Model {
 	}
 
 	/**
+	 * Uncomplete assessment form viewed by  GM and higher
+	 * @param string $activeYear
+	 * @param string $sectOrDept
+	 * @return array
+	 */
+	private function _uncomplete_viewed_director(string $activeYear, int $sectOrDept) : array
+	{
+		$employeHasntAssessed 	= $this->db->query("SELECT name, job_title_id FROM employes 
+													WHERE nik NOT IN 
+													(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
+													AND name NOT LIKE '%admin%'
+													AND position_id NOT IN 
+													(SELECT id FROM positions WHERE name LIKE '%manager')
+													AND dept_id IN ($sectOrDept)")->result();
+
+		$uncompleteAssessment 	= $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
+													JOIN employes b ON a.nik = b.nik
+													WHERE a.total_poin IS NULL 
+													AND a.nik IN 
+													(SELECT nik FROM employes where dept_id IN ($sectOrDept))
+													AND a.code LIKE '%$activeYear'")->result();
+		$fixArray = [];
+
+		foreach ($employeHasntAssessed as $employe => $value) {
+			array_push($fixArray,$value);
+		}
+
+		foreach ($uncompleteAssessment as $employe => $value) {
+			array_push($fixArray,$value);
+		}
+
+		return $fixArray;
+	}
+
+	/**
 	 * Get number of employes in each job title
 	 * @param bool $adminOrHR
 	 * @param int $sectOrDept
@@ -344,13 +411,21 @@ class Dashboard_model extends CI_Model {
 										AND b.section_id = $sectOrDept
 										GROUP BY b.job_title_id")->result();
 			// if DGM or higher
-			} elseif ($this->position_grade > 6) {
+			} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 				return $this->db->query("SELECT 
 											a.name AS job_title, 
 											count(b.nik) AS amount 
 										FROM job_titles a JOIN employes b ON a.id = b.job_title_id
 										WHERE b.name <> 'admin'
 										AND b.dept_id = $sectOrDept
+										GROUP BY b.job_title_id")->result();
+			// if director
+			} elseif ($this->position_grade > 8) {
+				return $this->db->query("SELECT 
+											a.name AS job_title, 
+											count(b.nik) AS amount 
+										FROM job_titles a JOIN employes b ON a.id = b.job_title_id
+										WHERE b.name <> 'admin'
 										GROUP BY b.job_title_id")->result();
 			}
 		}
@@ -384,7 +459,7 @@ class Dashboard_model extends CI_Model {
 										(SELECT id FROM positions where id > 6)
 										GROUP BY grade")->result();
 			// if GM and higher
-			} elseif ($this->position_grade > 6) {
+			} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 				return $this->db->query("SELECT 
 											grade AS level, 
 											count(nik) AS amount 
@@ -393,6 +468,16 @@ class Dashboard_model extends CI_Model {
 										AND name <> 'admin'
 										AND position_id NOT IN
 										(SELECT id FROM positions where id > 6)
+										GROUP BY grade")->result();
+			// if director
+			} elseif ($this->position_grade > 8) {
+				return $this->db->query("SELECT 
+											grade AS level, 
+											count(nik) AS amount 
+										FROM employes
+										WHERE name <> 'admin'
+										AND position_id NOT IN
+										(SELECT id FROM positions where grade > 3)
 										GROUP BY grade")->result();
 			}
 		}
@@ -423,13 +508,20 @@ class Dashboard_model extends CI_Model {
 										AND a.nik IN 
 										(SELECT nik FROM employes where section_id = '$sectOrDept')")->result();
 			// for GM and higher
-			} elseif ($this->position_grade > 6) {
+			} elseif ($this->position_grade > 6 && $this->position_grade < 9) {
 				return $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
 										JOIN employes b ON a.nik = b.nik
 										WHERE code LIKE '%$activeYear'
 										AND total_poin IS NOT NULL
 										AND a.nik IN 
 										(SELECT nik FROM employes where dept_id = '$sectOrDept')")->result();
+			} elseif ($this->position_grade > 8) {
+				return $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
+										JOIN employes b ON a.nik = b.nik
+										WHERE code LIKE '%$activeYear'
+										AND total_poin IS NOT NULL
+										AND a.nik IN 
+										(SELECT nik FROM employes where dept_id IN ($sectOrDept) )")->result();
 			}
 		}
 	}

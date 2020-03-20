@@ -205,7 +205,7 @@
                                             for (let i = 0; i < inputBox_<?= $formId ?>.length; i++) {
                                                 constanta_<?= $formId ?> += parseFloat(inputBox_<?= $formId ?>[i].value);
                                             }
-                                            document.getElementById('<?= $employe->nik ?>').value = constanta_<?= $formId ?>;
+                                            document.getElementById('<?= $employe->nik ?>').value = constanta_<?= $formId ?>.toFixed(2);
                                         </script>
 
                                     <?php else : ?>

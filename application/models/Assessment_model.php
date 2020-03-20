@@ -76,6 +76,31 @@ class Assessment_model extends CI_Model {
 		$this->db->order_by('a.grade, b.name', 'asc');
 		return $this->db->get()->result();
 	}
+
+	/**
+	 * Get list of all jobtitle by group id and section id
+	 * @param int $group
+	 * @param int $section
+	 * @return array
+	 */
+	public function jobtitle_by_director(int $grade) : array
+	{
+		$this->db->select('
+			a.job_title_id, 
+			a.dept_id,
+			a.grade,
+			b.name as jobtitleName,
+			b.section as section_id,
+			c.name as sectionName,
+			count(a.id) as numberOfPeople');
+		$this->db->from('employes a');
+		$this->db->join('job_titles b', 'a.job_title_id = b.id');
+		$this->db->join('departements c', 'c.id = a.dept_id');
+		$this->db->where('a.grade <=', $grade);
+		$this->db->group_by('a.job_title_id, a.dept_id, a.grade');
+		$this->db->order_by('a.grade, b.name', 'asc');
+		return $this->db->get()->result();
+	}
 	
 	/**
 	 * Get competency dictionary for each job title

@@ -36,10 +36,12 @@ class Assessment extends CI_Controller {
 			// for participant
 			default:
                 // if AM or SAM
-                if ($this->position == 7 || $this->position == 8 || $this->position == 9) {
+                if ($this->position_grade > 3 && $this->position_grade < 7) {
                     $getJobtitleList = $this->assessment->jobtitle_by_grade_and_section(3, $this->section);
-                } else {
+                } elseif ($this->position_grade > 6 && $this->position_grade < 9) {
                     $getJobtitleList = $this->assessment->jobtitle_by_grade_and_department(3, $this->department);
+                } elseif ($this->position_grade > 8) {
+                    $getJobtitleList = $this->assessment->jobtitle_by_director(3, $this->department);
                 }
 				
 				break;
