@@ -141,6 +141,35 @@ class Manage_model extends CI_Model {
 		$this->db->join('job_titles d', 'a.job_title_id = d.id', 'left');
 		return $this->db->get();
 	}
+
+	/**
+	 * Get list of users
+	 * 
+	 * @return array
+	 */
+	public function get_users() : array
+	{
+		$this->db->select('a.*, b.name, c.name as group_name');
+		$this->db->from('users a');
+		$this->db->join('employes b', 'a.nik = b.nik', 'left');
+		$this->db->join('groups c', 'c.id = a.group_id', 'left');
+		return $this->db->get()->result();
+	}
+
+	/**
+	 * Get user detail
+	 * @param string $nik
+	 * @return array
+	 */
+	public function get_detail_users(string $nik) : object
+	{
+		$this->db->select('a.*, b.name, c.name as group_name');
+		$this->db->from('users a');
+		$this->db->join('employes b', 'a.nik = b.nik', 'left');
+		$this->db->join('groups c', 'c.id = a.group_id', 'left');
+		$this->db->where('a.nik', $nik);
+		return $this->db->get()->row();
+	}
 	
 }
 
