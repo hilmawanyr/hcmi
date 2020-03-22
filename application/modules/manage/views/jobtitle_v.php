@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
               <label for="name">Department</label>
-              <select name="department" class="form-control" id="">
+              <select class="form-control" id="" disabled="">
                 <?php foreach ($departments as $department) : ?>
                   <option 
                     value="<?= $department->id ?>"
@@ -43,6 +43,7 @@
                   </option>
                 <?php endforeach; ?>
               </select>
+              <input type="hidden" name="department" value="<?= section_detail($sectionID)->dept_id ?>">
             </div>
 
             <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
@@ -72,29 +73,36 @@
           <hr>
           <table class="table table-hover table-bordered" id="example1">
             <thead>
-                <tr>
-                    <th>Name</th>
-                    <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
-                      <th>Action</th>
-                    <?php } ?>
-                </tr>
+              <tr>
+                <th>No</th>
+                <th>Name</th>
+                <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
+                  <th>Action</th>
+                <?php } ?>
+              </tr>
             </thead>
             <tbody>
-                <?php $no=1; foreach ($jobtitles as $jobtitle) : ?>
-                    <tr>
-                        <td><?= $no ?></td>
-                        <td><?= $jobtitle->name ?></td>
-                        <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
-                          <th>
-                            <button 
-                              class="btn btn-default"
-                              data-toggle="modal"
-                              data-target="#actionModal"
-                              onclick="action('1','<?= $jobtitle->id ?>')"><i class="fa fa-edit"></i></button>
-                          </th>
-                        <?php } ?>
-                    </tr>
-                <?php $no++; endforeach; ?>
+              <?php $no=1; foreach ($jobtitles as $jobtitle) : ?>
+                <tr>
+                  <td><?= $no ?></td>
+                  <td><?= $jobtitle->name ?></td>
+                  <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
+                    <th>
+                      <button 
+                        class="btn btn-default"
+                        data-toggle="modal"
+                        data-target="#actionModal"
+                        onclick="action('1','<?= $jobtitle->id ?>')"><i class="fa fa-edit"></i></button>
+                        <a 
+                          href="<?= base_url('jobtitle/'.$jobtitle->id.'-'.section_detail($sectionID)->id.'/remove') ?>" 
+                          onclick="return confirm('Are You sure want to delete this job tilte?')"
+                          class="btn btn-default">
+                          <i class="fa fa-trash"></i>
+                        </a>
+                    </th>
+                  <?php } ?>
+                </tr>
+              <?php $no++; endforeach; ?>
             </tbody>
           </table>
         </div>

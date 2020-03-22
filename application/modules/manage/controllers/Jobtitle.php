@@ -106,6 +106,41 @@ class Jobtitle extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	/**
+	 * Remove job title. You must check to employes table before remove the job title.
+	 * @param string $id. Because format of id parsed is [int]-[int].
+	 * @return void
+	 */
+	public function remove(string $id) : void
+	{
+		$jobtitleID = explode('-', $id)[0];
+		$sectionID  = explode('-', $id)[1];
+
+		$this->_is_jobtitle_used($id);
+
+		$this->db->delete('job_titles', ['id' => $jobtitleID]);
+		$this->session->set_flashdata('success_remove_data', 'Remove successfully!');
+		redirect(base_url('section/'.$sectionID.'/jobtitle'));
+	}
+
+	/**
+	 * Check whether job title used by employee
+	 * @param string $id.
+	 * @return void
+	 */
+	private function _is_jobtitle_used(string $id) : void
+	{
+		$jobtitleID = explode('-', $id)[0];
+		$sectionID  = explode('-', $id)[1];
+
+		$number_of_uses = $this->db->get_where('employes', ['job_title_id' => $jobtitleID])->num_rows();
+		if ($number_of_uses > 0) {
+			$this->session->set_flashdata('fail_remove_data', 'Cannot remove! Job title has been used!');
+			redirect(base_url('section/'.$sectionID.'/jobtitle'));
+		}
+		return;
+	}
+
 }
 
 /* End of file Jobtitle.php */
