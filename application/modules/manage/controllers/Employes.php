@@ -128,7 +128,7 @@ class Employes extends CI_Controller {
 		$this->_is_heads_nik_exist($nik, $head);
 
 		$object = ['nik' => $nik, 'head' => $head, 'created_at' => date('Y-m-d H:i:s')];
-		$this->db->insert('employe_relations', $object);
+		$this->db->insert('employee_relations', $object);
 
 		return;
 	}
@@ -161,11 +161,16 @@ class Employes extends CI_Controller {
 		// check whether NIK was exist
 		if ($data['nik'] != $hiddenNik) {
 			$this->_is_nik_exist($data['nik']);
+			$this->db->delete('employee_relations', ['nik' => $hiddenNik]);
 		}
 
 		$this->db->where('id', $id)->update('employes',$data);
 
-		$this->_update_employe_relation($data['nik'], $data['head']);
+		if ($data['nik'] != $hiddenNik) {
+			$this->_store_employe_relation($data['head'], $data['nik']);
+		} else {
+			$this->_update_employe_relation($data['nik'], $hiddenNik, $data['head']);
+		}
 
 		$this->session->set_flashdata('success_update_data', 'Update successfully!');
 		redirect(base_url('employes'));
@@ -176,9 +181,9 @@ class Employes extends CI_Controller {
 	 * @param 
 	 *
 	 */
-	private function _update_employe_relation($nik, $head) : void
+	private function _update_employe_relation($nik, $earlyNik, $head) : void
 	{
-		$this->db->update('employe_relations', ['nik' => $nik, 'head' => $head], ['nik' => $nik]);
+		$this->db->update('employee_relations', ['nik' => $nik, 'head' => $head], ['nik' => $earlyNik]);
 		return;
 	}
 
@@ -225,7 +230,7 @@ class Employes extends CI_Controller {
 	{
 		$employe = $this->db->select('a.*, b.head')
 							->from('employes a')
-							->join('employe_relations b','a.nik = b.nik', 'left')
+							->join('employee_relations b','a.nik = b.nik', 'left')
 							->where('a.nik', $nik)
 							->get()->row();
 
