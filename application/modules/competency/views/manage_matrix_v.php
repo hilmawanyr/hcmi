@@ -79,10 +79,9 @@
           <table class="table table-hover table-bordered" id="example1">
             <thead>
                 <tr>
-                  <th>No</th>
+                  <th>Level</th>
                   <th>Name</th>
                   <th>Description</th>
-                  <th>Level</th>
                   <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
                     <th>Delete</th>
                   <?php } ?>
@@ -91,10 +90,9 @@
             <tbody>
                 <?php $no=1; foreach ($matrixes as $matrix) : ?>
                     <tr>
-                      <td><?= $no ?></td>
+                      <td><?= $matrix->level ?></td>
                       <td><?= $matrix->name ?></td>
                       <td><?= $matrix->description ?></td>
-                      <td><?= $matrix->level ?></td>
                       <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
                         <th>
                           <a 

@@ -76,7 +76,8 @@ class Matrix_model extends CI_Model {
 								JOIN skill_dictionaries b ON a.skill_id = b.id
 								WHERE a.job_id = $jobtitle
 								AND a.deleted_at IS NULL
-								AND b.deleted_at IS NULL")->result();		
+								AND b.deleted_at IS NULL
+								ORDER BY a.level ASC")->result();		
 	}
 
 	/**
