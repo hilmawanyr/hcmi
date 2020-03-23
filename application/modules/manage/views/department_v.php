@@ -31,12 +31,12 @@
                   <td><?= $no ?></td>
                   <td><?= $department->name ?></td>
                   <td>
-                      <button
+                      <!-- <button
                         data-toggle="modal"
                         data-target="#actionModal"
                         onclick="edit(1,<?= $department->id ?>)"
                         class="btn btn-default"><i class="fa fa-edit"></i>
-                      </button>
+                      </button> -->
                       <a
                         href="<?= base_url('department/'.$department->id.'/section') ?>"
                         class="btn btn-default"><i class="fa fa-plus"></i>
