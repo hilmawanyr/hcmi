@@ -161,11 +161,16 @@ class Employes extends CI_Controller {
 		// check whether NIK was exist
 		if ($data['nik'] != $hiddenNik) {
 			$this->_is_nik_exist($data['nik']);
+			$this->db->delete('employee_relations', ['nik' => $hiddenNik]);
 		}
 
 		$this->db->where('id', $id)->update('employes',$data);
 
-		$this->_update_employe_relation($data['nik'], $data['head']);
+		if ($data['nik'] != $hiddenNik) {
+			$this->_store_employe_relation($data['head'], $data['nik']);
+		} else {
+			$this->_update_employe_relation($data['nik'], $hiddenNik, $data['head']);
+		}
 
 		$this->session->set_flashdata('success_update_data', 'Update successfully!');
 		redirect(base_url('employes'));
@@ -176,9 +181,10 @@ class Employes extends CI_Controller {
 	 * @param 
 	 *
 	 */
-	private function _update_employe_relation($nik, $head) : void
-	{
-		$this->db->update('employee_relations', ['nik' => $nik, 'head' => $head], ['nik' => $nik]);
+	private function _update_employe_relation($nik, $early_nik, $head) : void
+	{	
+		$this->db->where('nik' , $early_nik);
+		$this->db->update('employee_relations', ['head' => $head]);
 		return;
 	}
 

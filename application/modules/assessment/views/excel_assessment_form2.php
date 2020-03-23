@@ -13,7 +13,7 @@ $excel->setActiveSheetIndex(0);
 $excel->getActiveSheet()->setCellValue('A1', ' Form No : AF-'.$jobtitle.'-'.$activeyear);
 
 //border
-$excel->getActiveSheet()->getStyle('A2:H'.(count($employee)+3).'')->applyFromArray($BStyle);
+$excel->getActiveSheet()->getStyle('A2:I'.(count($employee)+3).'')->applyFromArray($BStyle);
 $excel->getActiveSheet()->getStyle('A1')->applyFromArray($BStyle);
 
 //name the worksheet
@@ -28,19 +28,20 @@ $initColumn       = "C";
 $dictionaryNumber = count($dictionary);
 
 foreach ($dictionary as $dict) {
-	$excel->getActiveSheet()->setCellValue($initColumn.'3', $dict->name_id);
-	$excel->getActiveSheet()->setCellValue($arrayColumn[$dictionaryNumber+2].'3', 'Nilai Absolut');
-	$initColumn++;
+    $excel->getActiveSheet()->setCellValue($initColumn.'3', $dict->name_id);
+    $excel->getActiveSheet()->setCellValue($arrayColumn[$dictionaryNumber+2].'3', 'Nilai Absolut');
+    $excel->getActiveSheet()->setCellValue($arrayColumn[$dictionaryNumber+3].'3', 'Level');
+    $initColumn++;
 }
 
 $num = 4;
 foreach ($employee as $employe) {
-	$excel->getActiveSheet()->setCellValue('A'.$num, $employe->nik);
-	$excel->getActiveSheet()->setCellValue('B'.$num, $employe->name);
+    $excel->getActiveSheet()->setCellValue('A'.$num, $employe->nik);
+    $excel->getActiveSheet()->setCellValue('B'.$num, $employe->name);
 
-	$initColumn2 = "C";
-	foreach ($dictionary as $dicts) {
-		// get assessment form to get its ID
+    $initColumn2 = "C";
+    foreach ($dictionary as $dicts) {
+        // get assessment form to get its ID
         $assessmentForm = $this->db->where('nik', $employe->nik)->like('code',$activeyear,'before')->get('assessment_forms')->row();
         
         // its ID will use to get detail form question
@@ -67,15 +68,16 @@ foreach ($employee as $employe) {
         foreach ($allPoint as $valpoint) {
             $constall = $constall + (($valpoint->poin * $valpoint->weight) / 5);
         }
-		
-		$excel->getActiveSheet()->setCellValue($initColumn2.$num, $pointPerCompetency);
-		$initColumn2++;
-	}
-	$excel->getActiveSheet()->setCellValue('H'.$num, $constall);
-	$num++;
+        
+        $excel->getActiveSheet()->setCellValue($initColumn2.$num, $pointPerCompetency);
+        $initColumn2++;
+    }
+    $excel->getActiveSheet()->setCellValue('H'.$num, $constall);
+    $excel->getActiveSheet()->setCellValue('I'.$num, get_assessment_grade($constall));
+    $num++;
 }
 
-$excel->getActiveSheet()->mergeCells('A2:H2');
+$excel->getActiveSheet()->mergeCells('A2:I2');
 
 //align
 $style = array(

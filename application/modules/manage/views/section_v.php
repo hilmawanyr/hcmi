@@ -76,11 +76,11 @@
                         <td><?= $section->name ?></td>
                         <?php if ($userSession['group'] != 3 && ($userSession['level'] != 2 || $userSession['level'] != 3)) { ?>
                           <th>
-                            <button 
+                            <!-- <button 
                               class="btn btn-default"
                               data-toggle="modal"
                               data-target="#actionModal"
-                              onclick="action('1','<?= $section->id ?>')"><i class="fa fa-edit"></i></button>
+                              onclick="action('1','<?= $section->id ?>')"><i class="fa fa-edit"></i></button> -->
                             <a 
                               class="btn btn-default" 
                               href="<?= base_url('section/'.$section->id.'/jobtitle') ?>">
