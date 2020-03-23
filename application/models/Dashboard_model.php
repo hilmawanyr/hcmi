@@ -53,6 +53,53 @@ class Dashboard_model extends CI_Model {
 		}		
 	}
 
+	public function get_participants_by_head(int $nik=0) : object
+	{	
+		$this->db->select("em.*");
+		$this->db->from("employee_relations emr");
+		$this->db->join("employes em","emr.nik = em.nik");
+		$this->db->where("grade <=","3");
+		$this->db->where_in("emr.head", $this->get_head($nik));
+		$all_team = $this->db->get();
+
+		return $all_team;
+	}
+
+	public function get_head(int $nik=0) : array 
+	{
+		$head = array($nik);
+		$filter = array();
+		$filter_temp = array();
+
+		$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
+			JOIN employes em ON emr.nik = em.nik  WHERE head = ".$nik)->result();
+
+		foreach ($team as $key => $value) {
+			array_push($filter,$value->nik);
+		}
+
+		// 7 patokan kira2
+		for ($i=0; $i < 5; $i++) {	
+			$y = count($filter);
+			for ($i=0; $i < $y ; $i++) { 
+				
+				$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
+										JOIN employes em ON emr.nik = em.nik  WHERE head = ".$filter[$i])->result();
+
+				if (count($team) > 0) {
+					foreach ($team as $key => $value) {
+						array_push($filter_temp,$value->nik);
+					}
+					array_push($head, $filter[$i]);
+				}
+			}
+			$filter = $filter_temp;
+			$filter_temp = array();
+		}
+
+		return $head;
+	}
+
 	/**
 	 * Get number of uncomplete assessment
 	 * @param bool $notAdminOrHR
@@ -383,6 +430,18 @@ class Dashboard_model extends CI_Model {
 		}
 
 		return $fixArray;
+	}
+
+	public function jobtitle_chart(int $nik=0) : array
+	{
+		$this->db->select("s.name as title, count(em.nik) as amount");
+		$this->db->from("employee_relations emr");
+		$this->db->join("employes em","emr.nik = em.nik");
+		$this->db->join("job_title jt","jt.id = em.job_title_id","left");
+		$this->db->where("grade <=","3");
+		$this->db->where_in("emr.head", $this->get_head($nik));
+		$this->db->group_by("em.job_title_id");
+		$all_team = $this->db->get()->result();
 	}
 
 	/**

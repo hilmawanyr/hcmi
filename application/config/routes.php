@@ -64,7 +64,14 @@ $route['print_auth_log'] = 'auth/authentication/print_log';
 $route['print_auth_log/(:any)'] = 'auth/authentication/print_log/$1';
 
 $route['dashboard'] = 'dashboard';
-$route['dashboard/(:any)/is_admin_or_hr/(:int)/section'] = 'dashboard/jobtitle_chart/$1/$2';
+$route['dashboard/jobtitle_chart/(:any)'] = 'dashboard/jobtitle_chart/$1';  // yg ini -- kita liat di browser ya -- via google meet
+// masih 500 tum ?
+// tunggu
+// N: oke di insert dulu boleh tum query nya (https://pastebin.com/MPYixDyX)
+// H: oke udah
+// N: masih error 500 tum 
+// bentar tum. subuhan 
+// N : yuk subuhan dulu
 $route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
