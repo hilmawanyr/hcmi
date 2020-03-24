@@ -124,7 +124,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="jobtitle">Grade</label>
+            <label for="grade">Grade</label>
             <select name="grade" class="form-control" style="width: 100%" id="grade" required="">
               <option value="" disabled="" selected=""></option>
               <?php for ($i=1; $i < 8; $i++) : ?>
@@ -133,7 +133,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="jobtitle">Head</label>
+            <label for="head">Head</label>
             <input type="text" class="form-control" id="head" value="" name="head" required="">
           </div>
         </div>

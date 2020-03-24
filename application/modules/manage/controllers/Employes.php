@@ -169,7 +169,13 @@ class Employes extends CI_Controller {
 		if ($data['nik'] != $hiddenNik) {
 			$this->_store_employe_relation($data['head'], $data['nik']);
 		} else {
-			$this->_update_employe_relation($data['nik'], $hiddenNik, $data['head']);
+			// check whether the employee has a head before
+			$is_employee_has_boss = $this->db->get_where('employee_relations', ['nik' => $hiddenNik])->num_rows();
+			if ($is_employee_has_boss > 0) {
+				$this->_update_employe_relation($data['nik'], $hiddenNik, $data['head']);
+			} else {
+				$this->_store_employe_relation($data['head'], $hiddenNik);
+			}
 		}
 
 		$this->session->set_flashdata('success_update_data', 'Update successfully!');
