@@ -303,6 +303,72 @@ class Assessment_model extends CI_Model {
 	{
 		return $this->db->get('poin_grades')->result();		
 	}
+
+	public function get_jobtitle_by_head(int $nik=0) : array 
+	{
+		$this->db->select('
+			a.job_title_id, 
+			a.section_id,
+			a.grade,
+			b.name as jobtitleName,
+			c.name as sectionName,
+			count(a.id) as numberOfPeople');
+		$this->db->from('employes a');
+		$this->db->join('employee_relations emr', 'emr.nik = a.nik');
+		$this->db->join('job_titles b', 'a.job_title_id = b.id');
+		$this->db->join('sections c', 'c.id = a.section_id');
+		$this->db->where_in('emr.head', $this->get_head($nik));
+		$this->db->group_by('a.job_title_id, a.section_id, a.grade');
+		$this->db->order_by('a.grade', 'asc');
+		return $this->db->get()->result();
+	}
+
+	public function get_partisipant(int $nik=0, int $job_id=0) : array 
+	{
+		$this->db->select('a.*');
+		$this->db->from('employes a');
+		$this->db->join('employee_relations emr', 'emr.nik = a.nik');
+		$this->db->where_in('emr.head', $this->get_head($nik));
+		$this->db->where('a.job_title_id', $job_id);
+		$this->db->order_by('a.name', 'asc');
+		return $this->db->get()->result();
+	}
+
+	public function get_head(int $nik=0) : array 
+	{
+		$head = array($nik);
+		$filter = array();
+		$filter_temp = array();
+
+		$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
+			JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$nik)->result();
+
+		foreach ($team as $key => $value) {
+			array_push($filter,$value->nik);
+		}
+
+		// 7 patokan kira2
+		for ($i=0; $i < 5; $i++) {	
+			$y = count($filter);
+			for ($i=0; $i < $y ; $i++) { 
+				
+				$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
+										JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$filter[$i])->result();
+
+				if (count($team) > 0) {
+					foreach ($team as $key => $value) {
+						array_push($filter_temp,$value->nik);
+					}
+					array_push($head, $filter[$i]);
+				}
+			}
+			$filter = $filter_temp;
+			$filter_temp = array();
+		}
+
+		return $head;
+	}
+
 }
 
 /* End of file Assessment.php */

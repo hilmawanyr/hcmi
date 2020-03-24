@@ -181,9 +181,10 @@ class Employes extends CI_Controller {
 	 * @param 
 	 *
 	 */
-	private function _update_employe_relation($nik, $earlyNik, $head) : void
-	{
-		$this->db->update('employee_relations', ['nik' => $nik, 'head' => $head], ['nik' => $earlyNik]);
+	private function _update_employe_relation($nik, $early_nik, $head) : void
+	{	
+		$this->db->where('nik' , $early_nik);
+		$this->db->update('employee_relations', ['head' => $head]);
 		return;
 	}
 

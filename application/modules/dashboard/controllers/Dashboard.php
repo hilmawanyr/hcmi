@@ -13,6 +13,7 @@ class Dashboard extends CI_Controller {
         }
 
         $loginSession         = $this->session->userdata('login_session');
+        $this->nik            = $loginSession['nik'];
         $this->group          = $loginSession['group'];
         $this->level          = $loginSession['level'];
         $this->grade          = $loginSession['grade'];
@@ -26,6 +27,8 @@ class Dashboard extends CI_Controller {
 
 	public function index()
 	{
+        // var_dump($this->dashboard->get_participants_by_head($this->nik)->result());die();
+
         $this->load->model('manage_model','manage');
         $data['informations']   = $this->manage->get_information()->result();
         $data['group']          = $this->group;
@@ -41,25 +44,9 @@ class Dashboard extends CI_Controller {
 
         // for login as participant
         } else {
-            // if login as assisstant manager or senior assistant manager
-            if ($this->position_grade > 3 && $this->position_grade < 7) {
-                $data['participants'] = $this->dashboard->get_participants($this->section)->num_rows();
-                $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->section);
-                $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->section);
-
-            // if login upper of asisstant manager (MGR, GM, ...)
-            } elseif ($this->position_grade > 6 && $this->position_grade < 9) {
-                $data['participants'] = $this->dashboard->get_participants(1, $this->department)->num_rows();
-                $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->department);
-                $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->department);
-
-            // if login as DIR and higher
-            } elseif ($this->position_grade > 8) {
-                $data['participants'] = $this->dashboard->get_participants(1)->num_rows();
-                $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete(TRUE, $this->department);
-                $data['completedAssessment']      = $this->dashboard->complete(TRUE, $this->department);
-            }
-            
+            $data['participants'] = $this->dashboard->get_participants_by_head($this->nik)->num_rows();
+            $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete2(TRUE);
+            $data['completedAssessment']      = $this->dashboard->complete2(TRUE);
         }
 
         $data['uncompletePercentage'] = ($data['assessmentThatUncomplete']/$data['participants']) * 100;
@@ -75,12 +62,12 @@ class Dashboard extends CI_Controller {
      * @param int $section
      * @return void
      */
-    public function jobtitle_chart(string $adminOrHR='true', int $section=0) : void
+    public function jobtitle_chart(string $adminOrHR='true', int $nik=0) : void
     {
         if ($adminOrHR == 'true') {
             $datas = $this->dashboard->employe_per_jobtitle();    
         } else {
-            $datas = $this->dashboard->employe_per_jobtitle(false, $section, $this->position);
+            $datas = $this->dashboard->jobtitle_chart($nik);
         }
         
         foreach ($datas as $data) {
@@ -104,7 +91,7 @@ class Dashboard extends CI_Controller {
         if ($adminOrHR == 'true') {
             $datas = $this->dashboard->employe_per_grade();    
         } else {
-            $datas = $this->dashboard->employe_per_grade(false, $section);
+            $datas = $this->dashboard->employe_per_grade2(false, $section);
         }
 
         foreach ($datas as $data) {

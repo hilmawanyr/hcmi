@@ -31,18 +31,10 @@ class Assessment extends CI_Controller {
 			// for admin and HR
 			case 1:
 			case 2:
-				$getJobtitleList = $this->assessment->jobtitle_by_grade(3);
+				$getJobtitleList = $this->assessment->get_jobtitle_by_head($this->nik);
 				break;
-			// for participant
 			default:
-                // if AM or SAM
-                if ($this->position_grade > 3 && $this->position_grade < 7) {
-                    $getJobtitleList = $this->assessment->jobtitle_by_grade_and_section(3, $this->section);
-                } elseif ($this->position_grade > 6 && $this->position_grade < 9) {
-                    $getJobtitleList = $this->assessment->jobtitle_by_grade_and_department(3, $this->department);
-                } elseif ($this->position_grade > 8) {
-                    $getJobtitleList = $this->assessment->jobtitle_by_director(3, $this->department);
-                }
+                $getJobtitleList = $this->assessment->get_jobtitle_by_head($this->nik);
 				
 				break;
 		}
@@ -63,13 +55,11 @@ class Assessment extends CI_Controller {
 	 */
 	public function form(string $jobtitle) : void
 	{
-		$data['active_year'] = get_active_year();
+        $data['active_year'] = get_active_year();
+        $data['sectionId']   = get_section_by_jobtitle($jobtitle);
+        $data['department']  = get_department_by_section($data['sectionId'])->id;
 
-		$data['sectionId'] = get_section_by_jobtitle($jobtitle);
-
-		$data['department'] = get_department_by_section($data['sectionId'])->id;
-
-		$get_employes = $this->db->get_where('employes',['job_title_id' => $jobtitle]);
+		$get_employes = $this->assessment->get_partisipant($this->nik,$jobtitle);
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
@@ -88,7 +78,7 @@ class Assessment extends CI_Controller {
 		if ($data['dictionary']->num_rows() > 0) {
 			// insert form assessment if those doesn't exist
 			if ($isFormExist->num_rows() < 1) {
-				$this->_generate_form_assessment($get_employes->result(), $jobtitle);
+				$this->_generate_form_assessment($get_employes, $jobtitle);
 			}
 
 			// change value of $get_employe if job_titles has competency matrixes

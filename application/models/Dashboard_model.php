@@ -2,7 +2,7 @@
 
 class Dashboard_model extends CI_Model {
 
-	public $position, $position_grade;
+	public $position, $position_grade, $nik;
 
 	public function __construct()
 	{
@@ -10,6 +10,7 @@ class Dashboard_model extends CI_Model {
 		$loginSession = $this->session->userdata('login_session');
 		$this->position       = $loginSession['position'];
 		$this->position_grade = $loginSession['position_grade'];
+		$this->nik            = $loginSession['nik'];
 	}
 
 	/**
@@ -51,6 +52,57 @@ class Dashboard_model extends CI_Model {
 				}
 				break;
 		}		
+	}
+
+	public function get_participants_by_head(int $nik=0) : object
+	{	
+		$heads = $this->get_head($nik);
+
+		$this->db->select("em.*");
+		$this->db->from("employee_relations emr");
+		$this->db->join("employes em","emr.nik = em.nik");
+		$this->db->where("em.grade <=","3");
+		$this->db->where_in("emr.head", $heads);
+		$all_team = $this->db->get();
+
+		return $all_team;
+	}
+
+	public function get_head(int $nik=0) : array 
+	{
+		$head        = array($nik);
+		$filter      = array();
+		$filter_temp = array();
+
+		$team 	= $this->db->query("SELECT emr.nik FROM employee_relations emr
+									JOIN employes em ON emr.nik = em.nik  
+									WHERE emr.head = ".$nik)->result();
+
+		foreach ($team as $key => $value) {
+			array_push($filter,$value->nik);
+		}
+
+		// 7 patokan kira2
+		for ($i=0; $i < 5; $i++) {	
+			$y = count($filter);
+			for ($i=0; $i < $y ; $i++) { 
+				
+				$team 	= $this->db->query("SELECT emr.nik FROM employee_relations emr
+											JOIN employes em ON emr.nik = em.nik 
+											WHERE emr.head = ".$filter[$i])->result();
+
+				if (count($team) > 0) {
+					foreach ($team as $key => $value) {
+						array_push($filter_temp,$value->nik);
+					}
+					array_push($head, $filter[$i]);
+				}
+			}
+			$filter = $filter_temp;
+			$filter_temp = array();
+		}
+
+		return $head;
 	}
 
 	/**
@@ -135,6 +187,94 @@ class Dashboard_model extends CI_Model {
 		}
 
 		return $uncompleteAssessment + $employeHasntAssessed; 
+	}
+
+	/**
+	 * Get number of uncomplete assessment
+	 * @param bool $notAdminOrHR
+	 * @param int $section
+	 * @return int
+	 */
+	public function uncomplete2(bool $notAdminOrHR=FALSE, int $sectOrDept=0) : int
+	{
+		$activeYear = get_active_year();
+
+		switch ($notAdminOrHR) {
+			case FALSE:
+				$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
+															WHERE nik NOT IN 
+															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
+															AND name NOT LIKE '%admin%'
+															AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
+														)->num_rows();
+
+				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
+															WHERE code LIKE '%$activeYear' 
+															AND code NOT IN 
+															(SELECT code FROM assessment_form_state 
+															WHERE code LIKE '%$activeYear')")->num_rows();
+				break;
+			
+			default:
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$participant = $this->get_participants_by_head($this->nik)->result();
+
+				foreach ($participant as $key => $value) {
+					$participants[] = $value->nik;
+				}
+
+				$employeHasntAssessed = $this->db->select('*')
+												->from('employes')
+												->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
+												->where_in('nik', $participants)
+												->get()->num_rows();
+
+				$uncompleteAssessment = $this->db->select('*')
+												->from('assessment_forms')
+												->where('total_poin')
+												->where_in('nik', $participants)
+												->get()->num_rows();
+
+				break;
+		}
+
+		return $uncompleteAssessment + $employeHasntAssessed; 
+	}
+
+	/**
+	 * Get number of completed assessment
+	 * @param bool $notAdminOrHR
+	 * @param int $sectOrDept
+	 * @return int
+	 */
+	public function complete2(bool $notAdminOrHR=FALSE, int $sectOrDept=0)
+	{
+		$activeYear = get_active_year();
+
+		switch ($notAdminOrHR) {
+			case FALSE:
+				return $this->db->query("SELECT * FROM assessment_forms a 
+										JOIN assessment_validations b ON a.code = b.code 
+										WHERE a.code LIKE '%$activeYear'")->num_rows();
+				break;
+			
+			default:
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$participant = $this->get_participants_by_head($this->nik)->result();
+
+				foreach ($participant as $key => $value) {
+					$participants[] = $value->nik;
+				}
+
+				return $this->db->select('*')
+								->from('assessment_forms')
+								->like('code',$activeYear,'before')
+								->where('total_poin IS NOT NULL', NULL, FALSE)
+								->where_in('nik', $participants)
+								->get()->num_rows();
+				
+				break;
+		}
 	}
 
 	/**
@@ -385,6 +525,21 @@ class Dashboard_model extends CI_Model {
 		return $fixArray;
 	}
 
+	public function jobtitle_chart(int $nik=0) : array
+	{
+		$heads = $this->get_head($nik);
+		$this->db->select("jt.name as job_title, count(em.nik) as amount");
+		$this->db->from("employee_relations emr");
+		$this->db->join("employes em","emr.nik = em.nik");
+		$this->db->join("job_titles jt","jt.id = em.job_title_id","left");
+		$this->db->where("grade <=","3");
+		// $this->db->where('jt.name IS NOT NULL', NULL, FALSE);
+		$this->db->where_in("emr.head", $heads);
+		$this->db->group_by("em.job_title_id");
+		$all_team = $this->db->get()->result();
+		return $all_team;
+	}
+
 	/**
 	 * Get number of employes in each job title
 	 * @param bool $adminOrHR
@@ -428,6 +583,37 @@ class Dashboard_model extends CI_Model {
 										WHERE b.name <> 'admin'
 										GROUP BY b.job_title_id")->result();
 			}
+		}
+	}
+
+	/**
+	 * Get number of employes in each job title
+	 * @param bool $adminOrHR
+	 * @param int $sectOrDept
+	 * @return array
+	 */
+	public function employe_per_grade2(bool $adminOrHR=true, int $sectOrDept=0) : array
+	{
+		if ($adminOrHR) {
+			return $this->db->query("SELECT 
+										grade AS level, 
+										count(nik) AS amount 
+									FROM employes
+									WHERE name <> 'admin'
+									GROUP BY grade")->result();
+		} else {
+			$participant = $this->get_participants_by_head($this->nik)->result();
+
+			foreach ($participant as $key => $value) {
+				$participants[] = $value->nik;
+			}
+
+			return $this->db->select('grade AS level, count(nik) AS amount ')
+							->from('employes')
+							->where('name !=', 'admin')
+							->where_in('nik', $participants)
+							->group_by('grade')
+							->get()->result();
 		}
 	}
 
