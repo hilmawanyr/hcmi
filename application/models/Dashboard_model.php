@@ -216,19 +216,23 @@ class Dashboard_model extends CI_Model {
 				break;
 			
 			default:
-				$heads = $this->get_head($this->nik);
-				$subquery = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$participant = $this->get_participants_by_head($this->nik)->result();
+
+				foreach ($participant as $key => $value) {
+					$participants[] = $value->nik;
+				}
+
 				$employeHasntAssessed = $this->db->select('*')
 												->from('employes')
 												->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
-												->where_in('nik', $heads)
-												->not_like('name','admin')
+												->where_in('nik', $participants)
 												->get()->num_rows();
 
 				$uncompleteAssessment = $this->db->select('*')
 												->from('assessment_forms')
 												->where('total_poin')
-												->where_in('nik', $heads)
+												->where_in('nik', $participants)
 												->get()->num_rows();
 
 				break;
@@ -255,13 +259,18 @@ class Dashboard_model extends CI_Model {
 				break;
 			
 			default:
-				$heads = $this->get_head($this->nik);
-				$subquery = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$participant = $this->get_participants_by_head($this->nik)->result();
+
+				foreach ($participant as $key => $value) {
+					$participants[] = $value->nik;
+				}
+
 				return $this->db->select('*')
 								->from('assessment_forms')
 								->like('code',$activeYear,'before')
 								->where('total_poin IS NOT NULL', NULL, FALSE)
-								->where_in('nik', $heads)
+								->where_in('nik', $participants)
 								->get()->num_rows();
 				
 				break;
