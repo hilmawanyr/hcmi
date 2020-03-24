@@ -341,7 +341,7 @@ class Assessment_model extends CI_Model {
 		$filter_temp = array();
 
 		$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
-			JOIN employes em ON emr.nik = em.nik  WHERE head = ".$nik)->result();
+			JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$nik)->result();
 
 		foreach ($team as $key => $value) {
 			array_push($filter,$value->nik);
@@ -353,7 +353,7 @@ class Assessment_model extends CI_Model {
 			for ($i=0; $i < $y ; $i++) { 
 				
 				$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
-										JOIN employes em ON emr.nik = em.nik  WHERE head = ".$filter[$i])->result();
+										JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$filter[$i])->result();
 
 				if (count($team) > 0) {
 					foreach ($team as $key => $value) {
