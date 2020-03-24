@@ -592,6 +592,37 @@ class Dashboard_model extends CI_Model {
 	 * @param int $sectOrDept
 	 * @return array
 	 */
+	public function employe_per_grade2(bool $adminOrHR=true, int $sectOrDept=0) : array
+	{
+		if ($adminOrHR) {
+			return $this->db->query("SELECT 
+										grade AS level, 
+										count(nik) AS amount 
+									FROM employes
+									WHERE name <> 'admin'
+									GROUP BY grade")->result();
+		} else {
+			$participant = $this->get_participants_by_head($this->nik)->result();
+
+			foreach ($participant as $key => $value) {
+				$participants[] = $value->nik;
+			}
+
+			return $this->db->select('grade AS level, count(nik) AS amount ')
+							->from('employes')
+							->where('name !=', 'admin')
+							->where_in('nik', $participants)
+							->group_by('grade')
+							->get()->result();
+		}
+	}
+
+	/**
+	 * Get number of employes in each job title
+	 * @param bool $adminOrHR
+	 * @param int $sectOrDept
+	 * @return array
+	 */
 	public function employe_per_grade(bool $adminOrHR=true, int $sectOrDept=0) : array
 	{
 		if ($adminOrHR) {
