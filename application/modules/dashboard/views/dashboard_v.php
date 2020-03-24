@@ -120,7 +120,7 @@ $loginSession = $this->session->userdata('login_session');
   var isAdminOrHR = $('#group').val() === '0' ? true : false;
   var section     = $('#group').val();
     
-  var url1        = '<?= base_url() ?>dashboard/jobtitle_chart/'+<?php echo $loginSession['nik']?>;
+  var url1        = '<?= base_url() ?>dashboard/jobtitle_chart/' + isAdminOrHR + '/' + <?= $loginSession['nik']?>;
   $.get(url1, function (response) {
 
     var respon = JSON.parse(response)
