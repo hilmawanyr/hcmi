@@ -91,7 +91,7 @@ class Dashboard extends CI_Controller {
         if ($adminOrHR == 'true') {
             $datas = $this->dashboard->employe_per_grade();    
         } else {
-            $datas = $this->dashboard->employe_per_grade(false, $section);
+            $datas = $this->dashboard->employe_per_grade2(false, $section);
         }
 
         foreach ($datas as $data) {
