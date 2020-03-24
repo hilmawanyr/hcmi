@@ -44,9 +44,9 @@ class Dashboard extends CI_Controller {
 
         // for login as participant
         } else {
-                $data['participants'] = $this->dashboard->get_participants_by_head($this->nik)->num_rows();
-                $data['assessmentThatUncomplete'] = 0;
-                $data['completedAssessment']      = 0;
+            $data['participants'] = $this->dashboard->get_participants_by_head($this->nik)->num_rows();
+            $data['assessmentThatUncomplete'] = $this->dashboard->uncomplete2(TRUE);
+            $data['completedAssessment']      = $this->dashboard->complete2(TRUE);
         }
 
         $data['uncompletePercentage'] = ($data['assessmentThatUncomplete']/$data['participants']) * 100;
@@ -91,7 +91,7 @@ class Dashboard extends CI_Controller {
         if ($adminOrHR == 'true') {
             $datas = $this->dashboard->employe_per_grade();    
         } else {
-            $datas = $this->dashboard->employe_per_grade(false, $section);
+            $datas = $this->dashboard->employe_per_grade2(false, $section);
         }
 
         foreach ($datas as $data) {
