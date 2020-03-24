@@ -55,13 +55,11 @@ class Assessment extends CI_Controller {
 	 */
 	public function form(string $jobtitle) : void
 	{
-		$data['active_year'] = get_active_year();
+        $data['active_year'] = get_active_year();
+        $data['sectionId']   = get_section_by_jobtitle($jobtitle);
+        $data['department']  = get_department_by_section($data['sectionId'])->id;
 
-		$data['sectionId'] = get_section_by_jobtitle($jobtitle);
-
-		$data['department'] = get_department_by_section($data['sectionId'])->id;
-
-		$get_employes = $this->assessment->get_partisipant($jobtitle,$this->nik);
+		$get_employes = $this->assessment->get_partisipant($this->nik,$jobtitle);
 		$data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
 		// load competency
@@ -80,7 +78,7 @@ class Assessment extends CI_Controller {
 		if ($data['dictionary']->num_rows() > 0) {
 			// insert form assessment if those doesn't exist
 			if ($isFormExist->num_rows() < 1) {
-				$this->_generate_form_assessment($get_employes->result(), $jobtitle);
+				$this->_generate_form_assessment($get_employes, $jobtitle);
 			}
 
 			// change value of $get_employe if job_titles has competency matrixes
