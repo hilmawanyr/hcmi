@@ -241,7 +241,9 @@ class Assessment extends CI_Controller {
         $competency = $this->assessment->get_competency_for_assessment($nik, $jobtitle, $skillId, $activeYear);
 
         $data['dictionary'] = $this->db->where('id', $skillId)->get('skill_dictionaries')->row();
-        
+
+        //var_dump($data['dictionary']);die();
+
         // get employe name
         $data['employname'] = $this->db->where('nik', $nik)->get('employes')->row();
         $data['competency'] = $competency;

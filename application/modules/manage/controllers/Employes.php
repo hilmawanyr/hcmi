@@ -164,7 +164,10 @@ class Employes extends CI_Controller {
 			$this->db->delete('employee_relations', ['nik' => $hiddenNik]);
 		}
 
-		$this->db->where('id', $id)->update('employes',$data);
+		$array = $data;
+		unset($array[$key]);
+
+		$this->db->where('id', $id)->update('employes',$array);
 
 		if ($data['nik'] != $hiddenNik) {
 			$this->_store_employe_relation($data['head'], $data['nik']);

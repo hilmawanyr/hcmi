@@ -98,6 +98,11 @@ class Dashboard_model extends CI_Model {
 					array_push($head, $filter[$i]);
 				}
 			}
+			
+			if (count($filter_temp) == 0) {
+				break;
+			}
+
 			$filter = $filter_temp;
 			$filter_temp = array();
 		}
