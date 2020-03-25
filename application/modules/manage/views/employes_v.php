@@ -20,7 +20,7 @@
             class="btn btn-info" 
             data-toggle="modal" 
             data-target="#actionModal"
-            onclick="action('','')">
+            onclick="add()">
             <i class="fa fa-plus"></i> Add Data
           </button>
           <hr>
@@ -58,7 +58,7 @@
                       class="btn btn-warning"
                       data-toggle="modal"
                       data-target="#actionModal"
-                      onclick="action('<?= $employe->nik ?>','1')">
+                      onclick="edit('<?= $employe->nik ?>')">
                       <i class="fa fa-pencil"></i>
                     </button>
                     <!-- <a
@@ -124,7 +124,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="jobtitle">Grade</label>
+            <label for="grade">Grade</label>
             <select name="grade" class="form-control" style="width: 100%" id="grade" required="">
               <option value="" disabled="" selected=""></option>
               <?php for ($i=1; $i < 8; $i++) : ?>
@@ -133,7 +133,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="jobtitle">Head</label>
+            <label for="head">Head</label>
             <input type="text" class="form-control" id="head" value="" name="head" required="">
           </div>
         </div>
@@ -148,54 +148,56 @@
 </div>
 
 <script>
-  function action(id, activity) {
-    if (activity === '') {
-      $('.modal-title').text('Add Employe');
-      $('#btnSubmit').text('Save');
-      $('#isUpdate, #nik, #name, #head').val('');
-      $('#section, #position, #jobtitle, #grade').val(null).trigger('change');
+  $('#section').change(function() {
+    $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $(this).val() +'/'+ $('#position').val(),
+      {}, 
+      function(response) {
+        $('#jobtitle').html(response)
+    })
+  });
 
-    } else {
-      $('.modal-title').text('Edit Employe');
-      $('#btnSubmit').text('Update');
-      $.get('<?= base_url() ?>employe/'+id+'/detail', function(response) {
-        var employe = JSON.parse(response)
-        $('#isUpdate').val(employe.id);
-        $('#nik').val(employe.nik);
-        $('#hidden_nik').val(employe.nik);
-        $('#name').val(employe.name);
-        $('#section').val(employe.section).trigger('change');
-        $('#position').val(employe.position).trigger('change');
-        $('#jobtitle').val(employe.jobtitle).trigger('change');
-        $('#grade').val(employe.grade);
-        $('#head').val(employe.head);
-      })
-    }
+  $('#position').change(function() {
+    $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $('#section').val() +'/'+ $(this).val(),
+      {}, 
+      function(response) {
+        $('#jobtitle').html(response)
+    })
+  });
+
+  function add() {
+    $('.modal-title').text('Add Employe');
+    $('#btnSubmit').text('Save');
+    $('#isUpdate, #nik, #name, #head').val('');
+    $('#section, #position, #jobtitle, #grade').val(null).trigger('change');
   }
 
-  $(document).ready(function($) {
-    $('#section').change(function() {
-      $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $(this).val() +'/'+ $('#position').val(),
-        {}, 
-        function(response) {
-          $('#jobtitle').html(response)
-      })
-    });
+  function edit(id) {
+    $('.modal-title').text('Edit Employe');
+    $('#btnSubmit').text('Update');
+    $.get('<?= base_url() ?>employe/'+id+'/detail', function(response) {
+      var employe = JSON.parse(response)
+      $('#isUpdate').val(employe.id);
+      $('#nik').val(employe.nik);
+      $('#hidden_nik').val(employe.nik);
+      $('#name').val(employe.name);
+      $('#section').val(employe.section).trigger('change');
+      $('#position').val(employe.position).trigger('change');
 
-    $('#position').change(function() {
-      $.get('<?= base_url('manage/employes/get_jobtitle/') ?>' + $('#section').val() +'/'+ $(this).val(),
-        {}, 
-        function(response) {
-          $('#jobtitle').html(response)
-      })
+      $.get('<?= base_url('manage/employes/get_jobtitle/') ?>'+employe.section+'/'+employe.position+'/'+employe.jobtitle, function(res) {
+        $('#jobtitle').html(res);
+        $('#jobtitle').val(employe.jobtitle).trigger('change');
+      });
+
+      $('#grade').val(employe.grade);
+      $('#head').val(employe.head);
     })
+  }
 
-    $('#head').autocomplete({
-      source: '<?= base_url('manage/employes/get_employe');?>',
-      minLength: 3,
-      select: function (evt, ui) {
-        this.form.head.value = ui.item.value;
-      }
-    });
+  $('#head').autocomplete({
+    source: '<?= base_url('manage/employes/get_employe');?>',
+    minLength: 3,
+    select: function (evt, ui) {
+      this.form.head.value = ui.item.value;
+    }
   });
 </script>
