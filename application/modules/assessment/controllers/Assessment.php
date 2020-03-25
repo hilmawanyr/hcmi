@@ -450,7 +450,7 @@ class Assessment extends CI_Controller {
         $data['numberofcolumn'] = count($data['dictionary']) + 3;
         
         // get emlployee base on job title
-        $data['employee']       = $this->db->where('job_title_id', $jobtitleId)->get('employes')->result();
+        $data['employee']       = $this->assessment->get_partisipant($this->nik, $jobtitleId);
         
         $this->load->view('excel_assessment_form2', $data);
     }
