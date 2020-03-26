@@ -98,6 +98,11 @@ class Dashboard_model extends CI_Model {
 					array_push($head, $filter[$i]);
 				}
 			}
+			
+			if (count($filter_temp) == 0) {
+				break;
+			}
+
 			$filter = $filter_temp;
 			$filter_temp = array();
 		}
@@ -206,13 +211,13 @@ class Dashboard_model extends CI_Model {
 															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
 															AND name NOT LIKE '%admin%'
 															AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
-														)->num_rows();
+														);
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
 															WHERE code LIKE '%$activeYear' 
 															AND code NOT IN 
 															(SELECT code FROM assessment_form_state 
-															WHERE code LIKE '%$activeYear')")->num_rows();
+															WHERE code LIKE '%$activeYear')");
 				break;
 			
 			default:
@@ -255,7 +260,7 @@ class Dashboard_model extends CI_Model {
 			case FALSE:
 				return $this->db->query("SELECT * FROM assessment_forms a 
 										JOIN assessment_validations b ON a.code = b.code 
-										WHERE a.code LIKE '%$activeYear'")->num_rows();
+										WHERE a.code LIKE '%$activeYear'");
 				break;
 			
 			default:

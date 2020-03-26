@@ -70,7 +70,12 @@ class Employes extends CI_Controller {
 		$grade     = $this->input->post('grade');
 		$isUpdate  = $this->input->post('isUpdate');
 		$hiddenNik = $this->input->post('hidden_nik');
-		$head      = explode(' - ', $this->input->post('head'))[0];
+		$head      = $this->input->post('head');
+
+		if ($head != "") {
+			$head      = explode(' - ', $this->input->post('head'))[0];	
+		}
+		
 
 		$storedData = [
 			'nik'          => $nik,
@@ -97,8 +102,6 @@ class Employes extends CI_Controller {
 	 */
 	private function _store(array $data) : void
 	{
-		// check whether NIK was exist
-		$this->_is_nik_exist($data['nik']);
 
 		$storedData = array_filter($data, function($arr) {
 			return $arr != 'head';
@@ -106,12 +109,10 @@ class Employes extends CI_Controller {
 
 		$this->db->insert('employes', $storedData);
 
-		$get_last_id = $this->db->insert_id();
-
-		$last_employe = $this->db->get_where('employes', ['id' => $get_last_id])->row();
-
-		// store to employe relation table
-		$this->_store_employe_relation($data['head'], $last_employe->nik);
+		if ($data['nik'] != "") {
+			// store to employe relation table
+			$this->_store_employe_relation($data['head'], $data['nik']);	
+		}
 
 		$this->session->set_flashdata('success_save_data', 'Successfully saved!');
 		redirect(base_url('employes'));
@@ -138,11 +139,11 @@ class Employes extends CI_Controller {
 	 * @param string $nik
 	 * @return void
 	 */
-	private function _is_heads_nik_exist(string $nik, string $headNik) : void
+	private function _is_heads_nik_exist(string $nik, string $head) : void
 	{
-		$check = $this->db->where('nik', $headNik)->get('employes')->num_rows();
+		$check = $this->db->where('nik', $head)->get('employes')->num_rows();
 		if ($check < 1) {
-			$this->db->delete('employes', ['nik' => $nik]);
+			//$this->db->delete('employes', ['nik' => $nik]);
 			$this->session->set_flashdata('fail_save_data', 'Data not saved! The head\'s NIK was not exist!');
 			redirect(base_url('employes'));
 		}
@@ -158,18 +159,21 @@ class Employes extends CI_Controller {
 	 */
 	private function _update(array $data, string $hiddenNik, int $id) : void
 	{
+
 		// check whether NIK was exist
-		if ($data['nik'] != $hiddenNik) {
-			$this->_is_nik_exist($data['nik']);
-			$this->db->delete('employee_relations', ['nik' => $hiddenNik]);
-		}
+		$this->_is_nik_exist($data['nik']);
 
-		$this->db->where('id', $id)->update('employes',$data);
+		$update_data = array_filter($data, function($arr) {
+			return $arr != 'head';
+		}, ARRAY_FILTER_USE_KEY);
 
-		if ($data['nik'] != $hiddenNik) {
-			$this->_store_employe_relation($data['head'], $data['nik']);
+		$this->db->where('nik', $data['nik'])->update('employes',$update_data);
+		
+		// check whether the employee has a head before
+		if ($this->_is_relation_exist($data['nik'])) {
+			$this->_update_employe_relation($data['nik'], $data['head']);
 		} else {
-			$this->_update_employe_relation($data['nik'], $hiddenNik, $data['head']);
+			$this->_store_employe_relation($data['head'], $data['nik']);
 		}
 
 		$this->session->set_flashdata('success_update_data', 'Update successfully!');
@@ -181,9 +185,9 @@ class Employes extends CI_Controller {
 	 * @param 
 	 *
 	 */
-	private function _update_employe_relation($nik, $early_nik, $head) : void
+	private function _update_employe_relation($nik, $head) : void
 	{	
-		$this->db->where('nik' , $early_nik);
+		$this->db->where('nik' , $nik);
 		$this->db->update('employee_relations', ['head' => $head]);
 		return;
 	}
@@ -194,16 +198,19 @@ class Employes extends CI_Controller {
 	 * @param int $position
 	 * @return void
 	 */
-	public function get_jobtitle(int $section, int $position) : void
+	public function get_jobtitle($section=0, $position=0, $jobtitle="") : void
 	{
-		$jobTitle = $this->db->get_where('job_titles',['section' => $section,'position_id' => $position])->result();
-		$list = "<option value='' selected='' disabled=''></option>";
-		foreach($jobTitle as $row) {
-			$list .= "<option value='".$row->id."'>";
-			$list .= $row->name;
-			$list .= "</option>";
+		if ($section != 0 && $position != 0) {
+			$jobTitle = $this->db->get_where('job_titles',['section' => $section,'position_id' => $position])->result();
+			$list = "<option value='' disabled=''></option>";
+			foreach($jobTitle as $row) {
+				$list .= $jobtitle == $row->id ? "<option value='".$row->id."' selected=''>" : "<option value='".$row->id."'>";
+				$list .= $row->name;
+				$list .= "</option>";
+			}
+			echo $list;
 		}
-		echo $list;
+		return;
 	}
 	
 
@@ -215,11 +222,21 @@ class Employes extends CI_Controller {
 	private function _is_nik_exist(string $nik) : void
 	{
 		$check = $this->db->where('nik', $nik)->get('employes')->num_rows();
-		if ($check > 0) {
-			$this->session->set_flashdata('fail_save_data', 'Data not saved! NIK was exist!');
+		if ($check == 0) {
+			$this->session->set_flashdata('fail_save_data', 'Employee Not Found');
 			redirect(base_url('employes'));
 		}
 		return;
+	}
+
+	private function _is_relation_exist(string $nik) : bool
+	{
+		$check = $this->db->where('nik', $nik)->get('employee_relations')->num_rows();
+		if ($check > 0) {
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 
 	/**

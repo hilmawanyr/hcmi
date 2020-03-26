@@ -119,7 +119,7 @@ class Dashboard extends CI_Controller {
                 $data['employes'] = $this->dashboard->get_participants_detail();
             // for login as non admin/HR
             } else {
-                $data['employes'] = $this->dashboard->get_participants_detail($section);
+                $data['employes'] = $this->dashboard->get_participants_by_head($this->nik)->result();
             }
             
         } elseif ($status == 'UNCOMPLETE') {
@@ -129,7 +129,7 @@ class Dashboard extends CI_Controller {
                 $data['employes'] = $this->dashboard->uncomplete_employes(TRUE);
             // for login as non admin/HR
             } else {
-                $data['employes'] = $this->dashboard->uncomplete_employes(FALSE,$section);
+                $data['employes'] = $this->dashboard->uncomplete2(TRUE)->num_rows();
             }
             
         } else {
@@ -139,7 +139,7 @@ class Dashboard extends CI_Controller {
                 $data['employes'] = $this->dashboard->complete_detail(TRUE);
             // for login as non admin/HR
             } else {
-                $data['employes'] = $this->dashboard->complete_detail(FALSE, $section);
+                $data['employes'] = $this->dashboard->complete2(TRUE)->num_rows();
             }
                         
         }

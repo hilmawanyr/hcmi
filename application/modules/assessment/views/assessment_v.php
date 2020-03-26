@@ -6,9 +6,9 @@
     <!-- if AM or SAM -->
     <?php if ($position_grade > 3 && $position_grade < 7) { ?>
 
-      <h3 class="box-title">Department : <?= get_department_by_section($section)->name; ?></h3>
+      <h3 class="box-title"></h3>
       <ol class="breadcrumb">
-        <h3 class="box-title pull-right">Section : <?= get_section($section)->name ?></h3>
+        <h3 class="box-title pull-right"></h3>
       </ol>
     
     <!-- if GM or higher -->
