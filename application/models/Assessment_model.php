@@ -334,14 +334,25 @@ class Assessment_model extends CI_Model {
 		return $this->db->get()->result();
 	}
 
+	public function get_first_state(int $nik=0, int $job_id=0){
+		
+		$head = $this->get_head($nik);
+		$head = implode( ", ", $head);
+
+		$query = $this->db->query("SELECT `emr`.`head`, (SELECT `positions`.`code` FROM `employes` JOIN `positions` ON `employes`.`position_id` = `positions`.`id` WHERE `nik` = `emr`.`head`) as code FROM `employes` `a` JOIN `employee_relations` `emr` ON `emr`.`nik` = `a`.`nik` WHERE `emr`.`head` IN($head) AND `a`.`job_title_id` = $job_id ORDER BY `a`.`name` ASC LIMIT 1")->row();
+
+		return $query->code;
+	}
+
 	public function get_head(int $nik=0) : array 
 	{
-		$head = array($nik);
-		$filter = array();
+		$head        = array($nik);
+		$filter      = array();
 		$filter_temp = array();
 
-		$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
-			JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$nik)->result();
+		$team 	= $this->db->query("SELECT emr.nik FROM employee_relations emr
+									JOIN employes em ON emr.nik = em.nik  
+									WHERE emr.head = ".$nik)->result();
 
 		foreach ($team as $key => $value) {
 			array_push($filter,$value->nik);
@@ -352,8 +363,9 @@ class Assessment_model extends CI_Model {
 			$y = count($filter);
 			for ($i=0; $i < $y ; $i++) { 
 				
-				$team = $this->db->query("SELECT emr.nik FROM employee_relations emr
-										JOIN employes em ON emr.nik = em.nik  WHERE emr.head = ".$filter[$i])->result();
+				$team 	= $this->db->query("SELECT emr.nik FROM employee_relations emr
+											JOIN employes em ON emr.nik = em.nik 
+											WHERE emr.head = ".$filter[$i])->result();
 
 				if (count($team) > 0) {
 					foreach ($team as $key => $value) {
@@ -362,11 +374,24 @@ class Assessment_model extends CI_Model {
 					array_push($head, $filter[$i]);
 				}
 			}
+			
+			if (count($filter_temp) == 0) {
+				break;
+			}
+
 			$filter = $filter_temp;
 			$filter_temp = array();
 		}
 
 		return $head;
+	}
+
+	public function get_continue_state(int $nik=0) : string {
+		$query = $this->db->query("SELECT er.head, (SELECT p.code FROM employes e JOIN positions p ON e.position_id = p.id WHERE e.nik = er.head) as code 
+								FROM employee_relations er 
+								JOIN employes em ON er.nik = em.nik 
+								WHERE er.nik = $nik")->row();
+		return $query->code;
 	}
 
 }

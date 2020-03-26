@@ -101,7 +101,7 @@
           </div>
           <div class="form-group">
             <label for="section">Section</label>
-            <select name="section" class="form-control select2" style="width: 100%" id="section" required="">
+            <select name="section" class="form-control select2" style="width: 100%" id="section">
               <option value="" disabled="" selected=""></option>
               <?php foreach ($sections as $section) : ?>
                 <option value="<?= $section->id ?>"><?= $section->name ?></option>
@@ -110,7 +110,7 @@
           </div>
           <div class="form-group">
             <label for="position">Position</label>
-            <select name="position" class="form-control select2" style="width: 100%" id="position" required="">
+            <select name="position" class="form-control select2" style="width: 100%" id="position">
               <option value="" disabled="" selected=""></option>
               <?php foreach ($positions as $position) : ?>
                 <option value="<?= $position->id ?>"><?= $position->name ?></option>
@@ -125,7 +125,7 @@
           </div>
           <div class="form-group">
             <label for="grade">Grade</label>
-            <select name="grade" class="form-control" style="width: 100%" id="grade" required="">
+            <select name="grade" class="form-control" style="width: 100%" id="grade">
               <option value="" disabled="" selected=""></option>
               <?php for ($i=1; $i < 8; $i++) : ?>
                 <option value="<?= $i ?>"><?= $i ?></option>
@@ -134,7 +134,7 @@
           </div>
           <div class="form-group">
             <label for="head">Head</label>
-            <input type="text" class="form-control" id="head" value="" name="head" required="">
+            <input type="text" class="form-control" id="head" value="" name="head">
           </div>
         </div>
         <div class="modal-footer">

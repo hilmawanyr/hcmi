@@ -143,7 +143,7 @@ class Assessment extends CI_Controller {
 									$employe->nik
 								);
 			if ($isEmployeHasForm < 1) {
-                $state = $this->_get_workflow_state();
+                $state = $this->_get_workflow_state("",$jobtitle);
 
 				// create an array of assessment form data to make insert batch
 				$assessmentForm[] = [
@@ -173,24 +173,13 @@ class Assessment extends CI_Controller {
      * 
      * @return void
      */
-    private function _get_workflow_state(string $state="")
+    private function _get_workflow_state(string $state="",int $job_title=0)
     {
-        $level = 0;
-        if ($state != "") {
-            $assment_state = $this->db->query("SELECT * FROM workflow_state WHERE state = '$state' LIMIT 1")->row();
-            $level = $assment_state->level;
-        }
-
-        $states = $this->db->query("SELECT * FROM workflow_state WHERE level > '$level' ORDER BY level ASC")->result();
-        foreach ($states as $value) {
-            $check  = $this->db->query("SELECT em.position_id FROM employes em 
-                                        JOIN positions pos ON em.position_id = pos.id
-                                        WHERE em.dept_id = '$this->department'
-                                        AND pos.code = '$value->state'
-                                        GROUP BY em.position_id")->num_rows();
-            if ($check >= 1) {
-                return $value->state;
-            }
+        
+        if ($state == "") {
+            return $this->assessment->get_first_state($this->nik, $job_title);
+        }else{
+            return $this->assessment->get_continue_state($this->nik);
         }
     }
 
@@ -417,7 +406,7 @@ class Assessment extends CI_Controller {
     {
         $code_form            = 'AF-'.$jobtitleId.'-'.get_active_year();
         $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
-        $state                = $this->_get_workflow_state($get_assessment_state->state);
+        $state                = $this->_get_workflow_state($get_assessment_state->state, $jobtitleId);
 
         if ($state == 'GM' ||  $state == 'DIR') {
             $state = 'DONE';

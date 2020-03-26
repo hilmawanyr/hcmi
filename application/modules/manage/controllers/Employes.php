@@ -102,8 +102,6 @@ class Employes extends CI_Controller {
 	 */
 	private function _store(array $data) : void
 	{
-		// check whether NIK was exist
-		$this->_is_nik_exist($data['nik']);
 
 		$storedData = array_filter($data, function($arr) {
 			return $arr != 'head';
@@ -111,13 +109,9 @@ class Employes extends CI_Controller {
 
 		$this->db->insert('employes', $storedData);
 
-		$get_last_id = $this->db->insert_id();
-
-		$last_employe = $this->db->get_where('employes', ['id' => $get_last_id])->row();
-
 		if ($data['nik'] != "") {
 			// store to employe relation table
-			$this->_store_employe_relation($data['head'], $last_employe->nik);	
+			$this->_store_employe_relation($data['head'], $data['nik']);	
 		}
 
 		$this->session->set_flashdata('success_save_data', 'Successfully saved!');
