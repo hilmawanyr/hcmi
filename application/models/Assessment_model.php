@@ -310,6 +310,7 @@ class Assessment_model extends CI_Model {
 			a.job_title_id, 
 			a.section_id,
 			a.grade,
+			emr.head,
 			b.name as jobtitleName,
 			c.name as sectionName,
 			count(a.id) as numberOfPeople');
@@ -318,7 +319,7 @@ class Assessment_model extends CI_Model {
 		$this->db->join('job_titles b', 'a.job_title_id = b.id');
 		$this->db->join('sections c', 'c.id = a.section_id');
 		$this->db->where_in('emr.head', $this->get_head($nik));
-		$this->db->group_by('a.job_title_id, a.section_id, a.grade');
+		$this->db->group_by('a.job_title_id, a.section_id, a.grade, emr.head');
 		$this->db->order_by('a.grade', 'asc');
 		return $this->db->get()->result();
 	}

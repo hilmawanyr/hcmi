@@ -37,6 +37,13 @@
             <th>Job Title</th>
             <th>Employes</th>
             <th>Section</th>
+
+            <!-- if login as manager and upper -->
+            <?php if ($position_grade > 5) : ?>
+            <th>Supervisor</th>
+            <?php endif; ?>
+            <!-- end if -->
+
             <!-- if user is not a participant -->
             <?php if ($position_grade > 7) { ?>
             <th>Department</th>
@@ -55,6 +62,13 @@
               <td><?= $row->jobtitleName ?></td>
               <td><?= $row->numberOfPeople ?></td>
               <td><?= get_section($row->section_id)->name ?></td>
+
+              <!-- if login as manager and upper -->
+              <?php if ($position_grade > 5) : ?>
+              <td><?= user_name($row->head) ?></td>
+              <?php endif; ?>
+              <!-- end if -->
+
               <!-- if user is not a participant -->
               <?php if ($position_grade > 7) { ?>
               <td><?= get_department(get_section($row->section_id)->dept_id) ?></td>
