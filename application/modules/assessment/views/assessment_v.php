@@ -35,7 +35,7 @@
           <tr>
             <th>Grade</th>
             <th>Job Title</th>
-            <th>Employes</th>
+            <th>Total Employes</th>
             <th>Section</th>
 
             <!-- if login as manager and upper -->
@@ -46,7 +46,7 @@
             <!-- end if -->
 
             <th>Percentage of Filling</th>
-            <th>Filled By</th>
+            <th>Process on</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -60,16 +60,16 @@
 
               <!-- if login as manager and upper -->
               <?php if ($position_grade > 5) : ?>
-              <td><?= user_name($row->head) ?></td>
+              <td><?= user_name(explode('-',$row->code)[3]) ?></td>
               <td><?= get_department(get_section($row->section_id)->dept_id) ?></td>
               <?php endif; ?>
               <!-- end if -->
 
-              <td><?= is_form_complete($row->job_title_id) ?> %</td>
-              <td><?= get_filling_state('AF-'.$row->job_title_id.'-'.get_active_year()) ?></td>
+              <td><?= is_form_complete($row->job_title_id, $row->head) ?> %</td>
+              <td><?= get_filling_state('AF-'.$row->job_title_id.'-'.get_active_year().'-'.$row->head) ?></td>
               <td>
                 <a 
-                  href="<?= base_url('form/'.$row->job_title_id) ?>" 
+                  href="<?= base_url('form/'.'AF-'.$row->job_title_id.'-'.get_active_year().'-'.$row->head) ?>" 
                   class="btn btn-info">
                   <i class="fa fa-file-text-o"></i> Form
                 </a>

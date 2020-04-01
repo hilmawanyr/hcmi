@@ -64,25 +64,24 @@ $route['print_auth_log'] = 'auth/authentication/print_log';
 $route['print_auth_log/(:any)'] = 'auth/authentication/print_log/$1';
 
 $route['dashboard'] = 'dashboard';
-$route['dashboard/jobtitle_chart/(:any)'] = 'dashboard/jobtitle_chart/$1';  // yg ini -- kita liat di browser ya -- via google meet
-// masih 500 tum ?
-// tunggu
-// N: oke di insert dulu boleh tum query nya (https://pastebin.com/MPYixDyX)
-// H: oke udah
-// N: masih error 500 tum 
-// bentar tum. subuhan 
-// N : yuk subuhan dulu
+$route['dashboard/jobtitle_chart/(:any)'] = 'dashboard/jobtitle_chart/$1';  
 $route['dashboard/(:any)/status/(:num)/section'] = 'dashboard/see_detail/$1/$2';
 
 $route['assessment'] = 'assessment';
 $route['assessment/reset'] = 'manage/reset';
 $route['assessment/reset/submit'] = 'manage/reset/submit';
 $route['assessment/reset/list/job'] = 'manage/reset/list_job';
-$route['form/(:num)'] = 'assessment/form/$1';
+$route['form/(:any)'] = 'assessment/form/$1';
 $route['form/upload'] = 'assessment/upload';
 $route['nik/(:num)/jobtitle/(:num)/competency/(:num)/assessment'] = 'assessment/get_competency/$1/$2/$3';
 $route['assessment/(:num)/competency/(:any)/nik/(:num)/jobid'] = 'assessment/see_poin/$1/$2/$3';
 $route['store_poin'] = 'assessment/insert_poin';
+$route['assessment/form_list'] = 'assessment/form_list';
+$route['assessment/setup_supervisor'] = 'assessment/setup_supervisor';
+$route['assessment/create_employee_relation'] = 'assessment/create_employee_relation';
+$route['assessment/employe'] = 'assessment/employee_list';
+$route['form/(:any)/see_detail'] = 'assessment/see_detail/$1';
+$route['form/(:any)/remove'] = 'assessment/remove_form/$1';
 // $route['submit_form/(:num)'] = 'assessment/submit_form/$1';
 $route['submit_form/(:num)'] = 'assessment/submit_form_2/$1';
 $route['export_to_excel/(:num)'] = 'assessment/export_assessment_to_excel/$1';

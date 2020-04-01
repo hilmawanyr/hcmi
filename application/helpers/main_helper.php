@@ -100,15 +100,15 @@
 	 * @param int $jobtitleId
 	 * @return int
 	 */
-	function is_form_complete(int $jobtitleId) : int
+	function is_form_complete(int $jobtitleId, string $spv) : int
 	{
 		$CI =& get_instance();
 		$activeYear = get_active_year();
 
-		$totalForm 	= $CI->db->where('code', 'AF-'.$jobtitleId.'-'.$activeYear)
+		$totalForm 	= $CI->db->where('code', 'AF-'.$jobtitleId.'-'.$activeYear.'-'.$spv)
 								->get('assessment_forms')->num_rows();
 
-		$totalComplete 	= $CI->db->where('code', 'AF-'.$jobtitleId.'-'.$activeYear)
+		$totalComplete 	= $CI->db->where('code', 'AF-'.$jobtitleId.'-'.$activeYear.'-'.$spv)
 									->where('total_poin IS NOT NULL', NULL, FALSE)
 									->get('assessment_forms')->num_rows();
 		// create percentage
@@ -142,7 +142,7 @@
 	function is_value_complete($amount, $nik, $year)
     {
     	$CI =& get_instance();
-        $formId = $CI->db->where('nik', $nik)->like('code',$year,'before')->get('assessment_forms')->row();
+        $formId = $CI->db->where('nik', $nik)->like('code',$year,'both')->get('assessment_forms')->row();
         
         if (isset($formId)) {
         	$filledCompetency = $CI->db->query("SELECT COUNT(distinct b.id_dictionary) AS totalFilled 
@@ -310,4 +310,21 @@
 		}
 
 		return $state;
+	}
+
+	function get_position_name($id)
+	{
+		$CI =& get_instance();
+		return $CI->db->get_where('positions', ['id' => $id])->row()->name;
+	}
+
+	function debug($value, $is_exit=0)
+	{
+		echo "<pre>";
+		print_r ($value);
+		echo "</pre>";
+
+		if ($is_exit != 0) {
+			die();	
+		}
 	}
