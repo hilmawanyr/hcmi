@@ -208,20 +208,19 @@ class Dashboard_model extends CI_Model {
 			case FALSE:
 				$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
 															WHERE nik NOT IN 
-															(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
+																(SELECT nik FROM assessment_forms 
+																WHERE code LIKE '%$activeYear%')
 															AND name NOT LIKE '%admin%'
 															AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
-														);
+														)->num_rows();
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
-															WHERE code LIKE '%$activeYear' 
-															AND code NOT IN 
-															(SELECT code FROM assessment_form_state 
-															WHERE code LIKE '%$activeYear')");
+															WHERE code LIKE '%$activeYear%' 
+															AND total_poin IS NULL")->num_rows();
 				break;
 			
 			default:
-				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%'";
 				$participant = $this->get_participants_by_head($this->nik)->result();
 
 				foreach ($participant as $key => $value) {
@@ -259,12 +258,12 @@ class Dashboard_model extends CI_Model {
 		switch ($notAdminOrHR) {
 			case FALSE:
 				return $this->db->query("SELECT * FROM assessment_forms a 
-										JOIN assessment_validations b ON a.code = b.code 
-										WHERE a.code LIKE '%$activeYear'");
+										WHERE a.code LIKE '%$activeYear%'
+										AND total_poin IS NOT NULL")->num_rows();
 				break;
 			
 			default:
-				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear'";
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%'";
 				$participant = $this->get_participants_by_head($this->nik)->result();
 
 				foreach ($participant as $key => $value) {
@@ -273,7 +272,7 @@ class Dashboard_model extends CI_Model {
 
 				return $this->db->select('*')
 								->from('assessment_forms')
-								->like('code',$activeYear,'before')
+								->like('code',$activeYear,'both')
 								->where('total_poin IS NOT NULL', NULL, FALSE)
 								->where_in('nik', $participants)
 								->get()->num_rows();
@@ -551,7 +550,7 @@ class Dashboard_model extends CI_Model {
 	 * @param int $sectOrDept
 	 * @return array
 	 */
-	public function employe_per_jobtitle(bool $adminOrHR=true, int $sectOrDept=0, int $positions) : array
+	public function employe_per_jobtitle(bool $adminOrHR=true, int $sectOrDept=0) : array
 	{
 		if ($adminOrHR) {
 			return $this->db->query("SELECT 
