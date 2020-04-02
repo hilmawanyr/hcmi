@@ -472,14 +472,13 @@ class Assessment_model extends CI_Model {
 			af.code,
 			b.name as dept_name,
 			c.name as section_name,
-			d.name as position_name,
 			count(em.id) as number_of_participant');
 		$this->db->from('employes em');
 		$this->db->join('assessment_forms af', 'em.nik = af.nik');
 		$this->db->join('departements b', 'em.dept_id = b.id');
 		$this->db->join('sections c', 'c.id = em.section_id');
 		$this->db->join('positions d', 'd.id = em.position_id');
-		$this->db->group_by('af.code, em.dept_id, em.section_id, em.position_id, em.grade');
+		$this->db->group_by('af.code, em.dept_id, em.section_id, em.grade');
 		$this->db->order_by('af.code', 'asc');
 		return $this->db->get()->result();
 	}
