@@ -69,7 +69,7 @@
           <i class="ion ion-person-add"></i>
         </div>
         <a 
-          href="<?= "#" //base_url('dashboard/UNCOMPLETE/status/'.$groupLog.'/section') ?>" 
+          href="<?= base_url('dashboard/UNCOMPLETE/status/'.$groupLog.'/section') ?>" 
           class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -87,7 +87,7 @@
           <i class="ion ion-stats-bars"></i>
         </div>
         <a 
-          href="<?= "#" //base_url('dashboard/COMPLETE/status/'.$groupLog.'/section') ?>" 
+          href="<?= base_url('dashboard/COMPLETE/status/'.$groupLog.'/section') ?>" 
           class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>

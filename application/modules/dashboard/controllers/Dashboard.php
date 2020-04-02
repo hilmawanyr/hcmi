@@ -126,20 +126,20 @@ class Dashboard extends CI_Controller {
             $data['pageTitle'] = "Uncomplete Participants";
             // for login as admin/HR
             if ($section == 0) {
-                $data['employes'] = $this->dashboard->uncomplete_employes(TRUE);
+                $data['employes'] = $this->dashboard->uncomplete_employes2();
             // for login as non admin/HR
             } else {
-                $data['employes'] = $this->dashboard->uncomplete2(TRUE)->num_rows();
+                $data['employes'] = $this->dashboard->uncomplete_employes2(FALSE);
             }
             
         } else {
             $data['pageTitle'] = "Complete Participants";
             // for login as admin/HR
             if ($section == 0) {
-                $data['employes'] = $this->dashboard->complete_detail(TRUE);
+                $data['employes'] = $this->dashboard->complete_detail2();
             // for login as non admin/HR
             } else {
-                $data['employes'] = $this->dashboard->complete2(TRUE)->num_rows();
+                $data['employes'] = $this->dashboard->complete_detail2(TRUE);
             }
                         
         }

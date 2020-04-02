@@ -391,26 +391,82 @@ class Dashboard_model extends CI_Model {
 	}
 
 	/**
+	 * Get employes whose uncomplete their assessment
+	 * @param int $sectOrDept
+	 * @return array
+	 */
+	public function uncomplete_employes2(bool $adminOrHR=TRUE, int $sectOrDept=0) : array
+	{
+		$activeYear = get_active_year();
+
+		if ($adminOrHR) {
+			$fixArray = $this->_uncomplete_viewed_admin($activeYear);
+			return $fixArray;
+
+		} else {
+			$fixArray = $this->_uncomplete_view2($activeYear, $sectOrDept);
+			return $fixArray;
+		}
+	}
+
+	/**
+	 * Uncomplete assessment form viewed by  GM and higher
+	 * @param string $activeYear
+	 * @param string $sectOrDept
+	 * @return array
+	 */
+	private function _uncomplete_view2(string $activeYear, int $sectOrDept) : array
+	{
+		$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%'";
+		$participant = $this->get_participants_by_head($this->nik)->result();
+
+		foreach ($participant as $key => $value) {
+			$participants[] = $value->nik;
+		}
+
+		$employeHasntAssessed = $this->db->select('*')
+										->from('employes')
+										->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
+										->where_in('nik', $participants)
+										->get()->result();
+
+		$uncompleteAssessment = $this->db->select('a.*,b.name,b.section_id,b.position_id,b.job_title_id,b.dept_id,b.grade')
+										->from('assessment_forms a')
+										->join('employes b', 'a.nik = b.nik')
+										->where('total_poin')
+										->where_in('a.nik', $participants)
+										->get()->result();
+		$fixArray = [];
+
+		foreach ($employeHasntAssessed as $employe => $value) {
+			array_push($fixArray,$value);
+		}
+
+		foreach ($uncompleteAssessment as $employe => $value) {
+			array_push($fixArray,$value);
+		}
+
+		return $fixArray;
+	}
+
+	/**
 	 * Uncomplete assessment fomr viewed by admin or HR
 	 * @param string $activeYear
 	 * @return array
 	 */
 	private function _uncomplete_viewed_admin(string $activeYear) : array
 	{
-		$employeHasntAssessed 	= $this->db->query("SELECT name, job_title_id FROM employes 
+		$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
 													WHERE nik NOT IN 
-													(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear')
+													(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%')
 													AND name NOT LIKE '%admin%'
-													AND position_id NOT IN 
-													(SELECT id FROM positions WHERE name LIKE '%manager')"
-													)->result();
+													AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
+												)->result();
 
-		$uncompleteAssessment 	= $this->db->query("SELECT b.name, b.job_title_id FROM assessment_forms a
+		$uncompleteAssessment 	= $this->db->query("SELECT a.*, b.name, b.job_title_id FROM assessment_forms a
 													JOIN employes b ON a.nik = b.nik
-													WHERE code LIKE '%$activeYear' 
-													AND code NOT IN 
-													(SELECT code FROM assessment_validations 
-													WHERE code LIKE '%$activeYear')")->result();
+													WHERE a.code LIKE '%$activeYear%' 
+													AND a.total_poin IS NULL")->result();
 		
 		$fixArray = [];
 
@@ -713,6 +769,44 @@ class Dashboard_model extends CI_Model {
 										AND a.nik IN 
 										(SELECT nik FROM employes where dept_id IN ($sectOrDept) )")->result();
 			}
+		}
+	}
+
+	/**
+	 * Get number of completed assessment
+	 * @param bool $notAdminOrHR
+	 * @param int $sectOrDept
+	 * @return int
+	 */
+	public function complete_detail2(bool $notAdminOrHR=FALSE, int $sectOrDept=0)
+	{
+		$activeYear = get_active_year();
+
+		switch ($notAdminOrHR) {
+			case FALSE:
+				return $this->db->query("SELECT em.* FROM assessment_forms af 
+										JOIN employes em ON af.nik = em.nik
+										WHERE af.code LIKE '%$activeYear%'
+										AND total_poin IS NOT NULL")->result();
+				break;
+			
+			default:
+				$subquery    = "SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%'";
+				$participant = $this->get_participants_by_head($this->nik)->result();
+
+				foreach ($participant as $key => $value) {
+					$participants[] = $value->nik;
+				}
+
+				return $this->db->select('em.*')
+								->from('assessment_forms af')
+								->join('employes em','af.nik = em.nik')
+								->like('code',$activeYear,'both')
+								->where('total_poin IS NOT NULL', NULL, FALSE)
+								->where_in('af.nik', $participants)
+								->get()->result();
+				
+				break;
 		}
 	}
 }
