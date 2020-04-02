@@ -121,7 +121,10 @@ class Assessment extends CI_Controller {
                                                 AND section_id = $sect 
                                                 AND grade < 4 
                                                 AND nik NOT IN 
-                                                (SELECT nik FROM assessment_forms WHERE code LIKE '%$code' )")->result();
+                                                    (SELECT nik FROM assessment_forms 
+                                                    WHERE code LIKE '%$active_year%' )
+                                                ")->result();
+
         $data['page']      = "setup_participant_v";
         $this->load->view('template/template', $data);
     }
@@ -293,7 +296,8 @@ class Assessment extends CI_Controller {
 
         $get_employes = $this->db->query("SELECT em.nik, em.name, em.job_title_id FROM employes em 
                                         JOIN assessment_forms af ON em.nik = af.nik 
-                                        WHERE af.code = '$code'");
+                                        WHERE af.code = '$code'
+                                        ORDER BY af.total_poin, em.name ASC");
 
         $data['jobTitleName'] = $this->db->where('id', $jobtitle)->get('job_titles')->row();
 
@@ -343,7 +347,7 @@ class Assessment extends CI_Controller {
                                         ->state;
         
         // number of filled assessment
-        $data['completeAssessment'] = $this->assessment->complete_assessment($jobtitle);
+        $data['completeAssessment'] = $this->assessment->complete_assessment2($code);
         $data['employes'] = $get_employes;
         // $data['page'] = 'assessment_form_v';
         $data['page'] = 'assessment_form_fill';
@@ -589,12 +593,11 @@ class Assessment extends CI_Controller {
      * 
      * @return void
      */
-    public function insert_poin() : void
+    public function insert_poin($code) : void
     {
         $id_form        = $this->input->post('idform');
         $inputamount    = count($this->input->post('nilai_mentah'));
         $limitEmptyPoin = $inputamount-1;
-        $code           = 'AF-'.$this->input->post('job').'-'.get_active_year().'-'.$this->nik;
 
         // prevent if user fill with empty poin for all statement
         if (count(array_unique($this->input->post('nilai_mentah'))) == 1) {
@@ -748,9 +751,10 @@ class Assessment extends CI_Controller {
         redirect(base_url('form/'.$jobtitleId));
     }
 
-    public function submit_form_2(int $jobtitleId) : void
+    public function submit_form_2(string $code) : void
     {
-        $code_form            = 'AF-'.$jobtitleId.'-'.get_active_year().'-'.$this->nik;
+        $jobtitleId           = explode('-', $code)[1];
+        $code_form            = $code;
         $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
         $state                = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
 
@@ -767,9 +771,10 @@ class Assessment extends CI_Controller {
      * @param int $jobtitleId
      * @return void
      */
-    public function export_assessment_to_excel(int $jobtitleId)
+    public function export_assessment_to_excel(string $code)
     {
         $this->load->library('excel');
+        $jobtitleId = explode('-', $code)[1];
         // active assessment year
         $data['activeyear']     = get_active_year();
 
@@ -785,7 +790,7 @@ class Assessment extends CI_Controller {
         $data['numberofcolumn'] = count($data['dictionary']) + 3;
         
         // get emlployee base on job title
-        $data['employee']       = $this->assessment->get_partisipant($this->nik, $jobtitleId);
+        $data['employee']       = $this->assessment->get_employee_assessment_form($code);
         
         $this->load->view('excel_assessment_form2', $data);
     }

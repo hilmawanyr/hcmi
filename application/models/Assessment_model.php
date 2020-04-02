@@ -204,6 +204,31 @@ class Assessment_model extends CI_Model {
 	}
 
 	/**
+	 * Get number of filled assessment
+	 * @param int $jobtitle
+	 * @return int
+	 */
+	public function complete_assessment2(string $code) : int
+	{
+		$this->db->distinct();
+		$this->db->select('c.id_dictionary, a.form_id');
+		$this->db->from('assessment_form_questions a');
+		$this->db->join('assessment_forms b', 'a.form_id = b.id');
+		$this->db->join('skill_units c', 'a.skill_unit_id = c.id');
+		$this->db->where('b.code', $code);
+		$this->db->where('a.poin is not null', NULL, FALSE);
+		$this->db->group_by('c.id_dictionary, a.form_id');
+		return $this->db->get()->num_rows();
+
+		/*$this->db->select('a.code');
+		$this->db->from('assessment_forms a');
+		$this->db->join('assessment_form_questions b', 'a.id = b.form_id');
+		$this->db->where('b.poin IS NOT NULL', NULL, FALSE);
+		$this->db->where('a.job_id', $jobtitle);
+		return $this->db->get()->num_rows();*/
+	}
+
+	/**
 	 * Check is employe has assessment form
 	 * @param int $jobtitle
 	 * @param string $activeYear
@@ -336,6 +361,7 @@ class Assessment_model extends CI_Model {
 			a.section_id,
 			a.grade,
 			emr.head,
+			af.code,
 			b.name as jobtitleName,
 			c.name as sectionName,
 			count(a.id) as numberOfPeople');
@@ -345,7 +371,7 @@ class Assessment_model extends CI_Model {
 		$this->db->join('job_titles b', 'a.job_title_id = b.id');
 		$this->db->join('sections c', 'c.id = a.section_id');
 		$this->db->where_in('emr.head', $this->get_head($nik));
-		$this->db->group_by('a.job_title_id, a.section_id, a.grade, emr.head');
+		$this->db->group_by('a.job_title_id, a.section_id, a.grade, emr.head, af.code');
 		$this->db->order_by('a.grade', 'asc');
 		return $this->db->get()->result();
 	}
@@ -359,6 +385,13 @@ class Assessment_model extends CI_Model {
 		$this->db->where('a.job_title_id', $job_id);
 		$this->db->order_by('a.name', 'asc');
 		return $this->db->get()->result();
+	}
+
+	public function get_employee_assessment_form(string $code)
+	{
+		return $this->db->query("SELECT em.nik, em.name FROM employes em
+								JOIN assessment_forms af ON em.nik = af.nik
+								WHERE af.code = '$code' ")->result();
 	}
 
 	public function get_first_state(int $nik=0, int $job_id=0)
@@ -476,6 +509,7 @@ class Assessment_model extends CI_Model {
 	{
 		return $this->db->query("SELECT em.* FROM employes em
 								JOIN employee_relations er ON em.nik = er.nik
+								JOIN assessment_forms af ON em.nik = af.nik
 								WHERE em.dept_id = $dept
 								AND em.section_id = $sect
 								AND em.grade < 4
