@@ -116,16 +116,15 @@ class Assessment extends CI_Controller {
 
         $active_year = get_active_year();
         $code        = $active_year.'-'.explode(' - ',$spv)[0];
-        $data['employees']  = $this->db->query("SELECT * FROM employes 
+        $data['employees']  = $this->db->query("SELECT employes.*,job_titles.name AS job_title,employee_relations.head AS head  FROM employes
+                                                LEFT JOIN job_titles ON job_titles.id = employes.job_title_id
+                                                LEFT JOIN employee_relations ON employes.nik = employee_relations.nik                           
                                                 WHERE dept_id = $dept 
                                                 AND section_id = $sect 
-                                                AND grade < 4 
-                                                AND nik NOT IN 
-                                                    (SELECT nik FROM assessment_forms 
-                                                    WHERE code LIKE '%$active_year%' )
+                                                AND grade < 4
                                                 ")->result();
 
-        $data['page']      = "setup_participant_v";
+        $data['page']      = "setup_participant_v"; 
         $this->load->view('template/template', $data);
     }
 

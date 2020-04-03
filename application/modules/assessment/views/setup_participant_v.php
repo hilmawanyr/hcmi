@@ -30,7 +30,7 @@
       </table>
       <hr>
       <form action="<?=  base_url('assessment/create_employee_relation') ?>" method="post">
-        <table class="table table-bordered table-striped">
+        <table id="example2" class="table table-bordered table-striped">
           <thead>
             <tr>
               <th>No</th>
@@ -54,16 +54,15 @@
               } ?>
 
               <tr <?= $message ?> >
-                <td <?= $sign ?> ><?= $no ?></td>
+                <td <?= $sign ?> ></td>
                 <td <?= $sign ?> ><?= $employee->name ?></td>
-                <td <?= $sign ?> ><?= get_jobtitle_name($employee->job_title_id) ?></td>
+                <td <?= $sign ?> ><?= $employee->job_title ?></td>
                 <td style="text-align: center;" <?= $sign ?> >
-                  <?php $is_employe_has_spv = $this->db->get_where('employee_relations', ['nik' => $employee->nik])->num_rows(); ?>
                   <input 
                     type="checkbox" 
                     name="employes[]" 
                     value="<?= $employee->nik ?>"
-                    <?= $is_employe_has_spv > 0 ? 'checked=""' : ''; ?> />
+                    <?= $employee->head == trim(explode('-',$detail['spv'])[0]) ? 'checked=""' : ''; ?> />
                   <input type="hidden" name="spv" value="<?= explode(' - ', $detail['spv'])[0] ?>" />
                   <input type="hidden" name="jobtitle[<?= $employee->nik ?>]" value="<?= $employee->job_title_id ?>">
                 </td>

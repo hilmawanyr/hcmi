@@ -41,7 +41,7 @@
                 <a 
                   href="<?= base_url('form/'.$recap->code.'/see_detail') ?>" 
                   class="btn btn-primary btn-sm">
-                  <i class="fa fa-eye"></i> See
+                  <i class="fa fa-eye"></i> Detail
                 </a>
                 <a 
                   onclick="return confirm('Are you sure want to delete this form?')"
