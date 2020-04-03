@@ -27,6 +27,13 @@
           <td>:</td>
           <td><?= $detail['spv'] ?></td>
         </tr>
+        <tr>
+          <td colspan="3">
+              <div class="checkbox">
+                <label><input type="checkbox" id="checkall" name="checkall" /> <b>Check All Employees</b></label>
+              </div>
+          </td>
+        </tr>
       </table>
       <hr>
       <form action="<?=  base_url('assessment/create_employee_relation') ?>" method="post">
@@ -36,6 +43,7 @@
               <th>No</th>
               <th>Employee</th>
               <th>Job Title</th>
+              <th>Form</th>
               <th style="text-align: center;">Choose</th>
             </tr>
           </thead>
@@ -57,8 +65,10 @@
                 <td <?= $sign ?> ></td>
                 <td <?= $sign ?> ><?= $employee->name ?></td>
                 <td <?= $sign ?> ><?= $employee->job_title ?></td>
+                <td <?= $sign ?> ><?= isset($employee->code) ? $employee->code : '-' ?></td>
                 <td style="text-align: center;" <?= $sign ?> >
                   <input 
+                    class="check"
                     type="checkbox" 
                     name="employes[]" 
                     value="<?= $employee->nik ?>"
@@ -77,3 +87,14 @@
     <!-- /.box-body -->
   </div>
 </section>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#checkall").click(function() {
+      if ($(this).is(':checked'))
+          $(".check").attr("checked", "checked");
+      else
+          $(".check").removeAttr("checked");
+    });
+  });
+</script>
