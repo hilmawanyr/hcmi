@@ -230,6 +230,7 @@
             "orderable": false,
             "targets": 0
         } ],
+        "bPaginate": false,
         "order": [[ 1, 'asc' ]]
     } );
  
