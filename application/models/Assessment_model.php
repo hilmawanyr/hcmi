@@ -428,7 +428,7 @@ class Assessment_model extends CI_Model {
 		}
 
 		// 7 patokan kira2
-		for ($i=0; $i < 5; $i++) {	
+		for ($i=0; $i < 27; $i++) {	
 			$y = count($filter);
 			for ($i=0; $i < $y ; $i++) { 
 				
