@@ -42,7 +42,7 @@ foreach ($employee as $employe) {
     $initColumn2 = "C";
     foreach ($dictionary as $dicts) {
         // get assessment form to get its ID
-        $assessmentForm = $this->db->where('nik', $employe->nik)->like('code',$activeyear,'before')->get('assessment_forms')->row();
+        $assessmentForm = $this->db->where('nik', $employe->nik)->like('code',$activeyear,'both')->get('assessment_forms')->row();
         
         // its ID will use to get detail form question
         $formId = $assessmentForm->id;

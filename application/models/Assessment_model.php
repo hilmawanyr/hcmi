@@ -132,7 +132,32 @@ class Assessment_model extends CI_Model {
 	public function is_assessment_form_exist(string $activeYear, int $jobtitle) : object
 	{
 		$this->db->where('job_id', $jobtitle);
-		$this->db->like('code', $activeYear, 'before');
+		$this->db->like('code', $activeYear, 'both');
+		return $this->db->get('assessment_forms');
+	}
+
+	/**
+	 * Check whether assessment form is exist
+	 * @param string $activeYear
+	 * @param int $jobtitle
+	 * @return array
+	 */
+	public function is_assessment_form_exist2(string $code) : object
+	{
+		$this->db->where('code', $code);
+		return $this->db->get('assessment_forms');
+	}
+
+	/**
+	 * Check whether assessment form is exist
+	 * @param string $activeYear
+	 * @param int $jobtitle
+	 * @return array
+	 */
+	public function assessment_form_employe(string $code, string $nik) : object
+	{
+		$this->db->where('code', $code);
+		$this->db->where('nik', $nik);
 		return $this->db->get('assessment_forms');
 	}
 
@@ -179,6 +204,31 @@ class Assessment_model extends CI_Model {
 	}
 
 	/**
+	 * Get number of filled assessment
+	 * @param int $jobtitle
+	 * @return int
+	 */
+	public function complete_assessment2(string $code) : int
+	{
+		$this->db->distinct();
+		$this->db->select('c.id_dictionary, a.form_id');
+		$this->db->from('assessment_form_questions a');
+		$this->db->join('assessment_forms b', 'a.form_id = b.id');
+		$this->db->join('skill_units c', 'a.skill_unit_id = c.id');
+		$this->db->where('b.code', $code);
+		$this->db->where('a.poin is not null', NULL, FALSE);
+		$this->db->group_by('c.id_dictionary, a.form_id');
+		return $this->db->get()->num_rows();
+
+		/*$this->db->select('a.code');
+		$this->db->from('assessment_forms a');
+		$this->db->join('assessment_form_questions b', 'a.id = b.form_id');
+		$this->db->where('b.poin IS NOT NULL', NULL, FALSE);
+		$this->db->where('a.job_id', $jobtitle);
+		return $this->db->get()->num_rows();*/
+	}
+
+	/**
 	 * Check is employe has assessment form
 	 * @param int $jobtitle
 	 * @param string $activeYear
@@ -189,7 +239,7 @@ class Assessment_model extends CI_Model {
 	{
 		// assessment form code
 		$code = 'AF-'.$jobtitle.'-'.$activeYear;
-		$this->db->where('code', $code);
+		$this->db->like('code', $code, 'after');
 		$this->db->where('nik', $nik);
 		$this->db->where('job_id', $jobtitle);
 		return $this->db->get('assessment_forms')->num_rows();
@@ -246,7 +296,7 @@ class Assessment_model extends CI_Model {
 										WHERE assessment_forms.job_id = '$jobtitle'
 										AND assessment_forms.nik = '$nik'
 										AND skill_units.id_dictionary = '$skillId'
-										AND assessment_forms.code like '%-$activeYear'
+										AND assessment_forms.code like '%-$activeYear%'
 										AND skill_units.deleted_at IS NULL")->result();
 		return $competency;
 	}
@@ -310,15 +360,18 @@ class Assessment_model extends CI_Model {
 			a.job_title_id, 
 			a.section_id,
 			a.grade,
+			emr.head,
+			af.code,
 			b.name as jobtitleName,
 			c.name as sectionName,
 			count(a.id) as numberOfPeople');
 		$this->db->from('employes a');
+		$this->db->join('assessment_forms af', 'af.nik = a.nik');
 		$this->db->join('employee_relations emr', 'emr.nik = a.nik');
 		$this->db->join('job_titles b', 'a.job_title_id = b.id');
 		$this->db->join('sections c', 'c.id = a.section_id');
 		$this->db->where_in('emr.head', $this->get_head($nik));
-		$this->db->group_by('a.job_title_id, a.section_id, a.grade');
+		$this->db->group_by('a.job_title_id, a.section_id, a.grade, emr.head, af.code');
 		$this->db->order_by('a.grade', 'asc');
 		return $this->db->get()->result();
 	}
@@ -334,12 +387,28 @@ class Assessment_model extends CI_Model {
 		return $this->db->get()->result();
 	}
 
-	public function get_first_state(int $nik=0, int $job_id=0){
-		
+	public function get_employee_assessment_form(string $code)
+	{
+		return $this->db->query("SELECT em.nik, em.name FROM employes em
+								JOIN assessment_forms af ON em.nik = af.nik
+								WHERE af.code = '$code' ")->result();
+	}
+
+	public function get_first_state(int $nik=0, int $job_id=0)
+	{
 		$head = $this->get_head($nik);
 		$head = implode( ", ", $head);
 
-		$query = $this->db->query("SELECT `emr`.`head`, (SELECT `positions`.`code` FROM `employes` JOIN `positions` ON `employes`.`position_id` = `positions`.`id` WHERE `nik` = `emr`.`head`) as code FROM `employes` `a` JOIN `employee_relations` `emr` ON `emr`.`nik` = `a`.`nik` WHERE `emr`.`head` IN($head) AND `a`.`job_title_id` = $job_id ORDER BY `a`.`name` ASC LIMIT 1")->row();
+		$query 	= $this->db->query("SELECT 
+										`emr`.`head`, 
+										(SELECT `positions`.`code` FROM `employes` 
+										JOIN `positions` ON `employes`.`position_id` = `positions`.`id` 
+										WHERE `nik` = `emr`.`head`) as code 
+									FROM `employes` `a` 
+									JOIN `employee_relations` `emr` ON `emr`.`nik` = `a`.`nik` 
+									WHERE `emr`.`head` IN($head) 
+									AND `a`.`job_title_id` = $job_id 
+									ORDER BY `a`.`name` ASC LIMIT 1")->row();
 
 		return $query->code;
 	}
@@ -359,7 +428,7 @@ class Assessment_model extends CI_Model {
 		}
 
 		// 7 patokan kira2
-		for ($i=0; $i < 5; $i++) {	
+		for ($i=0; $i < 27; $i++) {	
 			$y = count($filter);
 			for ($i=0; $i < $y ; $i++) { 
 				
@@ -392,6 +461,64 @@ class Assessment_model extends CI_Model {
 								JOIN employes em ON er.nik = em.nik 
 								WHERE er.nik = $nik")->row();
 		return $query->code;
+	}
+
+	public function recap_participant()
+	{
+		$this->db->select('
+			em.section_id,
+			em.dept_id,
+			em.grade,
+			af.code,
+			b.name as dept_name,
+			c.name as section_name,
+			count(em.id) as number_of_participant');
+		$this->db->from('employes em');
+		$this->db->join('assessment_forms af', 'em.nik = af.nik');
+		$this->db->join('departements b', 'em.dept_id = b.id');
+		$this->db->join('sections c', 'c.id = em.section_id');
+		$this->db->join('positions d', 'd.id = em.position_id');
+		$this->db->group_by('af.code, em.dept_id, em.section_id, em.grade');
+		$this->db->order_by('af.code', 'asc');
+		return $this->db->get()->result();
+	}
+
+	public function available_form()
+	{
+		$this->db->select('
+			a.job_title_id, 
+			a.section_id,
+			a.grade,
+			af.code,
+			SUBSTRING_INDEX(af.code, "-", -1) as head,
+			b.name as jobtitleName,
+			c.name as sectionName,
+			count(a.id) as numberOfPeople');
+		$this->db->from('employes a');
+		$this->db->join('assessment_forms af', 'a.nik = af.nik');
+		$this->db->join('job_titles b', 'a.job_title_id = b.id');
+		$this->db->join('sections c', 'c.id = a.section_id');
+		$this->db->where('a.grade <=', 3);
+		$this->db->group_by('a.job_title_id, a.grade, a.section_id, af.code');
+		$this->db->order_by('a.grade', 'asc');
+		return $this->db->get()->result();
+	}
+
+	public function employe_has_competency($spv, $dept, $sect)
+	{
+		return $this->db->query("SELECT em.* FROM employes em
+								JOIN employee_relations er ON em.nik = er.nik
+								JOIN assessment_forms af ON em.nik = af.nik
+								WHERE em.dept_id = $dept
+								AND em.section_id = $sect
+								AND em.grade < 4
+								AND er.head = '$spv'")->result();
+	}
+
+	public function see_detail_form($form_id)
+	{
+		return $this->db->query("SELECT em.* FROM employes em WHERE nik IN 
+								(SELECT nik FROM assessment_forms WHERE code = '$form_id')")->result();
 	}
 
 }

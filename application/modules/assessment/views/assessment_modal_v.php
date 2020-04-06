@@ -71,8 +71,8 @@
                             <input type="hidden" name="skill_id[]" value="<?= $items->unit_question ?>">
                             <input type="hidden" name="job" value="<?= $items->job_id ?>">
                             <input type="hidden" name="dicts" value="<?= $dict ?>">
+                            <input style="width:4em" type="hidden" value="<?= $items->weight ?>" disabled>
                         </td>
-                        <td><input style="width:4em" type="hidden" value="<?= $items->weight ?>" disabled></td>
                     </tr>
                     <?php $no++; ?>
                     <?php endforeach; ?>

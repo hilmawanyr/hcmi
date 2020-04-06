@@ -26,7 +26,7 @@
 	<!-- /.box-header -->
 		<div class="box-body">
 			<form action="" method="">
-            <a class="btn btn-default mr-2" href="<?= base_url('export_to_excel/'.$jobTitleName->id) ?>">
+            <a class="btn btn-default mr-2" href="<?= base_url('export_to_excel/'.$form_code) ?>">
                 <i class="fa fa-file-excel-o"></i> Export to Excel 
                 </a>
                 
@@ -42,7 +42,7 @@
                         'statementAmount'    => $statementAmount,
                         'completeAssessment' => $completeAssessment,
                         'submitStatus'       => $submitStatus,
-                        'jobtitle'           => $jobTitleName->id,
+                        'form_code'          => $form_code,
                         'department'         => $department,
                         'userPosition'       => $position_code,
                         'assessmentState'    => $assessment_state
@@ -137,10 +137,9 @@
                                     }
                                     
                                     /*=====  End of Condition for Poin Button  ======*/
-                                    
                                     // get assessment form to get its ID
                                     $assessmentForm = $this->db->where('nik', $employe->nik)
-                                    							->like('code',$active_year,'before')
+                                    							->like('code',$active_year,'both')
                                     							->get('assessment_forms');
 
                                     // its ID will use to get detail form question
@@ -236,7 +235,11 @@
 
 <div id="addModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
-        <form id="form-id" method="POST" action="<?= base_url('store_poin') ?>" onsubmit="return checkform(this);">
+        <form 
+            id="form-id" 
+            method="POST" 
+            action="<?= base_url('store_poin/'.$form_code) ?>" 
+            onsubmit="return checkform(this);">
             <!-- Modal content-->
             <div class="modal-content" id="field-poin">
 
