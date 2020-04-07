@@ -279,19 +279,36 @@
 	 * @param int $poin
 	 * @return string
 	 */
-	function get_assessment_grade(int $poin = null) : string
+	function get_assessment_grade_unused($poin=NULL) : string
 	{
 		$CI =& get_instance();
 		$CI->load->model('assessment_model','assessment');
 		$getRange = $CI->assessment->get_poin_range();
-
 		foreach ($getRange as $keys => $value) {
-
-			if (in_array((double)$poin, range((double)$value->bottom_limit, (double)$value->top_limit, 0.01))) {
+			if (in_array($poin, range($value->bottom_limit, $value->top_limit, 0.01))) {
 				$poinGrade = $value->grade;
 				return $poinGrade;
 			}
 		}
+		return '-';
+	}
+
+	/**
+	 * Get grade for absolute poin in assessment
+	 * @param int $poin
+	 * @return string
+	 */
+	function get_assessment_grade($poin=NULL) : string
+	{
+		$CI =& get_instance();
+		$CI->load->model('assessment_model','assessment');
+		$getRange = $CI->assessment->get_poin_range();
+		foreach ($getRange as $keys => $value) {
+			while ($poin > $value->bottom_limit && $poin < $value->top_limit) {
+				return $value->grade;
+			}
+		}
+		
 		return '-';
 	}
 
