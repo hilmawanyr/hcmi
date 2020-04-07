@@ -457,12 +457,13 @@ class Assessment_model extends CI_Model {
 		return $head;
 	}
 
-	public function get_continue_state(int $nik=0) : string {
-		$query = $this->db->query("SELECT er.head, (SELECT p.code FROM employes e JOIN positions p ON e.position_id = p.id WHERE e.nik = er.head) as code 
+	public function get_continue_state(int $nik=0) : object {
+		$query = $this->db->query("SELECT er.head, (SELECT p.code FROM employes e JOIN positions p ON e.position_id = p.id WHERE e.nik = er.head) as code,
+								(SELECT p.grade FROM employes e JOIN positions p ON e.position_id = p.id WHERE e.nik = er.head) as grade 
 								FROM employee_relations er 
 								JOIN employes em ON er.nik = em.nik 
 								WHERE er.nik = $nik")->row();
-		return $query->code;
+		return $query;
 	}
 
 	public function recap_participant()

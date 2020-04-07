@@ -22,7 +22,6 @@
             <th>Form Code</th>
             <th>Department</th>
             <th>Section</th>
-            <!-- <th>Position</th> -->
             <th>Grade</th>
             <th>Total Employees</th>
             <th>Action</th>
@@ -34,7 +33,6 @@
               <td><?= $recap->code ?></td>
               <td><?= $recap->dept_name ?></td>
               <td><?= $recap->section_name ?></td>
-              <!-- <td><?= $recap->position_name ?></td> -->
               <td><?= convert_to_roman($recap->grade) ?></td>
               <td><?= $recap->number_of_participant ?></td>
               <td>

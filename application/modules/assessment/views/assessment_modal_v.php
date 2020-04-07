@@ -26,7 +26,7 @@
             <table class="table table-hover table-bordered mb-0">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th>Level</th>
                         <th style="white-space:nowrap;">Pernyataan</th>
                         <th style="white-space:nowrap;">Nilai Mentah</th>
                         <!-- <th style="white-space:nowrap;">Bobot</th> -->

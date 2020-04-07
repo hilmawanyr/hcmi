@@ -749,9 +749,9 @@ class Assessment extends CI_Controller {
         $jobtitleId           = explode('-', $code)[1];
         $code_form            = $code;
         $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
-        $state                = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
+        $workflow                = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
 
-        if ($state == 'GM' ||  $state == 'DIR') {
+        if ($workflow->grade > 8 ) {
             $state = 'PA';
         }
 
@@ -759,6 +759,8 @@ class Assessment extends CI_Controller {
         $this->db->update('assessment_form_state', ['state' => $state]);
         redirect(base_url('form/'.$code_form));
     }
+
+
     /**
      * Export assessment for to excel
      * @param int $jobtitleId
