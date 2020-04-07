@@ -16,6 +16,9 @@
                     5 = Sangat baik
                 </p>
             </div>
+            <div class="alert alert-warning">
+                <p>Hanya dapat memilih <b>SATU</b> pernyataan dari lima pernyataan yang tersedia</p>
+            </div>
         </div>
     </div>
     <div class="table-wrap">
