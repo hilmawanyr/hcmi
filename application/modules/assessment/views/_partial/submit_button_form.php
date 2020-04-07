@@ -21,7 +21,7 @@ if ($userPosition == $assessmentState) { ?>
         <a 
             href="<?= base_url('submit_form/'.$form_code) ?>" 
             class="btn btn-warning pull-right" 
-            onclick="return confirm('Dengan ini anda menyatakan bahwa penilaian yang dilakukan adalah benar. Anda Yakin?')">
+            onclick="return confirm('Dengan ini anda menyatakan bahwa penilaian yang dilakukan adalah benar. Formulir penilaian yang telah Anda submit tidak dapat diubah kembali. Anda Yakin?')">
             <i class="fa fa-check"></i> Submit Form
         </a>
     <?php endif; ?>

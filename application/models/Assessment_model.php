@@ -473,6 +473,7 @@ class Assessment_model extends CI_Model {
 			em.dept_id,
 			em.grade,
 			af.code,
+			(SELECT name FROM employes WHERE nik = SUBSTRING_INDEX(af.code,"-",-1)) AS head_name,
 			b.name as dept_name,
 			c.name as section_name,
 			count(em.id) as number_of_participant');

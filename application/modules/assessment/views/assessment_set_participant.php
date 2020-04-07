@@ -23,6 +23,7 @@
             <th>Department</th>
             <th>Section</th>
             <th>Grade</th>
+            <th>Superior</th>
             <th>Total Employees</th>
             <th>Action</th>
           </tr>
@@ -34,6 +35,7 @@
               <td><?= $recap->dept_name ?></td>
               <td><?= $recap->section_name ?></td>
               <td><?= convert_to_roman($recap->grade) ?></td>
+              <td><?= $recap->head_name ?></td>
               <td><?= $recap->number_of_participant ?></td>
               <td>
                 <a 
