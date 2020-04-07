@@ -289,7 +289,8 @@ class Assessment_model extends CI_Model {
 				                            assessment_form_questions.skill_unit_id AS unit_question,
 				                            assessment_form_questions.weight,
 				                            assessment_form_questions.poin, 
-				                            skill_units.description
+				                            skill_units.description,
+				                            skill_units.level
 										FROM assessment_forms
 										JOIN assessment_form_questions ON assessment_forms.id = assessment_form_questions.form_id
 										JOIN skill_units ON skill_units.id = assessment_form_questions.skill_unit_id
@@ -297,7 +298,8 @@ class Assessment_model extends CI_Model {
 										AND assessment_forms.nik = '$nik'
 										AND skill_units.id_dictionary = '$skillId'
 										AND assessment_forms.code like '%-$activeYear%'
-										AND skill_units.deleted_at IS NULL")->result();
+										AND skill_units.deleted_at IS NULL
+										ORDER BY skill_units.level ASC")->result();
 		return $competency;
 	}
 
@@ -519,6 +521,24 @@ class Assessment_model extends CI_Model {
 	{
 		return $this->db->query("SELECT em.* FROM employes em WHERE nik IN 
 								(SELECT nik FROM assessment_forms WHERE code = '$form_id')")->result();
+	}
+
+	public function employee_by_superior($dept, $sect)
+	{
+		$employee = $this->db->query("SELECT 
+			                            employes.*,
+			                            job_titles.name AS job_title,
+			                            employee_relations.head AS head,
+			                            af.code
+			                        FROM employes
+			                        LEFT JOIN job_titles ON job_titles.id = employes.job_title_id
+			                        LEFT JOIN employee_relations ON employes.nik = employee_relations.nik
+			                        LEFT JOIN assessment_forms af ON employes.nik = af.nik                   
+			                        WHERE dept_id = $dept 
+			                        AND section_id = $sect 
+			                        AND grade < 4
+			                        ")->result();
+		return $employee;
 	}
 
 }

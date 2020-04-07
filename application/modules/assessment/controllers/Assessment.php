@@ -114,21 +114,9 @@ class Assessment extends CI_Controller {
 
         $data['detail']    = ['dept' => $dept, 'sect' => $sect, 'spv' => $spv];
 
-        $active_year = get_active_year();
-        $code        = $active_year.'-'.explode(' - ',$spv)[0];
-        $data['employees']  = $this->db->query("SELECT 
-                                                    employes.*,
-                                                    job_titles.name AS job_title,
-                                                    employee_relations.head AS head,
-                                                    af.code
-                                                FROM employes
-                                                LEFT JOIN job_titles ON job_titles.id = employes.job_title_id
-                                                LEFT JOIN employee_relations ON employes.nik = employee_relations.nik
-                                                LEFT JOIN assessment_forms af ON employes.nik = af.nik                   
-                                                WHERE dept_id = $dept 
-                                                AND section_id = $sect 
-                                                AND grade < 4
-                                                ")->result();
+        $active_year       = get_active_year();
+        $code              = $active_year.'-'.explode(' - ',$spv)[0];
+        $data['employees'] = $this->assessment->employee_by_superior($dept, $sect);
 
         $data['page']      = "setup_participant_v"; 
         $this->load->view('template/template', $data);
@@ -764,7 +752,7 @@ class Assessment extends CI_Controller {
         $state                = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
 
         if ($state == 'GM' ||  $state == 'DIR') {
-            $state = 'DONE';
+            $state = 'PA';
         }
 
         $this->db->where('code_form', $code_form);

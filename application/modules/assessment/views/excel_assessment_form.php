@@ -21,7 +21,7 @@ header("Expires: 0");
     </tr>
     <tr>
         <th>NIK</th>
-        <th>Nama Pegawai</th>
+        <th>Nama Karyawan</th>
         <?php foreach ($dictionary as $dict) : ?>
             <th><?= $dict->name_id ?>}</th>
         <?php endforeach; ?>

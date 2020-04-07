@@ -660,6 +660,7 @@ class Dashboard_model extends CI_Model {
 										count(nik) AS amount 
 									FROM employes
 									WHERE name <> 'admin'
+									AND grade < 4
 									GROUP BY grade")->result();
 		} else {
 			$participant = $this->get_participants_by_head($this->nik)->result();
@@ -672,6 +673,7 @@ class Dashboard_model extends CI_Model {
 							->from('employes')
 							->where('name !=', 'admin')
 							->where_in('nik', $participants)
+							->where('grade <', 4)
 							->group_by('grade')
 							->get()->result();
 		}

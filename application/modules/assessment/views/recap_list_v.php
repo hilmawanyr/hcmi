@@ -22,7 +22,7 @@
           <td><?= get_section($detail['sect'])->name ?></td>
         </tr>
         <tr>
-          <td><b>Supervisor</b></td>
+          <td><b>Superior</b></td>
           <td>:</td>
           <td><?= $detail['spv'] ?></td>
         </tr>

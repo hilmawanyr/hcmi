@@ -23,7 +23,7 @@
           <td><?= get_section($detail['sect'])->name ?></td>
         </tr>
         <tr>
-          <td><b>Supervisor</b></td>
+          <td><b>Superior</b></td>
           <td>:</td>
           <td><?= $detail['spv'] ?></td>
         </tr>
@@ -58,7 +58,7 @@
               } else {
                 $is_jobtitle_has_competency = $this->assessment->get_competency($employee->job_title_id)->num_rows();
                 $sign = $is_jobtitle_has_competency < 1 ? 'style="background:#ffb9a8"' : '';
-                $message = $is_jobtitle_has_competency < 1 ? 'data-toggle="tooltip" title="Pegawai dengan job title ini belum memiliki kompetensi penilaian"' : '';
+                $message = $is_jobtitle_has_competency < 1 ? 'data-toggle="tooltip" title="Karyawan dengan job title ini belum memiliki kompetensi penilaian"' : '';
               } ?>
 
               <tr <?= $message ?> >
@@ -72,7 +72,7 @@
                     type="checkbox" 
                     name="employes[]" 
                     value="<?= $employee->nik ?>"
-                    <?= $employee->head == trim(explode('-',$detail['spv'])[0]) ? 'checked=""' : ''; ?> />
+                    <?= $employee->head == explode(' - ',$detail['spv'])[0] ? 'checked=""' : ''; ?> />
                   <input type="hidden" name="spv" value="<?= explode(' - ', $detail['spv'])[0] ?>" />
                   <input type="hidden" name="jobtitle[<?= $employee->nik ?>]" value="<?= $employee->job_title_id ?>">
                 </td>

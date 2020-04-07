@@ -53,11 +53,15 @@
 	            <hr>
                 <?php $this->load->view('template/action_message'); ?>
                 <div class="tableFixHead">
+                <div class="alert alert-warning alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close"><i class="fa fa-times"></i></a>
+                    <p><b>Perhatian!</b> Formulir penilaian yang telah Anda submit tidak dapat diubah kembali.</p>
+                </div>
 				<table class="table table-hover table-bordered">
 					<thead>
                         <tr>
                             <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">NIK</th>
-                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nama Pegawai</th>
+                            <th style="white-space:nowrap; vertical-align: middle;" rowspan="2">Nama Karyawan</th>
 
                             <?php foreach ($dictionary->result() as $dictlist) : ?>
                                 <th 

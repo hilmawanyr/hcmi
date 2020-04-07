@@ -72,7 +72,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label for="department">Department</label>
-            <select name="department" class="form-control select2" style="width: 100%" id="department">
+            <select name="department" class="form-control select2" style="width: 100%" id="department" required="">
               <option value="" disabled="" selected=""></option>
               <?php foreach ($departments as $department) : ?>
                 <option value="<?= $department->id ?>"><?= $department->name ?></option>
@@ -82,13 +82,13 @@
 
           <div class="form-group">
             <label for="section">Section</label>
-            <select name="section" class="form-control select2" style="width: 100%" id="section">
+            <select name="section" class="form-control select2" style="width: 100%" id="section" required="">
               <option value="" disabled="" selected=""></option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="supervisor">Supervisor</label>
+            <label for="supervisor">Superior</label>
             <input type="text" class="form-control" id="supervisor" value="" name="supervisor" required="">
           </div>
         </div>

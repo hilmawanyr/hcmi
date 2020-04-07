@@ -140,7 +140,7 @@ $loginSession = $this->session->userdata('login_session');
             type: 'pie'
         },
         title: {
-            text: 'Jumlah Pegawai Per Job Title'
+            text: 'Jumlah Karyawan Per Job Title'
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.y:.f} orang</b>'
@@ -182,7 +182,7 @@ $loginSession = $this->session->userdata('login_session');
           type: 'pie'
       },
       title: {
-          text: 'Jumlah Pegawai Per Level '
+          text: 'Jumlah Karyawan Per Grade '
       },
       tooltip: {
           pointFormat: '{series.name}: <b>{point.y:.f} orang</b>'

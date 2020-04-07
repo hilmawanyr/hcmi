@@ -89,14 +89,14 @@ class Dashboard extends CI_Controller {
     public function employes_grade(string $adminOrHR='true', int $section=0) : void
     {
         if ($adminOrHR == 'true') {
-            $datas = $this->dashboard->employe_per_grade();    
+            $datas = $this->dashboard->employe_per_grade2();    
         } else {
             $datas = $this->dashboard->employe_per_grade2(false, $section);
         }
 
         foreach ($datas as $data) {
             $object[] = [
-                'name' => 'Level '.$data->level,
+                'name' => 'Grade '.$data->level,
                 'y' => $data->amount
             ];
         }

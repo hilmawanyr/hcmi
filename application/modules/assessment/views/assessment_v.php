@@ -40,13 +40,13 @@
 
             <!-- if login as manager and upper -->
             <?php if ($position_grade > 5) : ?>
-            <th>Supervisor</th>
+            <th>Superior</th>
             <th>Department</th>
             <?php endif; ?>
             <!-- end if -->
 
             <th>Percentage of Filling</th>
-            <th>Process on</th>
+            <th>On Process</th>
             <th>Action</th>
           </tr>
         </thead>
