@@ -15,6 +15,8 @@
           <tr>
             <th>No</th>
             <th>Name</th>
+            <th>Department</th>
+            <th>Section</th>
             <th>Job Title</th>
           </tr>
         </thead>
@@ -23,7 +25,9 @@
             <tr>
               <td><?= $no ?></td>
               <td><?= $employe->name ?></td>
-              <td><?= get_jobtitle_name($employe->job_title_id) ?></td>
+              <td><?= $employe->dept_name ?></td>
+              <td><?= $employe->sect_name ?></td>
+              <td><?= $employe->job_name ?></td>
             </tr>
           <?php $no++; } ?>
         </tbody>

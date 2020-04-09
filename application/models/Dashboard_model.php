@@ -58,9 +58,12 @@ class Dashboard_model extends CI_Model {
 	{	
 		$heads = $this->get_head($nik);
 
-		$this->db->select("em.*");
+		$this->db->select("em.*, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name");
 		$this->db->from("employee_relations emr");
 		$this->db->join("employes em","emr.nik = em.nik");
+		$this->db->join('departements dp', 'em.dept_id = dp.id');
+		$this->db->join('sections sc', 'em.section_id = sc.id');
+		$this->db->join('job_titles jt', 'em.job_title_id = jt.id');
 		$this->db->where("em.grade <=","3");
 		$this->db->where_in("emr.head", $heads);
 		$all_team = $this->db->get();
@@ -331,9 +334,17 @@ class Dashboard_model extends CI_Model {
 	public function get_participants_detail(int $sectOrDept=0) : array
 	{
 		if ($sectOrDept == 0) {
-			return $this->db->query("SELECT name, job_title_id FROM employes 
-									WHERE name <> 'admin' 
-									AND position_id NOT IN 
+			return $this->db->query("SELECT 
+										em.name, 
+										dp.name AS dept_name,
+										sc.name AS sect_name,
+										jt.name AS job_name 
+									FROM employes em
+									JOIN departements dp ON em.dept_id = dp.id
+									JOIN sections sc ON em.section_id = sc.id
+									JOIN job_titles jt ON em.job_title_id = jt.id
+									WHERE em.name <> 'admin' 
+									AND em.position_id NOT IN 
 									(SELECT id FROM positions where id > 6)")->result();
 		} else {
 			// assistant manager or senior assistant manager
@@ -424,15 +435,21 @@ class Dashboard_model extends CI_Model {
 			$participants[] = $value->nik;
 		}
 
-		$employeHasntAssessed = $this->db->select('*')
-										->from('employes')
+		$employeHasntAssessed = $this->db->select('em.*, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
+										->from('employes em')
+										->join('departements dp', 'em.dept_id = dp.id')
+										->join('sections sc', 'em.section_id = sc.id')
+										->join('job_titles jt', 'em.job_title_id = jt.id')
 										->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
 										->where_in('nik', $participants)
 										->get()->result();
 
-		$uncompleteAssessment = $this->db->select('a.*,b.name,b.section_id,b.position_id,b.job_title_id,b.dept_id,b.grade')
+		$uncompleteAssessment = $this->db->select('a.*,b.name, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
 										->from('assessment_forms a')
 										->join('employes b', 'a.nik = b.nik')
+										->join('departements dp', 'b.dept_id = dp.id')
+										->join('sections sc', 'b.section_id = sc.id')
+										->join('job_titles jt', 'b.job_title_id = jt.id')
 										->where('total_poin')
 										->where_in('a.nik', $participants)
 										->get()->result();
@@ -456,15 +473,32 @@ class Dashboard_model extends CI_Model {
 	 */
 	private function _uncomplete_viewed_admin(string $activeYear) : array
 	{
-		$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
-													WHERE nik NOT IN 
+		$employeHasntAssessed 	= $this->db->query("SELECT 
+														em.*, 
+														dp.name AS dept_name, 
+														sc.name AS sect_name,
+														jt.name AS job_name 
+													FROM employes em
+													JOIN departements dp ON em.dept_id = dp.id
+													JOIN sections sc ON em.section_id = sc.id
+													JOIN job_titles jt ON em.job_title_id = jt.id
+													WHERE em.nik NOT IN 
 													(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%')
-													AND name NOT LIKE '%admin%'
-													AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
+													AND em.name NOT LIKE '%admin%'
+													AND em.position_id IN (SELECT id FROM positions WHERE grade <= 3)"
 												)->result();
 
-		$uncompleteAssessment 	= $this->db->query("SELECT a.*, b.name, b.job_title_id FROM assessment_forms a
+		$uncompleteAssessment 	= $this->db->query("SELECT 
+														a.*, 
+														b.name, 
+														dp.name AS dept_name, 
+														sc.name AS sect_name,
+														jt.name AS job_name
+													FROM assessment_forms a
 													JOIN employes b ON a.nik = b.nik
+													JOIN departements dp ON em.dept_id = dp.id
+													JOIN sections sc ON em.section_id = sc.id
+													JOIN job_titles jt ON em.job_title_id = jt.id
 													WHERE a.code LIKE '%$activeYear%' 
 													AND a.total_poin IS NULL")->result();
 		
@@ -786,8 +820,16 @@ class Dashboard_model extends CI_Model {
 
 		switch ($notAdminOrHR) {
 			case FALSE:
-				return $this->db->query("SELECT em.* FROM assessment_forms af 
+				return $this->db->query("SELECT 
+											em.*,
+											dp.name AS dept_name, 
+											sc.name AS sect_name,
+											jt.name AS job_name 
+										FROM assessment_forms af 
 										JOIN employes em ON af.nik = em.nik
+										JOIN departements dp ON em.dept_id = dp.id
+										JOIN sections sc ON em.section_id = sc.id
+										JOIN job_titles jt ON em.job_title_id = jt.id
 										WHERE af.code LIKE '%$activeYear%'
 										AND total_poin IS NOT NULL")->result();
 				break;
@@ -800,9 +842,12 @@ class Dashboard_model extends CI_Model {
 					$participants[] = $value->nik;
 				}
 
-				return $this->db->select('em.*')
+				return $this->db->select('em.*, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
 								->from('assessment_forms af')
 								->join('employes em','af.nik = em.nik')
+								->join('departements dp', 'em.dept_id = dp.id')
+								->join('sections sc', 'em.section_id = sc.id')
+								->join('job_titles jt', 'em.job_title_id = jt.id')
 								->like('code',$activeYear,'both')
 								->where('total_poin IS NOT NULL', NULL, FALSE)
 								->where_in('af.nik', $participants)
