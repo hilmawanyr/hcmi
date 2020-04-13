@@ -71,16 +71,20 @@ class Employes extends CI_Controller {
 		$isUpdate  = $this->input->post('isUpdate');
 		$hiddenNik = $this->input->post('hidden_nik');
 		$head      = $this->input->post('head');
-
+		$dept 	   = NULL;
+		
 		if ($head != "") {
 			$head      = explode(' - ', $this->input->post('head'))[0];	
 		}
 		
+		if ($section != ""){
+			$dept     = get_department_by_section($section)->id;
+		}
 
 		$storedData = [
 			'nik'          => $nik,
 			'name'         => $name,
-			'dept_id'      => get_department_by_section($section)->id,
+			'dept_id'      => $dept,
 			'section_id'   => $section,
 			'position_id'  => $position,
 			'job_title_id' => $jobtitle,
@@ -102,6 +106,7 @@ class Employes extends CI_Controller {
 	 */
 	private function _store(array $data) : void
 	{
+		$this->_is_nik_exist($data['nik']);
 
 		$storedData = array_filter($data, function($arr) {
 			return $arr != 'head';
@@ -143,8 +148,7 @@ class Employes extends CI_Controller {
 	{
 		$check = $this->db->where('nik', $head)->get('employes')->num_rows();
 		if ($check < 1) {
-			//$this->db->delete('employes', ['nik' => $nik]);
-			$this->session->set_flashdata('fail_save_data', 'Data not saved! The head\'s NIK was not exist!');
+			$this->session->set_flashdata('warning', 'Employee data has been saved. But the employee\'s supervisor data is not saved/updated because his nik is not available!');
 			redirect(base_url('employes'));
 		}
 		return;
@@ -159,10 +163,6 @@ class Employes extends CI_Controller {
 	 */
 	private function _update(array $data, string $hiddenNik, int $id) : void
 	{
-
-		// check whether NIK was exist
-		$this->_is_nik_exist($data['nik']);
-
 		$update_data = array_filter($data, function($arr) {
 			return $arr != 'head';
 		}, ARRAY_FILTER_USE_KEY);
@@ -222,8 +222,8 @@ class Employes extends CI_Controller {
 	private function _is_nik_exist(string $nik) : void
 	{
 		$check = $this->db->where('nik', $nik)->get('employes')->num_rows();
-		if ($check == 0) {
-			$this->session->set_flashdata('fail_save_data', 'Employee Not Found');
+		if ($check > 0) {
+			$this->session->set_flashdata('fail_save_data', 'Data not saved! NIK was exist!');
 			redirect(base_url('employes'));
 		}
 		return;
@@ -283,6 +283,16 @@ class Employes extends CI_Controller {
 		redirect(base_url('employes'));
 	}
 	
+	/**
+	 * Get grade depend on position
+	 * @param int $position_id
+	 * @return void
+	 */
+	public function get_grade(int $position_id) : void
+	{
+		$grade = $this->db->get_where('positions', ['id' => $position_id])->row()->grade;
+		echo $grade;		
+	}
 
 }
 

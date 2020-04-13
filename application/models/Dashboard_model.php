@@ -345,7 +345,7 @@ class Dashboard_model extends CI_Model {
 									JOIN job_titles jt ON em.job_title_id = jt.id
 									WHERE em.name <> 'admin' 
 									AND em.position_id NOT IN 
-									(SELECT id FROM positions where id > 6)")->result();
+									(SELECT id FROM positions where grade > 3)")->result();
 		} else {
 			// assistant manager or senior assistant manager
 			if ($this->position_grade > 3 && $this->position_grade < 7) {
@@ -490,12 +490,12 @@ class Dashboard_model extends CI_Model {
 
 		$uncompleteAssessment 	= $this->db->query("SELECT 
 														a.*, 
-														b.name, 
+														em.name, 
 														dp.name AS dept_name, 
 														sc.name AS sect_name,
 														jt.name AS job_name
 													FROM assessment_forms a
-													JOIN employes b ON a.nik = b.nik
+													JOIN employes em ON a.nik = em.nik
 													JOIN departements dp ON em.dept_id = dp.id
 													JOIN sections sc ON em.section_id = sc.id
 													JOIN job_titles jt ON em.job_title_id = jt.id

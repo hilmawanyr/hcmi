@@ -52,7 +52,7 @@
         </div>
         <a 
           href="<?= base_url('dashboard/ALL_PARTICIPANTS/status/'.$groupLog.'/section') ?>" 
-          class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i>
+          class="small-box-footer">Detail <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
     </div>
@@ -70,7 +70,7 @@
         </div>
         <a 
           href="<?= base_url('dashboard/UNCOMPLETE/status/'.$groupLog.'/section') ?>" 
-          class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
+          class="small-box-footer">Detail <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
     </div>
@@ -88,7 +88,7 @@
         </div>
         <a 
           href="<?= base_url('dashboard/COMPLETE/status/'.$groupLog.'/section') ?>" 
-          class="small-box-footer">See detail <i class="fa fa-arrow-circle-right"></i>
+          class="small-box-footer">Detail <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
     </div>

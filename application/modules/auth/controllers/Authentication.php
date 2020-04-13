@@ -26,51 +26,49 @@ class Authentication extends CI_Controller {
 	 */
 	public function attempt_login()
 	{
-		// $ldap_id 			= $this->input->post('nik');
-		// $password 		= $this->input->post('password');
-		
-		// $user = $this->db->where('ldap_uid', $ldap_id)->get("users")->row();
-		// $nik = $user->nik;
-		
-		// $isUserExist 	= $this->login->is_user_exist($nik);
+		 $ldap_id 			= $this->input->post('nik');
+		 $password 			= $this->input->post('password');
 
-		// if (count($isUserExist) > 0) {
-		// 	// do verification for user's password
-		// 	if ($this->ldap_verification($ldap_id, $password)) {
-		// 		// create log for success login
-		// 		$this->_auth_log($nik);
-		// 		// create login session and redirect them to dahsboard
-		// 		$this->_login_success($isUserExist);
-		// 	}
-		// 	// handle fail login - wrong password
-		// 	$this->session->set_flashdata('login_fail', 'Your password is wrong!');
-		// 	redirect('auth/authentication');
-		// }
-		// // handle fail login - wrong password
-		// $this->session->set_flashdata('login_fail', 'Account not found!');
-
-		// redirect('auth/authentication');
-
-		$nik 			= $this->input->post('nik');
-		$password 		= $this->input->post('password');
-		$isUserExist 	= $this->login->is_user_exist($nik);
-		
-		if (count($isUserExist) > 0) {
-			// die('nurfan is here!');
-			// do verification for user's password
-			if (password_verify($password, $isUserExist->password)) {
-				// create log for success login
-				$this->_auth_log($nik);
-				// create login session and redirect them to dahsboard
-				$this->_login_success($isUserExist);
+		 if($ldap_id == 123456){
+			$nik 			= $ldap_id;
+			
+			$isUserExist 	= $this->login->is_user_exist($nik);
+			
+			if (count($isUserExist) > 0) {
+				// do verification for user's password
+				if (password_verify($password, $isUserExist->password)) {
+					// create log for success login
+					$this->_auth_log($nik);
+					// create login session and redirect them to dahsboard
+					$this->_login_success($isUserExist);
+				}
+				// handle fail login - wrong password
+				$this->session->set_flashdata('login_fail', 'Your password is wrong!');
+				redirect('auth/authentication');
 			}
 			// handle fail login - wrong password
-			$this->session->set_flashdata('login_fail', 'Your password is wrong!');
-			redirect('auth/authentication');
+			$this->session->set_flashdata('login_fail', 'Account not found!');
+			 
+		 }else{
+		 	$user = $this->db->where('ldap_uid', $ldap_id)->get("users")->row();
+		 	$nik = $user->nik;
+		 	
+		 	if ($nik != "") {
+		 		// do verification for user's password
+		 		if ($this->ldap_verification($ldap_id, $password)) {
+		 			// create log for success login
+		 			$this->_auth_log($nik);
+		 			// create login session and redirect them to dahsboard
+		 			$this->_login_success($user);
+		 		}
+		 		// handle fail login - wrong password
+		 		$this->session->set_flashdata('login_fail', 'Your password is wrong!');
+		 		redirect('auth/authentication');
+		 	}
+		 	// handle fail login - wrong password
+		 	$this->session->set_flashdata('login_fail', 'Account not found!');
 		}
-		// handle fail login - wrong password
-		$this->session->set_flashdata('login_fail', 'Account not found!');
-		redirect('auth/authentication');
+	     redirect('auth/authentication');
 	}
 
 	public function ldap_verification($ldap_id, $password)

@@ -92,7 +92,7 @@
           <input type="hidden" id="isUpdate" name="isUpdate" value="">
           <div class="form-group">
             <label for="jobtitle">NIK</label>
-            <input type="text" class="form-control" id="nik" value="" name="nik" required="">
+            <input type="text" class="form-control" id="nik" value="" name="nik" onkeypress="return isNumber(event)" readonly="" required="">
             <input type="hidden" name="hidden_nik" value="" id="hidden_nik">
           </div>
           <div class="form-group">
@@ -118,18 +118,13 @@
             </select>
           </div>
           <div class="form-group">
+            <label for="grade">Grade</label>
+            <input type="text" value="" class="form-control" name="grade" id="grade" readonly="">
+          </div>
+          <div class="form-group">
             <label for="jobtitle">Job Title</label>
             <select name="jobtitle" class="form-control select2" style="width: 100%" id="jobtitle">
               <option value="" disabled="" selected=""></option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="grade">Grade</label>
-            <select name="grade" class="form-control" style="width: 100%" id="grade">
-              <option value="" disabled="" selected=""></option>
-              <?php for ($i=1; $i < 8; $i++) : ?>
-                <option value="<?= $i ?>"><?= $i ?></option>
-              <?php endfor; ?>
             </select>
           </div>
           <div class="form-group">
@@ -164,14 +159,23 @@
     })
   });
 
+  $('#position').change(function() {
+    $.get('<?= base_url('manage/employes/get_grade/') ?>' + $(this).val(), {}, 
+      function(res) {
+        $('#grade').val(res)
+    })
+  });
+
   function add() {
     $('.modal-title').text('Add Employe');
     $('#btnSubmit').text('Save');
     $('#isUpdate, #nik, #name, #head').val('');
     $('#section, #position, #jobtitle, #grade').val(null).trigger('change');
+    document.getElementById("nik").removeAttribute("readonly");
   }
 
   function edit(id) {
+    document.getElementById("nik").setAttribute("readonly", "");
     $('.modal-title').text('Edit Employe');
     $('#btnSubmit').text('Update');
     $.get('<?= base_url() ?>employe/'+id+'/detail', function(response) {
@@ -200,4 +204,13 @@
       this.form.head.value = ui.item.value;
     }
   });
+
+  function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+  }
 </script>

@@ -51,7 +51,7 @@
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($jobtitleList as $row) { ?>
+          <?php $no=1; foreach ($jobtitleList as $row) { ?>
             <tr>
               <td><?= convert_to_roman($row->grade) ?></td>
               <td><?= $row->jobtitleName ?></td>
@@ -66,7 +66,27 @@
               <!-- end if -->
 
               <td><?= is_form_complete($row->job_title_id, $row->head) ?> %</td>
-              <td><?= get_filling_state('AF-'.$row->job_title_id.'-'.get_active_year().'-'.$row->head) ?></td>
+
+              <?php $code = 'AF-'.$row->job_title_id.'-'.get_active_year().'-'.$row->head; 
+              // for admin
+              if ($position_grade == 99) { ?>
+
+                <td>
+                  <a 
+                    onclick="edit_state('<?= $code ?>')" 
+                    href="javascript:void(0);" 
+                    data-target="#addModal" 
+                    data-toggle="modal">
+                    <?= get_filling_state($code) ?>
+                  </a>
+                </td>
+
+              <?php } else { ?>
+
+                <td><?= get_filling_state($code) ?></td>
+
+              <?php } ?>
+
               <td>
                 <a 
                   href="<?= base_url('form/'.'AF-'.$row->job_title_id.'-'.get_active_year().'-'.$row->head) ?>" 
@@ -75,10 +95,70 @@
                 </a>
               </td>
             </tr>
-          <?php } ?>
+          <?php $no++; } ?>
         </tbody>
       </table>
     </div>
     <!-- /.box-body -->
   </div>
 </section>
+
+<script>
+  function edit_state(code) {
+    $.get('<?= base_url('assessment/get_form/') ?>' + code, function(res) {
+      var data = JSON.parse(res);
+      document.getElementById('dept').value = data.dept;
+      document.getElementById('sect').value = data.sect;
+      document.getElementById('job').value = data.job;
+      document.getElementById('spv').value = data.spv;
+      document.getElementById('code').value = code;
+      document.getElementById('form-number').innerHTML = code;
+    });
+  }
+</script>
+
+<div id="addModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+  <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Change Filling State for Form <b id="form-number"></b></h4>
+      </div>
+      <form action="<?= base_url('assessment/change_state') ?>" method="post">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="year">Department</label>
+              <input type="text" name="dept" id="dept" value="" readonly="" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="year">Section</label>
+              <input type="text" name="sect" id="sect" value="" readonly="" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="year">Job Title</label>
+              <input type="text" name="job" id="job" value="" readonly="" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="year">Superior</label>
+              <input type="text" name="spv" id="spv" value="" readonly="" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="hidden" value="" name="code" id="code">
+              <label for="year">State</label>
+              <select name="state" id="" class="form-control">
+                <option value="" disabled="" selected=""></option>
+                <?php foreach ($state as $value) : ?>
+                  <option value="<?= $value->code ?>"><?= $value->code ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" id="btnSubmit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -39,6 +39,7 @@ class Assessment extends CI_Controller {
 				break;
 		}
 
+        $data['state']          = $this->db->get_where('positions', ['grade >' => 3])->result();
         $data['position_grade'] = $this->position_grade;
         $data['position']       = $this->position;
         $data['department']     = $this->department;
@@ -753,7 +754,9 @@ class Assessment extends CI_Controller {
 
         if ($workflow->grade > 8 ) {
             $state = 'PA';
-        }
+        } else {
+    	    $state = $workflow->code;
+    	}
 
         $this->db->where('code_form', $code_form);
         $this->db->update('assessment_form_state', ['state' => $state]);
@@ -829,6 +832,49 @@ class Assessment extends CI_Controller {
 		$data['description'] = $this->db->where('id', $id)->get('skill_dictionaries')->row();
 		$this->load->view('competency_description_modal', $data);    	
 	}
+
+    /**
+     * Get detail form based on its code
+     * @param string $code
+     * @return void
+     */
+    public function get_form(string $code) : void
+    {
+        $explode_code = explode('-', $code);
+        $jobtitle = get_jobtitle_name($explode_code[1]);
+
+        $section_id = get_section_by_jobtitle($explode_code[1]);
+        $section = get_section($section_id)->name;
+
+        $departments = get_department( get_section($section_id)->dept_id );
+        $spv = user_name($explode_code[3]);
+
+        $response = [
+            'code' => $code,
+            'spv'  => $spv,
+            'job'  => $jobtitle,
+            'sect' => $section,
+            'dept' => $departments,
+        ];
+        echo json_encode($response);
+    }
+
+    /**
+     * Handle change state for assessment filling
+     * 
+     * @return void
+     */
+    public function change_state()
+    {
+        $state = $this->input->post('state');
+        $code = $this->input->post('code');
+
+        $this->db->where('code_form', $code);
+        $this->db->update('assessment_form_state', ['state' => $state]);
+
+        $this->session->set_flashdata('success_update_data', 'State successfully changed!');
+        redirect(base_url('assessment'));
+    }
 	
 	/**
      * Handle import assessment form
