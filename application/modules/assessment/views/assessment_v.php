@@ -30,6 +30,13 @@
   <div class="box">
     <!-- /.box-header -->
     <div class="box-body">
+      <!-- export just for admin -->
+      <?php if ($position_grade == 99) { ?>
+        <a href="#exportModal" data-toggle="modal" class="btn btn-success">
+          <i class="fa fa-download"></i> Export Excel
+        </a>
+      <?php } ?>
+      <hr>
       <table id="example1" class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -158,6 +165,35 @@
               <button type="submit" id="btnSubmit" class="btn btn-primary">Update</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="exportModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+  <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Select Department to Export</h4>
+      </div>
+      <form action="<?= base_url('assessment/export_all_form') ?>" method="post">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="year">Department</label>
+            <select name="department" class="form-control" id="">
+              <option value="" disabled="" selected=""></option>
+              <?php foreach ($dept_list as $dept) : ?>
+                <option value="<?= $dept->id ?>"><?= $dept->name ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" id="btnSubmit" class="btn btn-primary">Export</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
       </form>
     </div>
   </div>

@@ -45,6 +45,7 @@ class Assessment extends CI_Controller {
         $data['department']     = $this->department;
         $data['section']        = $this->section;
         $data['jobtitleList']   = $getJobtitleList;
+        $data['dept_list']      = $this->db->get('departements')->result();
         $data['page']           = 'assessment_v';
 		$this->load->view('template/template', $data);
 	}
@@ -874,6 +875,23 @@ class Assessment extends CI_Controller {
 
         $this->session->set_flashdata('success_update_data', 'State successfully changed!');
         redirect(base_url('assessment'));
+    }
+
+    /**
+     * Export all assessment form
+     * 
+     * @return void
+     */
+    public function export_all_form()
+    {
+        $department = $this->input->post('department');
+        $this->load->library('excel');
+        // active assessment year
+        $data['activeyear'] = get_active_year();
+        
+        $data['assessment'] = $this->assessment->group_assessment_form(get_active_year(), $department);
+        // debug($data['assessment'],1);
+        $this->load->view('excel_all_assessment_form', $data);
     }
 	
 	/**

@@ -396,6 +396,33 @@ class Assessment_model extends CI_Model {
 								WHERE af.code = '$code' ")->result();
 	}
 
+	public function employees_whose_assessed(string $code)
+	{
+		return $this->db->query("SELECT em.nik, em.name, af.code FROM employes em
+								JOIN assessment_forms af ON em.nik = af.nik
+								WHERE af.code = '$code' ")->result();
+	}
+
+	public function group_assessment_form(string $year, int $department)
+	{
+		return $this->db->query("SELECT 
+									af.code, 
+									af.nik,
+									em.name,
+									em.job_title_id,
+									em.grade,
+									po.name AS position,
+									dp.name AS dept_name,
+									sc.name AS sect_name 
+								FROM assessment_forms af
+								JOIN employes em ON af.nik = em.nik
+								JOIN positions po ON em.position_id = po.id
+								JOIN departements dp ON em.dept_id = dp.id
+								JOIN sections sc ON em.section_id = sc.id
+								WHERE af.code LIKE '%-$year-%'
+								AND dp.id = $department")->result();
+	}
+
 	public function get_first_state(int $nik=0, int $job_id=0)
 	{
 		$head = $this->get_head($nik);
