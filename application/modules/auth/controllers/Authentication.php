@@ -29,7 +29,7 @@ class Authentication extends CI_Controller {
 		 $ldap_id 			= $this->input->post('nik');
 		 $password 			= $this->input->post('password');
 
-		 if($ldap_id){
+		 if($ldap_id == 123456){
 			$nik 			= $ldap_id;
 			
 			$isUserExist 	= $this->login->is_user_exist($nik);
