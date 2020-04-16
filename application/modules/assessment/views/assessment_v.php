@@ -182,7 +182,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label for="year">Department</label>
-            <select name="department" class="form-control" id="">
+            <select name="department" class="form-control" id="" required="">
               <option value="" disabled="" selected=""></option>
               <?php foreach ($dept_list as $dept) : ?>
                 <option value="<?= $dept->id ?>"><?= $dept->name ?></option>

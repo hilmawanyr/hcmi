@@ -888,7 +888,7 @@ class Assessment extends CI_Controller {
         $this->load->library('excel');
         // active assessment year
         $data['activeyear'] = get_active_year();
-        
+        $data['department_name'] = get_department($department);
         $data['assessment'] = $this->assessment->group_assessment_form(get_active_year(), $department);
         // debug($data['assessment'],1);
         $this->load->view('excel_all_assessment_form', $data);

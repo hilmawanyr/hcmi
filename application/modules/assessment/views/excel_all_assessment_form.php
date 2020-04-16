@@ -113,7 +113,7 @@ $excel->getActiveSheet()->getStyle("A1:M3")->getFont()->setBold(true);
 // $excel->getActiveSheet()->getStyle("A6:N7")->applyFromArray($style);
 // //$excel->getDefaultStyle()->applyFromArray($style);
 
-$filename = "Export_of_Assessment_Form_".$activeyear.".xls";
+$filename = "Export_of_Assessment_Form_".str_replace(' ', '_', $department_name)."_Department_".$activeyear.".xls";
 header('Content-Type: application/vnd.ms-excel'); //mime type
 header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
 header('Cache-Control: max-age=0'); //no cache
