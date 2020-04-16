@@ -81,6 +81,30 @@ class Dashboard extends CI_Controller {
     }
 
     /**
+     * Get content of dashboard chart -- for job scoring level
+     * @param string $adminOrHR
+     * @param int $section
+     * @return void
+     */
+    public function score_level_chart(string $adminOrHR='true', int $nik=0) : void
+    {
+        if ($adminOrHR == 'true') {
+            $datas = $this->dashboard->scoring_level_chart_admin();    
+        } else {
+            $datas = $this->dashboard->scoring_level_chart($nik);
+        }
+        
+        foreach ($datas as $data) {
+            $object[] = [
+                'name' => 'Level '.$data->level,
+                'y' => $data->amount
+            ];
+        }
+
+        echo json_encode($object);
+    }
+
+    /**
      * Get ratio from number of employes that grouped by their grade
      * @param string $adminOrHR
      * @param int $section

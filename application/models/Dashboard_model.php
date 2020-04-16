@@ -639,6 +639,31 @@ class Dashboard_model extends CI_Model {
 		return $all_team;
 	}
 
+	public function scoring_level_chart(int $nik=0) : array
+	{
+		$active_year = get_active_year();
+		$heads = $this->get_head($nik);
+		$this->db->select('count(af.nik) AS amount, af.poin_grade AS level');
+		$this->db->from('assessment_forms af');
+		$this->db->join('employee_relations er', 'af.nik = er.nik');
+		$this->db->where('af.poin_grade IS NOT NULL', NULL, FALSE);
+		$this->db->where_in('er.head', $heads);
+		$this->db->like('af.code', $active_year, 'both');
+		$this->db->group_by('af.poin_grade');
+		return $this->db->get()->result();
+	}
+
+	public function scoring_level_chart_admin() : array
+	{
+		$active_year = get_active_year();
+		$this->db->select('count(nik) AS amount, poin_grade AS level');
+		$this->db->from('assessment_forms');
+		$this->db->where('poin_grade IS NOT NULL', NULL, FALSE);
+		$this->db->like('code', $active_year, 'both');
+		$this->db->group_by('poin_grade');
+		return $this->db->get()->result();
+	}
+
 	/**
 	 * Get number of employes in each job title
 	 * @param bool $adminOrHR

@@ -209,9 +209,10 @@ class Assessment extends CI_Controller {
         if ($is_employe_has_form < 1) {
 
             $assessment_form = [
-                'code'   => $code,
-                'nik'    => $employee,
-                'job_id' => $jobtitle,
+                'code'       => $code,
+                'nik'        => $employee,
+                'job_id'     => $jobtitle,
+                'created_at' => date('Y-m-d H:i:s')
             ];
             $this->db->insert('assessment_forms', $assessment_form);
         }
@@ -518,7 +519,8 @@ class Assessment extends CI_Controller {
                     $assessmentQuestion[] = [
                         'form_id'       => $form->id,
                         'skill_unit_id' => $competency->unit_id,
-                        'weight'        => $competency->bobot
+                        'weight'        => $competency->bobot,
+                        'created_at'    => date('Y-m-d H:i:s')
                     ];
                 }
             }
@@ -638,7 +640,7 @@ class Assessment extends CI_Controller {
 						AND skill_unit_id IN (SELECT id FROM skill_units WHERE id_dictionary = $dictionaryId)");
 
         for ($j = 0; $j <= $filledArrayIndex; $j++) {
-        	$data = ['poin' => $poin[$j][0]];
+        	$data = ['poin' => $poin[$j][0], 'updated_at' => date('Y-m-d H:i:s')];
 	        $this->db->where('form_id', $id_form);
 	        $this->db->where('skill_unit_id', $poin[$j][1]);
 	        $this->db->update('assessment_form_questions', $data);
@@ -694,7 +696,8 @@ class Assessment extends CI_Controller {
                         [
                             'total_poin' => $totalPoin, 
                             'poin_grade' => $grade,
-                            'audit_by'   => $this->session->userdata('login_session')['nik']
+                            'audit_by'   => $this->session->userdata('login_session')['nik'],
+                            'updated_at' => date('Y-m-d H:i:s')
                         ]);
         /**
          * but if total_poin in assessment_forms has filled cause intentionally submit
@@ -751,7 +754,7 @@ class Assessment extends CI_Controller {
         $jobtitleId           = explode('-', $code)[1];
         $code_form            = $code;
         $get_assessment_state = $this->db->get_where('assessment_form_state',  ['code_form' => $code_form])->row();
-        $workflow                = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
+        $workflow             = $this->_get_workflow_state2($get_assessment_state->state, $this->nik, $jobtitleId);
 
         if ($workflow->grade > 8 ) {
             $state = 'PA';
@@ -759,8 +762,12 @@ class Assessment extends CI_Controller {
     	    $state = $workflow->code;
     	}
 
+        $this->db->where('code', $code_form);
+        $this->db->update('assessment_forms', ['audit_by' => $this->nik, 'updated_at' => date('Y-m-d H:i:s')]);
+
         $this->db->where('code_form', $code_form);
-        $this->db->update('assessment_form_state', ['state' => $state]);
+        $updated_data = ['state' => $state, 'updated_at' => date('Y-m-d H:i:s'), 'updated_by' => $this->nik];
+        $this->db->update('assessment_form_state', $updated_data);
         redirect(base_url('form/'.$code_form));
     }
 

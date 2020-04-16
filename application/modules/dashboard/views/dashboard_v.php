@@ -111,6 +111,14 @@
       <!-- /.box -->
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box box-default">
+      <div id="piechart3" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>          
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
 </section>
 <?php
 $loginSession = $this->session->userdata('login_session');
@@ -204,5 +212,48 @@ $loginSession = $this->session->userdata('login_session');
       }]
     });  
   })
+    
+  var url3 = '<?= base_url() ?>dashboard/score_level_chart/' + isAdminOrHR + '/' + <?= $loginSession['nik']?>;
+  $.get(url3, function (res) {
+
+    var respons = JSON.parse(res)
+
+    var chartContent = respons.map(function(data) {
+      return {
+        name: data.name,
+        y: parseInt(data.y)
+      }
+    })
+
+    Highcharts.chart('piechart3', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Jumlah Karyawan Per Level Penilaian'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:.f} orang</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y:.f}'
+                }
+            }
+        },
+        series: [{
+            name: 'Total',
+            colorByPoint: true,
+            data: chartContent
+        }]
+    });
+  });
 
 </script>
