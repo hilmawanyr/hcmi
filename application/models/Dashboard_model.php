@@ -20,12 +20,12 @@ class Dashboard_model extends CI_Model {
 	 */
 	public function get_participants(int $section=0, $department='') : object
 	{
+		$active_year = get_active_year();
 		switch ($section) {
 			case 0:
-				return $this->db->query("SELECT * FROM employes 
-										WHERE name <> 'admin' 
-										AND position_id IN 
-										(SELECT id FROM positions WHERE grade <= 3)");
+				return $this->db->query("SELECT af.*, em.name FROM assessment_forms af
+										JOIN employes em ON af.nik = em.nik
+										WHERE af.code LIKE '%-$active_year-%'");
 				break;
 			
 			default:
@@ -209,13 +209,14 @@ class Dashboard_model extends CI_Model {
 
 		switch ($notAdminOrHR) {
 			case FALSE:
-				$employeHasntAssessed 	= $this->db->query("SELECT * FROM employes 
-															WHERE nik NOT IN 
-																(SELECT nik FROM assessment_forms 
-																WHERE code LIKE '%$activeYear%')
-															AND name NOT LIKE '%admin%'
-															AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
-														)->num_rows();
+				$employeHasntAssessed 	= 0;
+				/*$this->db->query("SELECT * FROM employes 
+								WHERE nik NOT IN 
+									(SELECT nik FROM assessment_forms 
+									WHERE code LIKE '%$activeYear%')
+								AND name NOT LIKE '%admin%'
+								AND position_id IN (SELECT id FROM positions WHERE grade <= 3)"
+							)->num_rows();*/
 
 				$uncompleteAssessment 	= $this->db->query("SELECT * FROM assessment_forms 
 															WHERE code LIKE '%$activeYear%' 
@@ -230,11 +231,12 @@ class Dashboard_model extends CI_Model {
 					$participants[] = $value->nik;
 				}
 
-				$employeHasntAssessed = $this->db->select('*')
-												->from('employes')
-												->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
-												->where_in('nik', $participants)
-												->get()->num_rows();
+				$employeHasntAssessed = 0;
+				/*$this->db->select('*')
+						->from('employes')
+						->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
+						->where_in('nik', $participants)
+						->get()->num_rows();*/
 
 				$uncompleteAssessment = $this->db->select('*')
 												->from('assessment_forms')
@@ -333,17 +335,19 @@ class Dashboard_model extends CI_Model {
 	 */
 	public function get_participants_detail(int $sectOrDept=0) : array
 	{
+		$active_year= get_active_year();
 		if ($sectOrDept == 0) {
 			return $this->db->query("SELECT 
 										em.name, 
 										dp.name AS dept_name,
 										sc.name AS sect_name,
 										jt.name AS job_name 
-									FROM employes em
+									FROM assessment_forms af
+									JOIN employes em ON em.nik = af.nik
 									JOIN departements dp ON em.dept_id = dp.id
 									JOIN sections sc ON em.section_id = sc.id
 									JOIN job_titles jt ON em.job_title_id = jt.id
-									WHERE em.name <> 'admin' 
+									WHERE af.code LIKE '%-$active_year-%' 
 									AND em.position_id NOT IN 
 									(SELECT id FROM positions where grade > 3)")->result();
 		} else {
@@ -435,14 +439,14 @@ class Dashboard_model extends CI_Model {
 			$participants[] = $value->nik;
 		}
 
-		$employeHasntAssessed = $this->db->select('em.*, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
+		/*$employeHasntAssessed = $this->db->select('em.*, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
 										->from('employes em')
 										->join('departements dp', 'em.dept_id = dp.id')
 										->join('sections sc', 'em.section_id = sc.id')
 										->join('job_titles jt', 'em.job_title_id = jt.id')
 										->where('nik NOT IN ('.$subquery.')', NULL, FALSE)
 										->where_in('nik', $participants)
-										->get()->result();
+										->get()->result();*/
 
 		$uncompleteAssessment = $this->db->select('a.*,b.name, dp.name AS dept_name, sc.name AS sect_name, jt.name AS job_name')
 										->from('assessment_forms a')
@@ -453,7 +457,7 @@ class Dashboard_model extends CI_Model {
 										->where('total_poin')
 										->where_in('a.nik', $participants)
 										->get()->result();
-		$fixArray = [];
+		/*$fixArray = [];
 
 		foreach ($employeHasntAssessed as $employe => $value) {
 			array_push($fixArray,$value);
@@ -461,9 +465,9 @@ class Dashboard_model extends CI_Model {
 
 		foreach ($uncompleteAssessment as $employe => $value) {
 			array_push($fixArray,$value);
-		}
+		}*/
 
-		return $fixArray;
+		return $uncompleteAssessment;
 	}
 
 	/**
@@ -473,20 +477,21 @@ class Dashboard_model extends CI_Model {
 	 */
 	private function _uncomplete_viewed_admin(string $activeYear) : array
 	{
-		$employeHasntAssessed 	= $this->db->query("SELECT 
-														em.*, 
-														dp.name AS dept_name, 
-														sc.name AS sect_name,
-														jt.name AS job_name 
-													FROM employes em
-													JOIN departements dp ON em.dept_id = dp.id
-													JOIN sections sc ON em.section_id = sc.id
-													JOIN job_titles jt ON em.job_title_id = jt.id
-													WHERE em.nik NOT IN 
-													(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%')
-													AND em.name NOT LIKE '%admin%'
-													AND em.position_id IN (SELECT id FROM positions WHERE grade <= 3)"
-												)->result();
+		$employeHasntAssessed 	= 0;
+		/*$this->db->query("SELECT 
+							em.*, 
+							dp.name AS dept_name, 
+							sc.name AS sect_name,
+							jt.name AS job_name 
+						FROM employes em
+						JOIN departements dp ON em.dept_id = dp.id
+						JOIN sections sc ON em.section_id = sc.id
+						JOIN job_titles jt ON em.job_title_id = jt.id
+						WHERE em.nik NOT IN 
+						(SELECT nik FROM assessment_forms WHERE code LIKE '%$activeYear%')
+						AND em.name NOT LIKE '%admin%'
+						AND em.position_id IN (SELECT id FROM positions WHERE grade <= 3)"
+					)->result();*/
 
 		$uncompleteAssessment 	= $this->db->query("SELECT 
 														a.*, 
@@ -502,7 +507,7 @@ class Dashboard_model extends CI_Model {
 													WHERE a.code LIKE '%$activeYear%' 
 													AND a.total_poin IS NULL")->result();
 		
-		$fixArray = [];
+		/*$fixArray = [];
 
 		foreach ($employeHasntAssessed as $employe => $value) {
 			array_push($fixArray,$value);
@@ -510,9 +515,9 @@ class Dashboard_model extends CI_Model {
 
 		foreach ($uncompleteAssessment as $employe => $value) {
 			array_push($fixArray,$value);
-		}
+		}*/
 
-		return $fixArray;
+		return $uncompleteAssessment;
 	}
 
 	/**
